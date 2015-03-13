@@ -1,0 +1,105 @@
+################################################################################
+################################################################################
+###                     GUIDE D'UTILISATION DES ROUTINES                     ###
+###                           v3.4, 12/nov/2006, BC                          ###
+################################################################################
+################################################################################
+
+Se placer dans le répertoire Simu_JUNO (le répertoire qui contient le répertoire
+des routines de simulation pro_V3.4/).
+
+Lancer la commande 
+> ./idl_juno_v34
+
+NB: Cela revient à saisir la commande 
+> idl pro_V3.4/JUNO_batch.pro
+
+Le fichier batch pro_V3.4/JUNO_batch.pro contient les commandes nécessaires à la
+compilation et au lancement de la simulation définie par la procédure JUNO_init.
+
+La syntaxe de JUNO_init est la suivante : 
+
+; ==============================================================================
+; ==== definition de la longitude (+ inclinaison) jovicentrique du Soleil (t=0)
+
+  SET_LOCAL_TIME, longitude=0., inclination=0., parameters=params
+
+; ==============================================================================
+; ==== duree totale et pas de la simulation
+
+  SET_SIMULATION_TIME, simul_length=480., simul_step=.25, parameters=params
+
+; ==============================================================================
+; ==== Observateur fixe ou mobile 
+
+  SET_OBSERVER, name="fixe", motion=0b, obs_params=[3000.,0.,351.], $
+  parameters=params,verbose=verbose
+  ; ici, obs_params : position fixe de l'observateur 
+  ;            = [distance, latitude, longitude] (a t=0?) 
+
+ou bien 
+  SET_OBSERVER, name="orbiter", motion=1b, obs_params=[20.31,6.5,351.,90.,90.],$
+  parameters=params,verbose=verbose
+  ; ici, obs_params : definition de l'orbite et de la position initiale de 
+  ; l'observatieur
+  ;            = [semi_major_axis, semi_minor_axis, apoapsis longitude, 
+  ;               orbit inclinaison, initial phase]
+  ; NB initial phase = angle de phase sur l'orbite a t=0 par rapport au centre 
+  ; de l'ellipse avec phase=0 a l'apojove
+
+; ==============================================================================
+; ==== Definition des frequences d'observation
+; fmin, fmax, step_f pour le spectre dynamique produit
+
+ SET_FREQUENCY, fmin=.4, fmax=45., fstep=0.2, parameters=params				
+
+
+; ==============================================================================
+; label du nom de la source, nom du repertoire de stockage des parametres 
+; precalcules pour cette source
+
+ADD_SOURCE, name="Ovale Nord", directory="OvaleN", active_LO=[0,360,3], $
+  verbose=verbose,parameters=params,cone_app=70., cone_wid=.2, shape=0.2
+ADD_SOURCE, name="Ovale Sud",  directory="OvaleS", active_LO=[0,360,3], $
+  verbose=verbose,parameters=params,cone_app=70., cone_wid=.2, shape=0.2
+
+ADD_SOURCE, name="Io Flux Tube", directory="IFT", /satellite, $
+  pos_t0=[5.95, 105.], lag=[30.,-30.], shape=[0.1,0.1], cone_app=[70.,70.], $
+  cone_wid=[.2,.2], parameters=params,verbose=verbose,pole=[1,-1]
+
+Les paramètres de ADD_SOURCE sont les suivants : 
+ - cas "source aurorale" :
+    + name      : nom
+    + directory : répertoire où sont rangées les données précalculées
+    + active_LO : secteur de longitude actif [début, fin, pas] en dégrés
+    + active_LT : secteur de temps local [début, fin, pas] en dégrés (pas encore 
+                  implémenté).
+    + cone_app  : ouverture du cone d'émission en degrés (une valeur)
+    + cone_wid  : épaisseur du cone d'émission en degrés (une valeur)
+    + shape     : selection du type d'émission 
+ - cas "source satellite" :
+    + name      : nom
+    + directory : répertoire où sont rangées les données précalculées
+    + satellite : doit être à 1 pour sélectionné ce type de source
+    + pos_t0    : position du satellite à t=0 (distance, longitude) en degrés
+    + lag       : décalage en degrés entre la longitude active et 
+                  celle du satellite (Nord, -Sud) 
+    + shape     : selection du type d'émission (Nord, Sud)
+    + cone_app  : ouverture du cone d'émission en degrés (Nord, Sud)
+    + cone_wid  : épaisseur du cone d'émission en degrés (Nord, Sud)
+    + pole      : pole de l'émission. doit être [1,-1] dans le cas décrit ici 
+                  où on donne d'abord l'info Nord puis l'info Sud. 
+                  1= nord, -1=sud.
+ - tous les cas : 
+    + parameters: la structure contenant les paramètres de la simulation, 
+                  passée depuis la routine principale, juno.
+    + vebose=verbose: ne pas supprimer (permet d'avoir des info complémentaires
+                  en lançant la simulation avec juno,/verbose; l'execution est
+                  alors environ 20-30% plus lente).
+    + gradb_test: mot clé permettant d'activer le test sur le gradient de B au
+                  pied de la ligne de champ active. Ce test ne semble pas 
+                  fonctionner corectement pour l'instant.
+ 
+
+les paramètres de la simulation sont enregistrés dans la structure params qui 
+est remplie par les différentes routines. 
