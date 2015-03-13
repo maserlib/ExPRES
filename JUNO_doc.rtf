@@ -1,0 +1,193 @@
+{\rtf1\mac\ansicpg10000\cocoartf102
+{\fonttbl\f0\fswiss\fcharset77 Helvetica;\f1\fswiss\fcharset77 Helvetica-Bold;\f2\fswiss\fcharset77 Helvetica-BoldOblique;
+\f3\fmodern\fcharset77 Courier;\f4\fswiss\fcharset77 Helvetica-Oblique;}
+{\colortbl;\red255\green255\blue255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww15720\viewh17720\viewkind0
+\pard\tx565\tx1133\tx1700\tx2266\tx2832\tx3401\tx3967\tx4535\tx5102\tx5669\tx6235\tx6802\qc
+
+\f0\fs24 \cf0 \
+\pard\tx565\tx1133\tx1700\tx2266\tx2832\tx3401\tx3967\tx4535\tx5102\tx5669\tx6235\tx6802\qc
+
+\f1\b\fs42 \cf0 GUIDE D'UTILISATION DES ROUTINES\
+v3.6, 02/2007\
+\pard\tx565\tx1133\tx1700\tx2266\tx2832\tx3401\tx3967\tx4535\tx5102\tx5669\tx6235\tx6802\qj
+
+\f0\b0\fs34 \cf0 \
+\pard\tx565\tx1133\tx1700\tx2266\tx2832\tx3401\tx3967\tx4535\tx5102\tx5669\tx6235\tx6802\ql\qnatural
+
+\fs24 \cf0 \
+
+\f2\i\b\fs28 Lancer une simulation\
+
+\f0\i0\b0\fs24 \
+Se placer dans le r\'8epertoire 
+\f3 Simu_JUNO
+\f0  (le r\'8epertoire qui contient le r\'8epertoire des routines de simulation 
+\f3 pro_V3.6/
+\f0 ).\
+\
+Lancer la commande \
+
+\f3 > ./idl_juno_v36\
+
+\f0 \
+
+\f4\i NB
+\f0\i0 : Cela revient \'88 saisir la commande \
+
+\f3 > idl pro_V3.v36/JUNO_batch.pro\
+
+\f0 \
+Le fichier batch 
+\f3 pro_V3.6/JUNO_batch.pro
+\f0  contient les commandes n\'8ecessaires \'88 la compilation et au lancement de la simulation d\'8efinie par la proc\'8edure 
+\f3 JUNO_init
+\f0 .\
+\
+
+\f2\i\b\fs28 Syntaxe de la routine d'initialisation\
+
+\f0\i0\b0\fs24 \
+La syntaxe de 
+\f3 JUNO_init
+\f0  est la suivante : \
+==============================================================================\
+; si diag_theta = 1 alors on sauvegarde dans angle.dat les angles\
+; obs/planete/sources dans angle.dat\
+; ==============================================================================\
+diag_theta=0
+\f1\b \
+
+\f0\b0 \
+\
+
+\f3 ; ==============================================================================\
+; ==== definition de la longitude (+ inclinaison) jovicentrique du Soleil (t=0)\
+\
+  SET_LOCAL_TIME, longitude=0., inclination=0., parameters=params\
+\
+; ==============================================================================\
+; ==== duree totale et pas de la simulation\
+\
+  SET_SIMULATION_TIME, simul_length=480., simul_step=.25, parameters=params\
+\
+; ==============================================================================\
+; ==== Parametres de la planetes\
+\
+  SET_PLANET, planet=planet, parameters=params\
+planet='jup' ou 'sat'\
+; ==============================================================================\
+; ==== Observateur fixe ou mobile \
+\
+  SET_OBSERVER, name="fixe", motion=0b, obs_params=[3000.,0.,351.], $\
+  parameters=params,verbose=verbose\
+  ; ici, obs_params : position fixe de l'observateur \
+  ;            = [distance, latitude, longitude] (a t=0?) \
+\
+ou bien \
+  SET_OBSERVER, name="orbiter", motion=1b, obs_params=[20.31,6.5,351.,90.,90.],$\
+  parameters=params,verbose=verbose\
+  ; ici, obs_params : definition de l'orbite et de la position initiale de \
+  ; l'observatieur\
+  ;            = [semi_major_axis, semi_minor_axis, apoapsis longitude, apoapsis declination \
+  ;               orbit inclinaison, initial phase]\
+  ; NB initial phase = angle de phase sur l'orbite a t=0 par rapport au centre \
+  ; de l'ellipse avec phase=0 a l'apojove\
+\
+; ==============================================================================\
+; ==== Definition des frequences d'observation\
+; fmin, fmax, step_f pour le spectre dynamique produit\
+\
+ SET_FREQUENCY, fmin=.4, fmax=45., fstep=0.2, parameters=params				\
+\
+\
+; ==============================================================================\
+; label du nom de la source, nom du repertoire de stockage des parametres \
+; precalcules pour cette source\
+\
+ADD_SOURCE, name="Ovale Nord", directory="OvaleN", active_LO=[0,360,3], $\
+  verbose=verbose,parameters=params,cone_app=70., cone_wid=.2, shape=0.2\
+ADD_SOURCE, name="Ovale Sud",  directory="OvaleS", active_LO=[0,360,3], $\
+  verbose=verbose,parameters=params,cone_app=70., cone_wid=.2, shape=0.2\
+\
+ADD_SOURCE, name="Io Flux Tube", directory="IFT", /satellite, $\
+  pos_t0=[5.95, 105.], lag=[30.,-30.], shape=[0.1,0.1], cone_app=[70.,70.], $\
+  cone_wid=[.2,.2], parameters=params,verbose=verbose,pole=[1,-1]\
+\
+Les param\'8ftres de ADD_SOURCE sont les suivants : \
+ - cas "source aurorale" :\
+    + name      : nom\
+    + directory : r\'8epertoire o\'9d sont rang\'8ees les donn\'8ees pr\'8ecalcul\'8ees\
+    + active_LO : secteur de longitude actif [d\'8ebut, fin, pas] en d\'8egr\'8es\
+    + active_LT : secteur de temps local [d\'8ebut, fin, pas] en d\'8egr\'8es (pas encore \
+                  impl\'8ement\'8e).\
+    + cone_app  : ouverture du cone d'\'8emission en degr\'8es (une valeur)\
+    + cone_wid  : \'8epaisseur du cone d'\'8emission en degr\'8es (une valeur)\
+    + shape     : selection du type d'\'8emission \
+ - cas "source satellite" :\
+    + name      : nom\
+    + directory : r\'8epertoire o\'9d sont rang\'8ees les donn\'8ees pr\'8ecalcul\'8ees\
+    + satellite : doit \'90tre \'88 1 pour s\'8electionn\'8e ce type de source\
+    + pos_t0    : position du satellite \'88 t=0 (distance, longitude) en degr\'8es\
+    + lag       : d\'8ecalage en degr\'8es entre la longitude active et \
+                  celle du satellite (Nord, -Sud) \
+    + shape     : selection du type d'\'8emission (Nord, Sud)\
+    + cone_app  : ouverture du cone d'\'8emission en degr\'8es (Nord, Sud)\
+    + cone_wid  : \'8epaisseur du cone d'\'8emission en degr\'8es (Nord, Sud)\
+    + pole      : pole de l'\'8emission. doit \'90tre [1,-1] dans le cas d\'8ecrit ici \
+                  o\'9d on donne d'abord l'info Nord puis l'info Sud. \
+                  1= nord, -1=sud.\
+ - tous les cas : \
+    + parameters: la structure contenant les param\'8ftres de la simulation, \
+                  pass\'8ee depuis la routine principale, juno.\
+    + vebose=verbose: ne pas supprimer (permet d'avoir des info compl\'8ementaires\
+                  en lan\'8dant la simulation avec juno,/verbose; l'execution est\
+                  alors environ 20-30% plus lente).\
+    + gradb_test: mot cl\'8e permettant d'activer le test sur le gradient de B au\
+                  pied de la ligne de champ active. Ce test ne semble pas \
+                  fonctionner correctement pour l'instant.\
+    +axisym_latitude : gamme de latitude active [d\'8ebut,fin,pas]. Le champ doit \'90tre axysymetrique.\
+
+\f0  \
+\
+les param\'8ftres de la simulation sont enregistr\'8es dans la structure 
+\f3 params
+\f0  dont les diff\'8erents \'8el\'8ements sont remplis par les diff\'8erentes routines. \
+\
+
+\f2\i\b\fs28 Modifications par rapport aux versions pr\'8ec\'8edentes et pour la version 3.5 : 
+\f0\i0\b0\fs24 cf Doc r\'8epertoire 3.5\
+\
+
+\f2\i\b\fs28 Pour la version 3.6\
+\
+[SH]\
+
+\f0\i0\b0\fs24 Modifications pour Saturne (SET_PLANET)\
+set_observer: Le grand axe n'est plus obligatoirement dans le plan equatorial\
+Add_source: Latitudes actives. Chaque latitude active est consid\'8er\'8ee en interne comme une source ind\'8ependante.\
+Diag_theta : si mis a 1 dans JUNO_init on sauve l'angle observateur/planete/source dans angle.dat\
+		    ca peut servir si on veut interpreter des spectre dynamique observ\'8es.\
+\
+
+\f2\i\b\fs28 \
+[LL]\
+\pard\tx565\tx1133\tx1700\tx2266\tx2832\tx3401\tx3967\tx4535\tx5102\tx5669\tx6235\tx6802\li540\fi-540\ql\qnatural
+
+\f0\i0\b0\fs24 \cf0 Calcul du champ:\
++ Rajout coeff_SPV, coeff_SPVR et coeff_Z3 avec anneau de courant. Pour le calcul des lignes de champ: mod\'8fle \'88 entrer directement dans calc_ligne.pro\
++ Lignes de champ calcul\'8ees pour une variation en colatitude (au 14/02: de 5 \'88 40) et stock\'8ees dans OvaleS/N_modele\
+(comme champ axisym\'8etrique, rotation_planete_sat fait tourner les lignes de champ en longitude)\
+\
+Simulation:\
++ Correction juno.pro: \
+	=> rotation_planete_sat plac\'8e en fin de boucle pour avoir le calcul de l'\'8emission aussi en t=0 (en l'\'8etat la rotation des sources et de l'observateur est incr\'8ement\'8e d\'8fs t=0)\
+	=> Calcul ad hoc du temps local et longitude associee dans la boucle temps\
+	=> Suppression du +1 dans la base de temps de spdyn (on a donc nt elements au lieu de n+1)\
+\
++ Correction rotation_planete_sat.pro :  \
+	=> Modification de n_source: si bornes de temps local \'8egales, 1 source existe par d\'8efaut\
+	=> Modification de la conversion Temps local -> Longitude en d\'8ebut de programme\
+\pard\tx565\tx1133\tx1700\tx2266\tx2832\tx3401\tx3967\tx4535\tx5102\tx5669\tx6235\tx6802\ql\qnatural
+\cf0 \
+}
