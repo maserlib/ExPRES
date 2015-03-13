@@ -1,0 +1,228 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf410
+{\fonttbl\f0\fswiss\fcharset77 CenturyGothic;\f1\fswiss\fcharset77 CenturyGothic-Bold;\f2\fswiss\fcharset77 CenturyGothic-BoldItalic;
+\f3\fmodern\fcharset77 Courier;\f4\fswiss\fcharset77 CenturyGothic-Italic;}
+{\colortbl;\red255\green255\blue255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10140\viewh10800\viewkind0
+\pard\tx366\tx813\tx2814\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\qc\pardirnatural
+
+\f0\fs24 \cf0 \
+
+\f1\b\fs42 GUIDE D'UTILISATION DES ROUTINES\
+v3.4, 12/nov/2006, BC\
+\pard\tx366\tx813\tx2814\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\qj\pardirnatural
+
+\f0\b0\fs34 \cf0 \
+\pard\tx366\tx813\tx2814\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
+
+\fs24 \cf0 \
+
+\f2\i\b\fs28 Lancer une simulation\
+
+\f0\i0\b0\fs24 \
+Se placer dans le r\'8epertoire 
+\f3 Simu_JUNO
+\f0  (le r\'8epertoire qui contient le r\'8epertoire des routines de simulation 
+\f3 pro_V3.4/
+\f0 ).\
+\
+Lancer la commande \
+
+\f3 > ./idl_juno_v34\
+
+\f0 \
+
+\f4\i NB
+\f0\i0 : Cela revient \'88 saisir la commande \
+
+\f3 > idl pro_V3.4/JUNO_batch.pro\
+
+\f0 \
+Le fichier batch 
+\f3 pro_V3.4/JUNO_batch.pro
+\f0  contient les commandes n\'8ecessaires \'88 la compilation et au lancement de la simulation d\'8efinie par la proc\'8edure 
+\f3 JUNO_init
+\f0 .\
+\
+
+\f2\i\b\fs28 Syntaxe de la routine d'initialisation\
+
+\f0\i0\b0\fs24 \
+La syntaxe de 
+\f3 JUNO_init
+\f0  est la suivante : \
+\
+\'a5 d\'8efinition de la longitude (+ inclinaison) jovicentrique du Soleil (\'88 t=0)\
+
+\f3 \
+  SET_LOCAL_TIME, longitude=0., inclination=0., parameters=params\
+\
+
+\f0 \'a5 dur\'8ee totale et pas de la simulation\
+
+\f3 \
+  SET_SIMULATION_TIME, simul_length=480., simul_step=.25, parameters=params\
+\
+
+\f0 \'a5\'caObservateur fixe ou mobile \
+
+\f3 \
+  SET_OBSERVER, name="fixe", motion=0b, obs_params=[3000.,0.,351.], $\
+  parameters=params,verbose=verbose\
+  ; ici, obs_params : position fixe de l'observateur \
+  ;            = [distance, latitude, longitude] (a t=0?) \
+\
+
+\f0 ou bien \
+\
+
+\f3   SET_OBSERVER, name="orbiter", motion=1b, obs_params=[20.31,6.5,351.,90.,90.],$\
+  parameters=params,verbose=verbose\
+  ; ici, obs_params : definition de l'orbite et de la position initiale de \
+  ; l'observatieur\
+  ;            = [semi_major_axis, semi_minor_axis, apoapsis longitude, \
+  ;               orbit inclinaison, initial phase]\
+  ; NB initial phase = angle de phase sur l'orbite a t=0 par rapport au centre \
+  ; de l'ellipse avec phase=0 a l'apojove\
+\
+\
+
+\f0 \'a5 Definition des fr\'8equences d'observation\
+
+\f3 \
+  SET_FREQUENCY, fmin=.4, fmax=45., fstep=0.2, parameters=params				\
+\
+
+\f0 \'a5 Ajout des sources\
+
+\f3 \
+  ADD_SOURCE, name="Ovale Nord", directory="OvaleN", active_LO=[0,360,3], $\
+    verbose=verbose,parameters=params,cone_app=70., cone_wid=.2, shape=0.2\
+  ADD_SOURCE, name="Ovale Sud",  directory="OvaleS", active_LO=[0,360,3], $\
+    verbose=verbose,parameters=params,cone_app=70., cone_wid=.2, shape=0.2\
+\
+  ADD_SOURCE, name="Io Flux Tube", directory="IFT", /satellite, $\
+    pos_t0=[5.95, 105.], lag=[30.,-30.], shape=[0.1,0.1], cone_app=[70.,70.], $\
+    cone_wid=[.2,.2], parameters=params,verbose=verbose,pole=[1,-1]\
+\
+
+\f0 Les param\'8ftres de 
+\f3 ADD_SOURCE
+\f0  sont les suivants : \
+\pard\tx366\tx813\tx3234\ql\qnatural\pardirnatural
+\cf0 \
+
+\f4\i 	- cas "source aurorale" :\
+\pard\tx366\tx813\tx3234\li3220\fi-3220\ql\qnatural\pardirnatural
+
+\f0\i0 \cf0     		+
+\f3 name
+\f0  :	nom\
+		+ 
+\f3 directory
+\f0  :	r\'8epertoire o\'9d sont rang\'8ees les donn\'8ees pr\'8ecalcul\'8ees\
+		+ 
+\f3 active_LO
+\f0  :	secteur de longitude actif [d\'8ebut, fin, pas] en d\'8egr\'8es\
+		+ 
+\f3 active_LT
+\f0  :	secteur de temps local [d\'8ebut, fin, pas] en d\'8egr\'8es (pas encore impl\'8ement\'8e).\
+		+ 
+\f3 cone_app
+\f0  :	ouverture du cone d'\'8emission en degr\'8es (une valeur)\
+		+ 
+\f3 cone_wid
+\f0  : 	\'8epaisseur du cone d'\'8emission en degr\'8es (une valeur)\
+		+ 
+\f3 shape
+\f0  : 	selection du type d'\'8emission \
+\pard\tx366\tx813\tx3234\ql\qnatural\pardirnatural
+\cf0 \
+
+\f4\i 	- cas "source satellite" :\
+\pard\tx366\tx813\tx3234\li3220\fi-3220\ql\qnatural\pardirnatural
+
+\f0\i0 \cf0 		+ 
+\f3 name
+\f0  : 	nom\
+		+ 
+\f3 directory
+\f0  : 	r\'8epertoire o\'9d sont rang\'8ees les donn\'8ees pr\'8ecalcul\'8ees\
+		+ 
+\f3 satellite
+\f0  : 	doit \'90tre \'88 1 pour s\'8electionn\'8e ce type de source\
+		+ 
+\f3 pos_t0
+\f0  : 	position du satellite \'88 t=0 (distance, longitude) en degr\'8es\
+		+ 
+\f3 lag
+\f0  : 	d\'8ecalage en degr\'8es entre la longitude active et celle du satellite (Nord, -Sud) \
+		+ 
+\f3 shape
+\f0  : 	selection du type d'\'8emission (Nord, Sud)\
+		+ 
+\f3 cone_app
+\f0  : 	ouverture du cone d'\'8emission en degr\'8es (Nord, Sud)\
+		+ 
+\f3 cone_wid
+\f0  : 	\'8epaisseur du cone d'\'8emission en degr\'8es (Nord, Sud)\
+		+ 
+\f3 pole
+\f0  : 	pole de l'\'8emission. doit \'90tre [1,-1] dans le cas d\'8ecrit ici o\'9d on donne d'abord l'info Nord puis l'info Sud. [1= nord, -1=sud]\
+\pard\tx366\tx813\tx3234\ql\qnatural\pardirnatural
+\cf0 \
+
+\f4\i 	- tous les cas : \
+\pard\tx366\tx813\tx3234\li3220\fi-3220\ql\qnatural\pardirnatural
+
+\f0\i0 \cf0 		+ 
+\f3 parameters
+\f0  : 	la structure contenant les param\'8ftres de la simulation, pass\'8ee depuis la routine principale, 
+\f3 juno.pro
+\f0 .\
+		+ 
+\f3 vebose=verbose
+\f0  : ne pas supprimer (permet d'avoir des info compl\'8ementaires en lan\'8dant la simulation avec juno,/verbose; l'execution est alors environ 20-30% plus lente).\
+		+ 
+\f3 gradb_test
+\f0 : 	mot cl\'8e permettant d'activer le test sur le gradient de B au pied de la ligne de champ active. Ce test ne semble pas fonctionner correctement pour l'instant.\
+\pard\tx366\tx813\tx2814\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
+\cf0  \
+\
+les param\'8ftres de la simulation sont enregistr\'8es dans la structure 
+\f3 params
+\f0  dont les diff\'8erents \'8el\'8ements sont remplis par les diff\'8erentes routines. \
+\
+
+\f2\i\b\fs28 Modifications par rapport aux versions pr\'8ec\'8edentes \
+
+\f0\i0\b0\fs24 \
+Les common blocks ont \'8et\'8e supprim\'8es au profit du passage d'une structure contenant toutes les infos n\'8ecessaires au d\'8eroulement de la simulation. Les diff\'8erentes sources ont \'8et\'8e homog\'8en\'8eis\'8ees. Elles sont maintenant toutes trait\'8ees de la m\'90me mani\'8fre (plus de distinguo source N, source S dans le cas satellite, par exemple). Les mots cl\'8es permettant de d\'8efinir la mani\'8fre de coder les intensit\'8es sur le spectre dynamique final ont \'8et\'8e supprim\'8es. On  enregistre dans le tableau 
+\f3 spdyn
+\f0  tous les spectres dynamiques.  Les dimensions de ce tableau, dans la proc\'8edure 
+\f3 JUNO
+\f0  sont donc : Nombre de fr\'8equences x Nombres de pas de temps x Nombre de Sources. Le nombre de Sources est d\'8efini par le param\'8ftre 
+\f3 Active_LO
+\f0  ou 
+\f3 Active_LT
+\f0  dans le cas d'une source oval aurorale, et il vaut 2 dans le cas d'une source satellite.\
+\
+Le gain en temps de calcul par rapport est d'environ x25 sur Charybde, gr\'89ce \'88 deux optimisations :\
+ - les calculs sont faits en parall\'8fle sur toutes les sources (gain de ~x4.5). Il y avait auparavant un appel de la routine de calcul de l'\'8emission (
+\f3 field_line_emission
+\f0 ) par source. Cette routine a \'8et\'8e modifi\'8ee pour traiter tout d'un bloc.\
+ - les donn\'8ees magn\'8etiques pr\'8ecalcul\'8ees sont charg\'8ees une fois pour toutes au moment de l'initialisation (gain jusqu'\'88 ~x6). Cela est b\'8en\'8efique surtout dans le cas des ovales auroraux, o\'9d la ligne de champs d'une longitude donn\'8ee pouvait \'90tre charg\'8ee de nombreuses fois au cours de la boucle sur le temps. \
+\
+
+\f2\i\b\fs28 A faire.\
+
+\f0\i0\b0\fs24 \
++ l'option 
+\f3 Active_LT
+\f0  pour s\'8electionner un secteur de temps local actif dans le cas des ovales auroraux. Pour mettre en place cette option, voir les commentaires dans 
+\f3 add_Source.pro
+\f0 .\
++ v\'8erifier le test sur le gradient de B (dans 
+\f3 field_line_emission.pro
+\f0 )\
++ randomisation\
++ variation lin\'8eaire de l'ouverture du cone d'\'8emission en fonction de la fr\'8equence. }
