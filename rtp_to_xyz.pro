@@ -1,0 +1,1 @@
+pro RTP_TO_XYZ, rtp, xyz; x,y,z & r en Rj; theta, phi en rad  r=rtp(0) & theta=rtp(1) & phi=rtp(2)  xyz=[r*sin(theta)*cos(phi),r*sin(theta)*sin(phi),r*cos(theta)]returnend

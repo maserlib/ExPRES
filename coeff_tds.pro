@@ -1,0 +1,4 @@
+pro COEFF_TDS,g,h,n,dip,crt,tdip;coefficients du Dipole de 7 Gauss (Z96);g et h:coeff. des polynomes de Legendre;n:ordre du developpement;dip:position du dipole/axe de rotation;crt:anneau de courantG=fltarr(6,6) & H=fltarr(6,6)n=3G(1,0)=7.0G(1,1)=-0.0  &  H(1,1)=0.0G(2,0)=-0.0G(2,1)=-0.0  &  H(2,1)=-0.0G(2,2)=0.0  &  H(2,2)=0.0G(3,0)=0.0G(3,1)=-0.0  &  H(3,1)=-0.0G(3,2)=0.0  &  H(3,2)=0.0G(3,3)=-0.0  &  H(3,3)=-0.0dip=[15.,200.]crt=[0.,0.,0.,0.]
+
+  tdip=[[-0.914200,-0.374606,-0.154625],$	[0.369361,-0.927184,0.0624727],$	[-0.166769,0.,0.985996]]
+  ;tdip=[[1.,0.,0.],$;	[0.,1.,0.],$;	[0.,0.,1.]]returnend

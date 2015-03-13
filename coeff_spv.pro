@@ -1,0 +1,2 @@
+pro COEFF_SPV, g,h,n,dip,crt,tdip; coefficients modele SPVG=fltarr(6,6) & H=fltarr(6,6)G(1,0)=0.2116G(2,0)=0.0156G(3,0)=0.0232
+n=3dip=[0.,0.]	         ; tilt en degres, longitude du pole N magnetique en degrescrt=[8.,16.,2.5,13]  ; parametres du disque de courant: Rsmin, Rsmax, 			         ; 1/2 epaisseur en Rs, mu0*Itot/2/dRs en nTtdip=[[1.,0.,0.],$   ; matrice de changement de coordonnees      [0.,1.,0.],$      [0.,0.,1.]]returnend
