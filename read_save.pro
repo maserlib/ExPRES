@@ -1,31 +1,48 @@
 ;***********************************************************
 ;***                                                     ***
-;***         SERPE V6.1                                  ***
+;***         SERPE V6.1b0                                ***
 ;***                                                     ***
 ;***********************************************************
 ;***                                                     ***
 ;***       MODULE: READ_SAVE                             ***
 ;***                                                     ***
+;***.....................................................***
 ;***     function: rank_bodies;                          ***
-;***          Ranks Bodies                               ***
-;***          V6.0: First release                        ***
+;***          Ranks Bodies (using Parent links)          ***
+;***     Version history                                 ***
+;***     [SH] V6.0: First release                        ***
+;***                                                     ***
+;***.....................................................***
 ;***     function: init_serpe_structures;                ***
 ;***          Initiliazes SERPE Parameter Structures     ***
-;***          V6.1: Extracted from previous read_save    ***
+;***     Version history                                 ***
+;***     [BC] V6.1: Extracted from previous read_save    ***
+;***                                                     ***
+;***.....................................................***
 ;***     function: build_serpe_obj;                      ***
 ;***          Builds SERPE Parameters and Objects        ***
-;***          V6.1: Extracted from previous read_save    ***
+;***     Version history                                 ***
+;***     [BC] V6.1: Extracted from previous read_save    ***
+;***                                                     ***
+;***.....................................................***
 ;***     function: check_save_json;                      ***
 ;***          Checks JSON content                        ***
-;***          V6.1: First release                        ***
-;***     READ_SAVE_JSON                                  ***
+;***     Version history                                 ***
+;***     [BC] V6.1: First release                        ***
+;***                                                     ***
+;***.....................................................***
+;***     pro: READ_SAVE_JSON                             ***
 ;***          Reads Save file (in JSON format)           ***
-;***          V6.1: First release                        ***
-;***     READ_SAVE                                       ***
+;***     Version history                                 ***
+;***     [BC] V6.1: First release            	         ***
+;***                                                     ***
+;***.....................................................***
+;***     pro: READ_SAVE                                  ***
 ;***          Reads Save file (in old format)            ***
-;***          V6.0: First release                        ***
-;***          V6.1: Using build_serpe_obj and            ***
-;***                init_serpe_structures                ***
+;***     Version history                                 ***
+;***     [SH] V6.0: First release                        ***
+;***     [BC] V6.1: Using build_serpe_obj and            ***
+;***                init_serpe_structures               ***
 ;***                                                     ***
 ;***********************************************************
 
