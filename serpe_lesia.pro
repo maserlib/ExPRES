@@ -1,3 +1,23 @@
+;***********************************************************
+;***                                                     ***
+;***         SERPE V6.0                                  ***
+;***                                                     ***
+;***********************************************************
+;***                                                     ***
+;***       MODULE: MAIN_LESIA                            ***
+;***                                                     ***
+;***     STRREPLACE                                      ***
+;***     XYZ_TO_RTP                                      ***
+;***     TOTALE                                          ***
+;***     FIND_MIN                                        ***
+;***     MAIN                                            ***
+;***     INIT                                            ***
+;***     CALLBACK                                        ***
+;***     FINALIZE                                        ***
+;***                                                     ***
+;***********************************************************
+
+;************************************************************** STRREPLACE
 pro STRREPLACE, Strings, Find1, Replacement1
 
 ;   Check integrity of input parameter
@@ -29,6 +49,7 @@ pro STRREPLACE, Strings, Find1, Replacement1
 end
 
 
+;************************************************************** XYZ_TO_RTP
 FUNCTION XYZ_TO_RTP, xyz
 ; x,y,z & r en Rp
 ; theta, phi en rad
@@ -44,6 +65,7 @@ FUNCTION XYZ_TO_RTP, xyz
 return,transpose([[r],[theta],[phi]])
 end
 
+;************************************************************** TOTALE
 function totale,a,b
 ;IDL considere qu'un tableau dont la derniere dimension a une taille 1
 ;n'a pas cette dimension. Donc cette fonction  corrige un bug IDL
@@ -51,6 +73,7 @@ if size(a,/n_dim) lt b then return,a
 return,total(a,b)
 end
 
+;************************************************************** FIND_MIN
 function find_min,x1,x2,dist
 z1=where((x1 lt 0.) or (x1 gt dist))
 z2=where((x2 lt 0.) or (x2 gt dist))
@@ -68,7 +91,12 @@ end
 
 
 
+;**************************************************************
+;************************************************************** MAIN
 pro main,buf
+;**************************************************************
+; Main routine, starting serpe 
+;**************************************************************
 t=systime(/seconds)
 buf='' & read,buf
 tmp=(STRSPLIT(buf,'/',/EXTRACT))
@@ -78,10 +106,9 @@ print,buf
 buf2=buf;+'*.srp'
 name_r=FILE_SEARCH(buf2)
 name_r=name_r[0]
-if name_r eq '' then begin
-print,'Simulation File not found'
-stop
-endif
+
+if name_r eq '' then message,'Simulation File not found'
+
 name_rold=name_r
 STRREPLACE,name_r,'queue', 'on-going'
 comd='mv '+name_rold+' '+name_r
@@ -91,7 +118,13 @@ spawn,comd
 adresse_lib='/Library/Server/Web/Data/Sites/Default/maser/serpe/data'
 ;adresse_lib='/Library/Server/Documents/maser/serpe/data/'
 ;adresse_lib='/home/seb/Bureau/Work/SERPE/'
-read_save,adresse_lib,name_r,parameters
+
+case strlowcase(strmid(name_r,strlen(name_r)-3)) of
+  'srp' : read_save,adresse_lib,name_r,parameters
+  'son' : read_save_json,adresse_lib,name_r,parameters
+  else: message,'Illegal input file name.'
+endcase 
+
 ;restore,name_r
 print,'Simulation file ok'
 print,'Results will be saved under the name ',parameters.out
@@ -124,7 +157,12 @@ print,"That's pretty much it..."
 end
 
 
+;**************************************************************
+;************************************************************** INIT
 pro init,parameters
+;**************************************************************
+; Calls all INIT procedures for selected objects 
+;**************************************************************
 nobj=n_elements(parameters.objects)
 for i=0,nobj-1 do begin
 it=(*(parameters.objects[i])).it
@@ -132,7 +170,12 @@ if it[0] ne '' then for j=0,n_elements(it)-1 do CALL_PROCEDURE,it[j],parameters.
 endfor
 end
 
+;**************************************************************
+;************************************************************** CALLBACK
 pro callback,parameters
+;**************************************************************
+; Calls all CALLBACK procedures for the selected objects
+;**************************************************************
 nobj=n_elements(parameters.objects)
 
 for i=0,nobj-1 do begin
@@ -141,7 +184,12 @@ if cb[0] ne '' then for j=0,n_elements(cb)-1 do CALL_PROCEDURE,cb[j],parameters.
 endfor
 end
 
+;**************************************************************
+;************************************************************** FINALIZE
 pro finalize,parameters
+;**************************************************************
+; Calls all FINALIZE procedures for the selected objects
+;**************************************************************
 nobj=n_elements(parameters.objects)
 
 for i=0,nobj-1 do begin
@@ -149,6 +197,8 @@ fz=(*(parameters.objects[i])).fz
 if fz[0] ne '' then for j=0,n_elements(fz)-1 do CALL_PROCEDURE,fz[j],parameters.objects[i],parameters
 endfor
 end
+
+;**************************************************************
 
 
 

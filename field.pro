@@ -7,8 +7,10 @@
 ;***       MODULE: FIELD                                 ***
 ;***                                                     ***
 ;***     function: INTEROGATE_FIELD; are the files there ***
-;***     INIT                                            ***
-;***     CALLBACK                                        ***
+;***     DIPOLAR_FIELD_N; (North)                        ***
+;***     DIPOLAR_FIELD_S; (South)                        ***
+;***     INIT   [INIT_FIELD]                             ***
+;***     CALLBACK [CB_ROT_FIELD]                         ***
 ;***                                                     ***
 ;***********************************************************
 

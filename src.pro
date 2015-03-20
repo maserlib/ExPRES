@@ -6,10 +6,12 @@
 ;***                                                     ***
 ;***       MODULE: SOURCE                                ***
 ;***                                                     ***
-;***     function: Loss-cone; beaming d'un cone de perte ***
-;***     function: Shielding; ecrantage des sources      ***
-;***     INIT                                            ***
-;***     CALLBACK                                        ***
+;***     function: LOSS_CONE; beaming d'un cone de perte ***
+;***     function: SHIELDING; ecrantage des sources      ***
+;***     function: REFRACT; refraction des sources       ***
+;***     function: SHELL;                                ***
+;***     INIT   [INIT_SRC]                               ***
+;***     CALLBACK [CB_SRC]                               ***
 ;***                                                     ***
 ;***********************************************************
 
@@ -65,7 +67,7 @@ if n_elements(w) gt 1 then w=w[1:*]
 return
 end
 
-;************************************************************** refraction
+;************************************************************** REFRACT
 function refrac,th,thz,gb,v,vp,hot,cosa,islc
 if islc ne 0 then begin
 gam=1./sqrt(1.+(v^2+hot))
@@ -101,7 +103,7 @@ if w3[0] ne -1 then th[w3]=-1000.
 return,th
 end
 
-;************************************************************** LOSS-CONE
+;************************************************************** LOSS_CONE
 function Loss_cone,v,vp,temp,cosa,error
 ;Calcule analytiquement le beaming pour le loss-cone
 v=double(v)

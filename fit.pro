@@ -6,16 +6,18 @@
 ;***                                                     ***
 ;***       MODULE: FIT                                   ***
 ;***                                                     ***
-;***     INIT                                            ***
-;***     CALLBACK                                        ***
-;***     FINALIZE                                        ***
+;***     INIT   [INIT_FIT]                               ***
+;***     CALLBACK [CB_FIT]                               ***
+;***     FINALIZE [FZ_FIT]                               ***
 ;***                                                     ***
 ;***********************************************************
 
 
 ;************************************************************** INIT_FIT
 pro init_fit,obj,parameters
-;init_fit se substitue a SERPE_MAIN
+;************************************************************** 
+;  init_fit se substitue a SERPE_MAIN
+;************************************************************** 
 restore,(*obj).file_img
 sortie=dilate(sortie,fltarr(7,7)+1)
 (*((*obj).img))=sortie

@@ -963,9 +963,11 @@ for i=0,n_elements(sc)-2 do begin
 	case mfl of 
 		'O6+Connerney CS':fld='O6'
 		'VIP4+Connerney CS' :fld='VIP4'
+		'VIT4+Connerney CS' :fld='VIT4'
 		'VIPAL+Connerney CS' : fld='VIPAL'
 		'O6 Connerney CS':fld='O6'
 		'VIP4 Connerney CS' :fld='VIP4'
+		'VIT4 Connerney CS' :fld='VIT4'
 		'VIPAL Connerney CS' : fld='VIPAL'
 		'SPV': fld='SPV'
 		'Z3': fld='Z3'

@@ -4,14 +4,14 @@
 ;***                                                     ***
 ;***********************************************************
 ;***                                                     ***
-;***       MODULE: MOVIE                                 ***
+;***       MODULE: MOVIE2D                               ***
 ;***                                                     ***
-;***     INIT                                            ***
-;***     CALLBACK                                        ***
-;***     FINALIZE                                        ***
+;***     CALLBACK [CB_MOVIE2D]                           ***
+;***     FINALIZE [FZ_MOVIE2D]                           ***
 ;***                                                     ***
 ;***********************************************************
 
+;************************************************************** FZ_MOVIE2D
 pro fz_movie2d,obj,parameters
 comd="rm -f "+parameters.out+"_fov.mp4"
 spawn,comd
@@ -25,6 +25,7 @@ spawn,comd
 end
 
 
+;************************************************************** CB_MOVIE2D
 pro cb_movie2d,obj,parameters
 if parameters.time.istep mod (*obj).sub ne 0 then return
 frame=fix(parameters.time.istep/(*obj).sub)

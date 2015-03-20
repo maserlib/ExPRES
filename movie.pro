@@ -6,12 +6,14 @@
 ;***                                                     ***
 ;***       MODULE: MOVIE                                 ***
 ;***                                                     ***
-;***     CALLBACK                                        ***
-;***     FINALIZE                                        ***
+;***     INIT    [INIT_MOVIE]                            ***
+;***     CALLBACK  [CB_MOVIE]                            ***
+;***     FINALIZE  [FZ_MOVIE]                            ***
 ;***                                                     ***
 ;***********************************************************
 ;/opt/local/bin/ffmpeg -f image2 -an -i Test_Io_movie%03d.png -vcodec h264 -vpre slow -crf 22 video-test-ffmpeg-x264.mp4
 
+;************************************************************** INIT_MOVIE
 pro init_movie
 rad=0.1
 oOrb = OBJ_NEW('orb', COLOR=[255, 0, 0])
@@ -22,6 +24,7 @@ img->GetProperty, DATA=imag
 write_png,'test.png',imag
 end
 
+;************************************************************** FZ_MOVIE
 pro fz_movie,obj,parameters
 comd="rm -f "+parameters.out+"_movie.mp4"
 spawn,comd
@@ -35,6 +38,7 @@ spawn,comd
 end
 
 
+;************************************************************** CB_MOVIE
 pro cb_movie,obj,parameters
 set_plot,'Z'
 if parameters.time.istep mod (*obj).sub ne 0 then return
