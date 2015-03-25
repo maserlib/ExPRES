@@ -103,7 +103,7 @@ tmp=(STRSPLIT(buf,'/',/EXTRACT))
 tmp=tmp[n_elements(tmp)-1]
 print,'+++++++++++++++ SERPE SIMULATION #',tmp,' +++++++++++++++'
 print,buf
-buf2=buf;+'*.srp'
+buf2=strtrim(buf,2)
 name_r=FILE_SEARCH(buf2)
 name_r=name_r[0]
 
@@ -114,8 +114,8 @@ STRREPLACE,name_r,'queue', 'on-going'
 comd='mv '+name_rold+' '+name_r
 spawn,comd
 
-
-adresse_lib='/Library/Server/Web/Data/Sites/Default/maser/serpe/data'
+adresse_lib='../../data'
+;adresse_lib='/Library/Server/Web/Data/Sites/Default/maser/serpe/data'
 ;adresse_lib='/Library/Server/Documents/maser/serpe/data/'
 ;adresse_lib='/home/seb/Bureau/Work/SERPE/'
 
