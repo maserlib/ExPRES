@@ -207,14 +207,17 @@ coef[*,2]=a*(1.-b)
 coef[*,3]=a*b
 coef=reform(rebin(reform(coef,1,1,nlg,nlat,4),3,parameters.freq.n_freq,nlg,nlat,4),3,parameters.freq.n_freq,nlg*nlat,4)
 
-; pole nord magnetique
-if (*obj).north then begin
-	b=fltarr(3,parameters.freq.n_freq,nlg*nlat);vecteur champ unitaire
-	bz=fltarr(3,parameters.freq.n_freq,nlg*nlat);vecteur direction normale au L-shell
-	x=fltarr(3,parameters.freq.n_freq,nlg*nlat);position
-	d=fltarr(parameters.freq.n_freq,nlg*nlat);densite
-	gb=fltarr(parameters.freq.n_freq,nlg*nlat);gradient angle
-	f=fltarr(nlg*nlat);frequence max
+
+b=fltarr(3,parameters.freq.n_freq,nlg*nlat);vecteur champ unitaire
+bz=fltarr(3,parameters.freq.n_freq,nlg*nlat);vecteur direction normale au L-shell
+x=fltarr(3,parameters.freq.n_freq,nlg*nlat);position
+d=fltarr(parameters.freq.n_freq,nlg*nlat);densite
+gb=fltarr(parameters.freq.n_freq,nlg*nlat);gradient angle
+f=fltarr(nlg*nlat);frequence max
+	
+	
+if (*obj).north then begin ; pole nord magnetique
+	var=0
 	for i=0,3 do begin
 		lg2=((fix(lg)+fix(0.5*i)) mod 360)
 		lat2=(fix(lat)+ (i mod 2))<((*((*obj).parent)).nlat-1)
@@ -223,159 +226,89 @@ if (*obj).north then begin
 		x=x+(*((*((*obj).parent)).x_n))[*,*,lg2,lat2]*coef[*,*,*,i]
 		d=d+(*((*((*obj).parent)).dens_n))[*,lg2,lat2]*coef[0,*,*,i]
 		gb=gb+(*((*((*obj).parent)).gb_n))[*,lg2,lat2]*coef[0,*,*,i]
-		f=f+(*((*((*obj).parent)).fmax))[0,lg2,lat2]*coef[0,0,*,i]
+		f=f+(*((*((*obj).parent)).fmax))[var,lg2,lat2]*coef[0,0,*,i]
 	endfor
 
-
-	(*((*obj).x))[*,*,*,0]=reform(rebin(reform(x,3,parameters.freq.n_freq,nlg*nlat,1),3,parameters.freq.n_freq,nlg*nlat,nv),$
-		3,parameters.freq.n_freq,nlg*nlat*nv);positions des ources sauvegardees pour les animations
-
-;on calcule le vecteur ligne de visee
-	x=xyz_obs-x
-	dist=rebin(reform(sqrt(total(x^2,1)),1,parameters.freq.n_freq,nlg*nlat),3,parameters.freq.n_freq,nlg*nlat)
-	x=x/dist
-	th=reform(rebin(reform(acos(total(x*b,1)),parameters.freq.n_freq,1,nlg*nlat),parameters.freq.n_freq,nv,nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat)
-	xy=x*(1.-b*rebin(reform(cos(th),1,parameters.freq.n_freq,nv*nlg*nlat),3,parameters.freq.n_freq,nv*nlg*nlat))
-	b=0b
-
-	dist2=rebin(reform(sqrt(total(xy^2,1)),1,parameters.freq.n_freq,nlg*nlat),3,parameters.freq.n_freq,nlg*nlat)
-	xy=xy/dist2
-	dist2=0b
-	thz=reform(rebin(reform(acos(total(xy*bz,1)),parameters.freq.n_freq,1,nlg*nlat),parameters.freq.n_freq,nv,nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat)
-	bz=0b;thz est l'angle azimuthal pour les cones non axisymmetriques
-	xy=0b
-
-	d=rebin(reform(d,parameters.freq.n_freq,nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat)
-	f=rebin(reform(*(parameters.freq.freq_tab),parameters.freq.n_freq,1,1),parameters.freq.n_freq,nv*nlg*nlat)/$
-	reform(rebin(reform(f,1,1,nlg*nlat),parameters.freq.n_freq,nv,nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat)
-
-
-	w2=[-1];w2=pas d'emissions selon le type de sources
-	if (*obj).loss ne 0 then th2=Loss_cone(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),w2)
-	if (*obj).cavity ne 0 then th2=shell(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,(*obj).cold,w2)
-	if (*obj).constant ne 0 then th2=(*obj).constant
-	if (*obj).rampe ne 0 then th2=f*((*obj).constant-(*obj).asymp)+(*obj).asymp
-
-;if (parameters.time.time  gt 24) then ccx=-10
-;refraction outside the source
-	th2=refrac(th2,thz,gb,rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),(*obj).loss)
-	th=((th2-th*!radeg)/(*obj).width)
-
-	if w2[0] ne -1 then th[w2]=1000.
-
-;th est deja la difference entre l'angle d'emission et l'angle d'observation
-;on interpole ici pour les cas ou th change tres vite (ionosphere par exemple)
-	th[0:parameters.freq.n_freq-2,*]=(abs(0.5*(th[0:parameters.freq.n_freq-2,*]+th[1:parameters.freq.n_freq-1,*]))<abs(th[0:parameters.freq.n_freq-2,*]))
-	th[parameters.freq.n_freq-1,*]=abs(th[parameters.freq.n_freq-1,*])
-
-	w=where(th ge 1.,compl=w2)
-	if w[0] ne -1 then th[w]=0
-	if w2[0] ne -1 then th[w2]=1
-
-
-	shielding,x,obj,0,dist,rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),parameters,w3;;faux c'est pas v ici!!
-	if w3[0] ne -1 then th[w3]=0
-	x=0b
-
-	(*((*obj).spdyn))[*,*,0]=reform(th,parameters.freq.n_freq,nv*nlg*nlat,1)
-	for k=0,nv*nlg*nlat-1 do begin
-		w0=where(f[*,k] gt 1)
-		if w0[0] ne -1 then (*((*obj).spdyn))[w0,k,0]=0.
-	endfor
-
-;condition sur les gradient
-	if abs((*obj).grad_eq) then begin
-		w0=where(rebin(reform(fix(abs((*((*((*obj).parent)).grad_b_eq))[0,lg,lat]+0.5*(*obj).grad_eq)),nlg*nlat),nv*nlg*nlat) gt 0.9)
-		if w0[0] ne -1 then (*((*obj).spdyn))[*,w0,0]=0.
-	endif
-	if abs((*obj).grad_in) then begin
-		w0=where(rebin(reform(fix(abs((*((*((*obj).parent)).grad_b_in))[0,lg,lat]+0.5*(*obj).grad_in)),nlg*nlat),nv*nlg*nlat) gt 0.9)
-		if w0[0] ne -1 then (*((*obj).spdyn))[*,w0,0]=0.
-	endif
-endif
-
-;***************************************************************************************************************************
-
-if (*obj).south then begin
-	b=fltarr(3,parameters.freq.n_freq,nlg*nlat)
-	bz=fltarr(3,parameters.freq.n_freq,nlg*nlat);vecteur direction normale au L-shell
-	x=fltarr(3,parameters.freq.n_freq,nlg*nlat)
-	d=fltarr(parameters.freq.n_freq,nlg*nlat)
-	gb=fltarr(parameters.freq.n_freq,nlg*nlat);gradient angle
-	f=fltarr(nlg*nlat)
+endif else begin				; pole sud magnetique
+	var=1
 	for i=0,3 do begin
 		lg2=((fix(lg)+fix(0.5*i)) mod 360)
 		lat2=(fix(lat)+ (i mod 2))<((*((*obj).parent)).nlat-1)
 		b=b-(*((*((*obj).parent)).b_s))[*,*,lg2,lat2]*coef[*,*,*,i]
+		bz=bz+(*((*((*obj).parent)).bz_s))[*,*,lg2,lat2]*coef[*,*,*,i]
 		x=x+(*((*((*obj).parent)).x_s))[*,*,lg2,lat2]*coef[*,*,*,i]
 		d=d+(*((*((*obj).parent)).dens_s))[*,lg2,lat2]*coef[0,*,*,i]
-		f=f+(*((*((*obj).parent)).fmax))[1,lg2,lat2]*coef[0,0,*,i]
-		bz=bz+(*((*((*obj).parent)).bz_s))[*,*,lg2,lat2]*coef[*,*,*,i]
 		gb=gb+(*((*((*obj).parent)).gb_s))[*,lg2,lat2]*coef[0,*,*,i]
+		f=f+(*((*((*obj).parent)).fmax))[var,lg2,lat2]*coef[0,0,*,i]
 	endfor
 
-	coef=0b
-	(*((*obj).x))[*,*,*,1]=reform(rebin(reform(x,3,parameters.freq.n_freq,nlg*nlat,1),3,parameters.freq.n_freq,nlg*nlat,nv),$
-		3,parameters.freq.n_freq,nlg*nlat*nv)
-	x=xyz_obs-x
-	dist=rebin(reform(sqrt(total(x^2,1)),1,parameters.freq.n_freq,nlg*nlat),3,parameters.freq.n_freq,nlg*nlat)
-	x=x/dist
-	th=reform(rebin(reform(acos(total(x*b,1)),parameters.freq.n_freq,1,nlg*nlat),parameters.freq.n_freq,nv,nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat)
-	xy=x*(1.-b*rebin(reform(cos(th),1,parameters.freq.n_freq,nv*nlg*nlat),3,parameters.freq.n_freq,nv*nlg*nlat))
-	b=0b
+endelse
+coef=0b
+(*((*obj).x))[*,*,*,var]=reform(rebin(reform(x,3,parameters.freq.n_freq,nlg*nlat,1),3,parameters.freq.n_freq,nlg*nlat,nv),$
+		3,parameters.freq.n_freq,nlg*nlat*nv);positions des ources sauvegardees pour les animations
 
-	dist2=rebin(reform(sqrt(total(xy^2,1)),1,parameters.freq.n_freq,nlg*nlat),3,parameters.freq.n_freq,nlg*nlat)
-	xy=xy/dist2
-	dist2=0b
-	thz=reform(rebin(reform(acos(total(xy*bz,1)),parameters.freq.n_freq,1,nlg*nlat),parameters.freq.n_freq,nv,nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat)
-	bz=0b;thz est l'angle azimuthal pour les cones non axisymmetriques
-	xy=0b
+;on calcule le vecteur ligne de visee
+x=xyz_obs-x
+dist=rebin(reform(sqrt(total(x^2,1)),1,parameters.freq.n_freq,nlg*nlat),3,parameters.freq.n_freq,nlg*nlat)
+x=x/dist
+th=reform(rebin(reform(acos(total(x*b,1)),parameters.freq.n_freq,1,nlg*nlat),parameters.freq.n_freq,nv,nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat)
+xy=x*(1.-b*rebin(reform(cos(th),1,parameters.freq.n_freq,nv*nlg*nlat),3,parameters.freq.n_freq,nv*nlg*nlat))
+b=0b
 
-	d=rebin(reform(d,parameters.freq.n_freq,nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat)
-	f=rebin(reform(*(parameters.freq.freq_tab),parameters.freq.n_freq,1,1),parameters.freq.n_freq,nv*nlg*nlat)/$
-	reform(rebin(reform(f,1,1,nlg*nlat),parameters.freq.n_freq,nv,nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat)
+dist2=rebin(reform(sqrt(total(xy^2,1)),1,parameters.freq.n_freq,nlg*nlat),3,parameters.freq.n_freq,nlg*nlat)
+xy=xy/dist2
+dist2=0b
+thz=reform(rebin(reform(acos(total(xy*bz,1)),parameters.freq.n_freq,1,nlg*nlat),parameters.freq.n_freq,nv,nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat)
+bz=0b;thz est l'angle azimuthal pour les cones non axisymmetriques
+xy=0b
 
-	w2=[-1];w2=pas d'emissions selon le type de sources
-	if (*obj).loss ne 0 then th2=Loss_cone(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),w2)
-	if (*obj).cavity ne 0 then th2=shell(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,(*obj).cold,w2)
-	if (*obj).constant ne 0 then th2=(*obj).constant
-	if (*obj).rampe ne 0 then th2=f*((*obj).constant-(*obj).asymp)+(*obj).asymp
+d=rebin(reform(d,parameters.freq.n_freq,nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat)
+f=rebin(reform(*(parameters.freq.freq_tab),parameters.freq.n_freq,1,1),parameters.freq.n_freq,nv*nlg*nlat)/$
+reform(rebin(reform(f,1,1,nlg*nlat),parameters.freq.n_freq,nv,nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat)
 
+
+w2=[-1];w2=pas d'emissions selon le type de sources
+if (*obj).loss ne 0 then th2=Loss_cone(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),w2)
+if (*obj).cavity ne 0 then th2=shell(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,(*obj).cold,w2)
+if (*obj).constant ne 0 then th2=(*obj).constant
+if (*obj).rampe ne 0 then th2=f*((*obj).constant-(*obj).asymp)+(*obj).asymp
+
+;if (parameters.time.time  gt 24) then ccx=-10
 ;refraction outside the source
-	th2=refrac(th2,thz,gb,rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),(*obj).loss)
-	th=((th2-th*!radeg)/(*obj).width)
+th2=refrac(th2,thz,gb,rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),(*obj).loss)
+th=((th2-th*!radeg)/(*obj).width)
 	
-
-	if w2[0] ne -1 then th[w2]=1000.
+if w2[0] ne -1 then th[w2]=1000.
 
 ;th est deja la difference entre l'angle d'emission et l'angle d'observation
 ;on interpole ici pour les cas ou th change tres vite (ionosphere par exemple)
-	th[0:parameters.freq.n_freq-2,*]=(abs(0.5*(th[0:parameters.freq.n_freq-2,*]+th[1:parameters.freq.n_freq-1,*]))<abs(th[0:parameters.freq.n_freq-2,*]))
-	th[parameters.freq.n_freq-1,*]=abs(th[parameters.freq.n_freq-1,*])
+th[0:parameters.freq.n_freq-2,*]=(abs(0.5*(th[0:parameters.freq.n_freq-2,*]+th[1:parameters.freq.n_freq-1,*]))<abs(th[0:parameters.freq.n_freq-2,*]))
+th[parameters.freq.n_freq-1,*]=abs(th[parameters.freq.n_freq-1,*])
 
-	w=where(th ge 1.,compl=w2)
-	if w[0] ne -1 then th[w]=0
-	if w2[0] ne -1 then th[w2]=1
+w=where(th ge 1.,compl=w2)
+if w[0] ne -1 then th[w]=0
+if w2[0] ne -1 then th[w2]=1
 
-	shielding,x,obj,1,dist,rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),parameters,w3
-	if w3[0] ne -1 then th[w3]=0
-	x=0b
-	
-	(*((*obj).spdyn))[*,*,1]=reform(th,parameters.freq.n_freq,nv*nlg*nlat,1)
-	for k=0,nv*nlg*nlat-1 do begin
-		w0=where(f[*,k] gt 1)
-		if w0[0] ne -1 then (*((*obj).spdyn))[w0,k,1]=0.
-	endfor
-	if abs((*obj).grad_eq) then begin
-		w0=where(rebin(reform(fix(abs((*((*((*obj).parent)).grad_b_eq))[1,lg,lat]+0.5*(*obj).grad_eq)),nlg*nlat),nv*nlg*nlat) gt 0.9)
-		if w0[0] ne -1 then (*((*obj).spdyn))[*,w0,1]=0.
-	endif
-	if abs((*obj).grad_in) then begin
-		w0=where(rebin(reform(fix(abs((*((*((*obj).parent)).grad_b_in))[1,lg,lat]+0.5*(*obj).grad_in)),nlg*nlat),nv*nlg*nlat) gt 0.9)
-		if w0[0] ne -1 then (*((*obj).spdyn))[*,w0,1]=0.
-	endif
+
+shielding,x,obj,var,dist,rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),parameters,w3;;faux c'est pas v ici!!
+if w3[0] ne -1 then th[w3]=0
+x=0b
+
+(*((*obj).spdyn))[*,*,var]=reform(th,parameters.freq.n_freq,nv*nlg*nlat,1)
+for k=0,nv*nlg*nlat-1 do begin
+	w0=where(f[*,k] gt 1)
+	if w0[0] ne -1 then (*((*obj).spdyn))[w0,k,var]=0.
+endfor
+
+;condition sur les gradient
+if abs((*obj).grad_eq) then begin
+	w0=where(rebin(reform(fix(abs((*((*((*obj).parent)).grad_b_eq))[0,lg,lat]+0.5*(*obj).grad_eq)),nlg*nlat),nv*nlg*nlat) gt 0.9)
+	if w0[0] ne -1 then (*((*obj).spdyn))[*,w0,var]=0.
 endif
-
+if abs((*obj).grad_in) then begin
+	w0=where(rebin(reform(fix(abs((*((*((*obj).parent)).grad_b_in))[0,lg,lat]+0.5*(*obj).grad_in)),nlg*nlat),nv*nlg*nlat) gt 0.9)
+	if w0[0] ne -1 then (*((*obj).spdyn))[*,w0,var]=0.
+endif
 
 return
 end
