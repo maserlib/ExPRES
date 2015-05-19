@@ -16,7 +16,7 @@
 
 ;************************************************************** INTEROGATE_FIELD
 FUNCTION INTEROGATE_FIELD,folder0,fold,sig
-; Cette foncyion permet de savoir s'il ya a bien des fichiers champ
+; Cette fonction permet de savoir s'il ya a bien des fichiers champ
 ; la ou indique et si ce sont des fichiers de champ axisymetrique ou pas
 file=folder0+sig+fold+'.lsr'
 folder=folder0+fold
@@ -52,113 +52,135 @@ endif
 (*((*obj).feq))=fltarr(2,360,(*obj).nlat)
 
 if (*obj).north then begin
-(*((*obj).b_n))=fltarr(3,parameters.freq.n_freq,360,(*obj).nlat)
-(*((*obj).bz_n))=fltarr(3,parameters.freq.n_freq,360,(*obj).nlat)
-(*((*obj).x_n))=fltarr(3,parameters.freq.n_freq,360,(*obj).nlat)
-(*((*obj).gb_n))=fltarr(parameters.freq.n_freq,360,(*obj).nlat)
-(*((*obj).dens_n))=fltarr(parameters.freq.n_freq,360,(*obj).nlat)
-ff=(*(parameters.freq.freq_tab))
-for i=0,(*obj).nlat-1 do begin
-for j=0,359 do begin
+	(*((*obj).b_n))=fltarr(3,parameters.freq.n_freq,360,(*obj).nlat)
+	(*((*obj).bz_n))=fltarr(3,parameters.freq.n_freq,360,(*obj).nlat)
+	(*((*obj).x_n))=fltarr(3,parameters.freq.n_freq,360,(*obj).nlat)
+	(*((*obj).gb_n))=fltarr(parameters.freq.n_freq,360,(*obj).nlat)
+	(*((*obj).dens_n))=fltarr(parameters.freq.n_freq,360,(*obj).nlat)
+	ff=(*(parameters.freq.freq_tab))
+	for i=0,(*obj).nlat-1 do begin
+	for j=0,359 do begin
+		if strmid((*obj).folder,0,6) eq 'Dipole' then begin 
+			dipolar_field_N,(*obj).folder,obj,ff,fix(i+(*obj).l_min-(*obj).loffset),axisym,i,j 
+			alt_min=1.
+		endif else begin
+			axisym=INTEROGATE_FIELD((*obj).folder,STRTRIM(STRING(fix(i+(*obj).l_min-(*obj).loffset)),2),'')
+			if (axisym and (j eq 0)) or ~axisym then begin
+				if axisym then file=(*obj).folder+STRTRIM(STRING(fix(i+(*obj).l_min-(*obj).loffset)),2)+'.lsr' $
+				else file=(*obj).folder+STRTRIM(STRING(fix(i+(*obj).l_min-(*obj).loffset)),2)+'/'+STRTRIM(STRING(j),2)+'.lsr'
+				n=0L
+				openr,unit, file,/get_lun,/swap_if_little_endian
+      			readu,unit,n
+      			b_read      = fltarr(3,n)
+      			f_read      = fltarr(n)
+      			x_read      = fltarr(3,n)
+      			gb_read     = fltarr(n)
+      			bz_read      = fltarr(3,n)
+      			sc_gb_read  = fltarr(n)
+      			xt          = fltarr(n)
+      			readu,unit, xt
+      			x_read(0,*) = xt
+      			readu,unit, xt
+      			x_read(1,*) = xt
+      			readu,unit, xt
+      			x_read(2,*) = xt
+      			xt          = 0
+      			readu,unit, b_read
+     			readu,unit, f_read
+      			readu,unit,sc_gb_read
+      			readu,unit,bz_read
+     			readu,unit,gb_read
+    			close, unit & free_lun, unit
 
-if strmid((*obj).folder,0,6) eq 'Dipole' then begin 
-	dipolar_field_N,(*obj).folder,obj,ff,fix(i+(*obj).l_min-(*obj).loffset),axisym,i,j 
-	alt_min=1.
-endif else begin
+    			for k=0,2 do begin
+    				(*((*obj).b_n))[k,*,j,i] = interpol(b_read(k,*),f_read,ff)
+    				(*((*obj).x_n))[k,*,j,i] = interpol(x_read(k,*),f_read,ff)
+    				(*((*obj).bz_n))[k,*,j,i] = interpol(bz_read(k,*),f_read,ff)
+    				if (*obj).sat then (*((*obj).x_n))[k,*,j,i]=(*((*obj).x_n))[k,*,j,i]*(*((*((*obj).parent)).parent)).radius $
+    				else (*((*obj).x_n))[k,*,j,i]=(*((*obj).x_n))[k,*,j,i]*(*((*obj).parent)).radius
+    			endfor
+    			(*((*obj).gb_n))[*,j,i] = interpol(gb_read,f_read,ff)
+			endif
 
-axisym=INTEROGATE_FIELD((*obj).folder,STRTRIM(STRING(fix(i+(*obj).l_min-(*obj).loffset)),2),'')
-if (axisym and (j eq 0)) or ~axisym then begin
-if axisym then file=(*obj).folder+STRTRIM(STRING(fix(i+(*obj).l_min-(*obj).loffset)),2)+'.lsr' $
-else file=(*obj).folder+STRTRIM(STRING(fix(i+(*obj).l_min-(*obj).loffset)),2)+'/'+STRTRIM(STRING(j),2)+'.lsr'
-n=0L
-openr,unit, file,/get_lun,/swap_if_little_endian
-      readu,unit,n
-      b_read      = fltarr(3,n)
-      f_read      = fltarr(n)
-      x_read      = fltarr(3,n)
-      gb_read     = fltarr(n)
-      bz_read      = fltarr(3,n)
-      sc_gb_read  = fltarr(n)
-      xt          = fltarr(n)
-      readu,unit, xt
-      x_read(0,*) = xt
-      readu,unit, xt
-      x_read(1,*) = xt
-      readu,unit, xt
-      x_read(2,*) = xt
-      xt          = 0
-      readu,unit, b_read
-      readu,unit, f_read
-      readu,unit,sc_gb_read
-      readu,unit,bz_read
-      readu,unit,gb_read
-    close, unit & free_lun, unit
+			if axisym then begin
+    			rot=[[cos(!pi/180.*j),-sin(!pi/180.*j),0.],[sin(!pi/180.*j),cos(!pi/180.*j),0.],[0.,0.,1.]]
+				for k=0,parameters.freq.n_freq-1 do begin
+    				(*((*obj).b_n))[*,k,j,i] =rot#(*((*obj).b_n))[*,k,0,i]
+    				(*((*obj).bz_n))[*,k,j,i] =rot#(*((*obj).bz_n))[*,k,0,i]
+    				(*((*obj).x_n))[*,k,j,i] =rot#(*((*obj).x_n))[*,k,0,i]
+				endfor
+			endif
+;*********************
+;calcul du fmax (partie NORD) ; modification 17/04/2015 - CL
+;*********************
+			if (*obj).sat then flat = (*(*(*obj).parent).parent).flat $
+			else flat = (*(*obj).parent).flat
+		; si l'objet est un satellite, il faut prendre l applatissement du corps central
 
-    for k=0,2 do begin
-    (*((*obj).b_n))[k,*,j,i] = interpol(b_read(k,*),f_read,ff)
-    (*((*obj).x_n))[k,*,j,i] = interpol(x_read(k,*),f_read,ff)
-    (*((*obj).bz_n))[k,*,j,i] = interpol(bz_read(k,*),f_read,ff)
-    if (*obj).sat then (*((*obj).x_n))[k,*,j,i]=(*((*obj).x_n))[k,*,j,i]*(*((*((*obj).parent)).parent)).radius $
-    else (*((*obj).x_n))[k,*,j,i]=(*((*obj).x_n))[k,*,j,i]*(*((*obj).parent)).radius
-    endfor
-    (*((*obj).gb_n))[*,j,i] = interpol(gb_read,f_read,ff)
-endif
-
-if axisym then begin
-    rot=[[cos(!pi/180.*j),-sin(!pi/180.*j),0.],[sin(!pi/180.*j),cos(!pi/180.*j),0.],[0.,0.,1.]]
-for k=0,parameters.freq.n_freq-1 do begin
-    (*((*obj).b_n))[*,k,j,i] =rot#(*((*obj).b_n))[*,k,0,i]
-    (*((*obj).bz_n))[*,k,j,i] =rot#(*((*obj).bz_n))[*,k,0,i]
-    (*((*obj).x_n))[*,k,j,i] =rot#(*((*obj).x_n))[*,k,0,i]
-endfor
-endif
-r=sqrt(total(x_read^2,1)) & alt_min=min(r) & r=abs(r-min(r)-(*obj).aurora_alt)
-
-w=(where(r eq min(r)))[0]
-;print,'ici',n,w
-    (*((*obj).fmax))[0,j,i]=f_read[w]
-    (*((*obj).feq))[0,j,i]=min([f_read[0],f_read[n-1]])
-endelse
-
-endfor;longitude
-;smooth fmax
-(*((*obj).fmax))[0,*,i]=smooth(smooth(smooth(smooth((*((*obj).fmax))[0,*,i],5),5),5),5)
+			r=sqrt(x_read[0,*]^2+x_read[1,*]^2+x_read[2,*]^2)			; calcul du r de la ligne de champ
+			beta=atan(x_read[2,*],sqrt(x_read[0,*]^2+x_read[1,*]^2))	; calcul de l'angle entre le plan de l'équateur et le r de la ligne de champ
+			r_el=sqrt(1./(cos(beta)^2+sin(beta)^2/(1- flat))) ; calcul du r de l'ellipsoide de Jupiter
+			alt_min=r_el
+			w=where(r gt (r_el+(*obj).aurora_alt), nw) ; 
+			(*((*obj).fmax))[0,j,i]=f_read(w(nw-1l))
+		;	(*((*obj).feq))[0,j,i]=min([f_read[0],f_read[n-1l]]) 
+		; feq a virer
+;*********************
+;ancien calcul :
+;*********************
+;			r=sqrt(total(x_read^2,1)) & alt_min=min(r) & r=abs(r-min(r))
+;			w=(where(r eq min(r)))[0]
+;			;print,'ici',n,w
+;			    (*((*obj).fmax))[0,j,i]=f_read[w]
+;			    (*((*obj).feq))[0,j,i]=min([f_read[0],f_read[n-1]])
+;*********************			
+			endelse
+	endfor;longitude
+	;smooth fmax
+	(*((*obj).fmax))[0,*,i]=smooth(smooth(smooth(smooth((*((*obj).fmax))[0,*,i],5),5),5),5)
 
 
-;Calcul des conditions sur les gradients a l'equateur (eq) et aux ionospheres (in)
-(*((*obj).grad_b_eq))[0,*,i]=shift((*((*obj).feq))[0,*,i],-1)-(*((*obj).feq))[0,*,i]
-(*((*obj).grad_b_in))[0,*,i]=shift((*((*obj).fmax))[0,*,i],-1)-(*((*obj).fmax))[0,*,i]
-w=where((*((*obj).grad_b_eq))[0,*,i] ge 0,compl=w2)
-if w[0] ne -1 then (*((*obj).grad_b_eq))[0,w,i]=0.5
-if w2[0] ne -1 then (*((*obj).grad_b_eq))[0,w2,i]=-0.5
-w=where((*((*obj).grad_b_in))[0,*,i] ge 0,compl=w2)
-if w[0] ne -1 then (*((*obj).grad_b_in))[0,w,i]=0.5
-if w2[0] ne -1 then (*((*obj).grad_b_in))[0,w2,i]=-0.5
+	;Calcul des conditions sur les gradients a l'equateur (eq) et aux ionospheres (in)
+	;a virer d apres mail de S.HESS - 30/04/2015 (CL)
+;	(*((*obj).grad_b_eq))[0,*,i]=shift((*((*obj).feq))[0,*,i],-1)-(*((*obj).feq))[0,*,i]
+;	(*((*obj).grad_b_in))[0,*,i]=shift((*((*obj).fmax))[0,*,i],-1)-(*((*obj).fmax))[0,*,i]
+;	w=where((*((*obj).grad_b_eq))[0,*,i] ge 0,compl=w2)
+;	if w[0] ne -1 then (*((*obj).grad_b_eq))[0,w,i]=0.5
+;	if w2[0] ne -1 then (*((*obj).grad_b_eq))[0,w2,i]=-0.5
+;	w=where((*((*obj).grad_b_in))[0,*,i] ge 0,compl=w2)
+;	if w[0] ne -1 then (*((*obj).grad_b_in))[0,w,i]=0.5
+;	if w2[0] ne -1 then (*((*obj).grad_b_in))[0,w2,i]=-0.5
 
-endfor;latitude
+	endfor;latitude
 
-if (*obj).sat then begin
-nd=n_elements((*((*((*((*obj).parent)).parent)).density)))
-if nd ne 0 then dens=(*((*((*((*obj).parent)).parent)).density))
-endif else begin
-nd=n_elements((*((*((*obj).parent)).density)))
-if nd ne 0 then dens=(*((*((*obj).parent)).density))
-endelse
+	if (*obj).sat then begin
+	nd=n_elements((*((*((*((*obj).parent)).parent)).density)))
+	if nd ne 0 then dens=(*((*((*((*obj).parent)).parent)).density))
+	endif else begin
+	nd=n_elements((*((*((*obj).parent)).density)))
+	if nd ne 0 then dens=(*((*((*obj).parent)).density))
+	endelse
 
-for i=0,nd-1 do begin
-case (*(dens[i])).type of
-    'stellar':     (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0/total((*((*obj).x_n))^2,1)
-    'ionospheric': (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0*$
-          exp(-((sqrt(total((*((*obj).x_n))^2,1))-alt_min)>0)/(*(dens[i])).height)
-    'torus':       (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0*$
-          exp(-sqrt((sqrt(total(((*((*obj).x_n))[0:1,*,*,*])^2,1))-(*(dens[i])).perp)^2+$
-          ((*((*obj).x_n))[2,*,*,*])^2)/(*(dens[i])).height)
-    'disk' :       (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0*$
+;*********************
+;Calcul du alt_min entrant dans la determination de la densite dans le cas du modele 'ionospheric' ; modification 21/04/2015 - CL
+;*********************
+	angle=atan((*(*obj).x_n)[2,*,*,*],sqrt((*(*obj).x_n)[0,*,*,*]^2+(*(*obj).x_n)[1,*,*,*]^2))
+	alt_min=sqrt(1./(cos(angle)^2+sin(angle)^2/(1-flat)))
+;*********************
+	for i=0,nd-1 do begin
+	case (*(dens[i])).type of
+	    'stellar':     (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0/total((*((*obj).x_n))^2,1)
+	    'ionospheric': (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0*$
+          exp(-((sqrt(total((*((*obj).x_n))^2,1))-(alt_min+(*(dens[i])).perp))>0)/((*(dens[i])).height))
+   	 	'torus':       (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0*$
+   	       exp(-sqrt((sqrt(total(((*((*obj).x_n))[0:1,*,*,*])^2,1))-(*(dens[i])).perp)^2+$
+   	       ((*((*obj).x_n))[2,*,*,*])^2)/(*(dens[i])).height)
+   	 	'disk' :       (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0*$
           exp(-(sqrt(total(((*((*obj).x_n))[0:1,*,*,*])^2,1)))/(*(dens[i])).perp)*$
           exp(-(sqrt(((*((*obj).x_n))[2,*,*,*])^2))/(*(dens[i])).height)
-endcase
-endfor;dens
-(*((*obj).dens_n))[*,*,*]=((0.009*sqrt((*((*obj).dens_n))[*,*,*]))/rebin(*parameters.freq.freq_tab,parameters.freq.n_freq,360,(*obj).nlat))^2
+	endcase
+	endfor;dens
+	(*((*obj).dens_n))[*,*,*]=((0.009*sqrt((*((*obj).dens_n))[*,*,*]))/rebin(*parameters.freq.freq_tab,parameters.freq.n_freq,360,(*obj).nlat))^2
 endif;north
 
 if (*obj).south then begin
@@ -183,7 +205,7 @@ openr,unit, file,/get_lun,/swap_if_little_endian
       readu,unit,n
       b_read      = fltarr(3,n)
       f_read      = fltarr(n)
-      gb_read     = fltarr(n)
+      gb_read     = fltarr(n) 
       bz_read      = fltarr(3,n)
       sc_gb_read  = fltarr(n)
       x_read      = fltarr(3,n)
@@ -220,25 +242,46 @@ for k=0,parameters.freq.n_freq-1 do begin
     (*((*obj).x_s))[*,k,j,i] =rot#(*((*obj).x_s))[*,k,0,i]
 endfor
 endif
-r=sqrt(total(x_read^2,1)) & alt_min=min(r) & r=abs(r-min(r)-(*obj).aurora_alt)
+;*********************
+;calcul du fmax (partie SUD) ; modification 17/04/2015 - CL
+;*********************
+			if (*obj).sat then flat = (*(*(*obj).parent).parent).flat $
+			else flat = (*(*obj).parent).flat
+		; si l'objet est un satellite, il faut prendre l applatissement du corps central
 
-w=(where(r eq min(r)))[0]
-    (*((*obj).fmax))[1,j,i]=f_read[w]
-    (*((*obj).feq))[1,j,i]=min([f_read[0],f_read[n-1]])
+
+			r=sqrt(total(x_read^2,1))			; calcul du r de la ligne de champ
+			beta=atan(x_read[2,*],sqrt(x_read[0,*]^2+x_read[1,*]^2))	; calcul de l'angle entre le plan de l'équateur et le r de la ligne de champ
+			r_el=sqrt(1./(cos(beta)^2+sin(beta)^2/(1- flat))) ; calcul du r de l'ellipsoide de Jupiter
+			alt_min=r_el
+			w=where(r gt (r_el+(*obj).aurora_alt), nw) ; 
+			(*((*obj).fmax))[1,j,i]=f_read(w(nw-1l))
+		;	(*((*obj).feq))[1,j,i]=min([f_read[0],f_read[n-1l]]) 
+;*********************
+;ancien calcul :
+;*********************
+;			r=sqrt(total(x_read^2,1)) & alt_min=min(r) & r=abs(r-min(r))
+;			w=(where(r eq min(r)))[0]
+;			;print,'ici',n,w
+;			    (*((*obj).fmax))[1,j,i]=f_read[w]
+;			    (*((*obj).feq))[1,j,i]=min([f_read[0],f_read[n-1]])
+;*********************
+
+;*********************
 endelse
 
 endfor;longitude
 (*((*obj).fmax))[1,*,i]=smooth(smooth(smooth(smooth((*((*obj).fmax))[1,*,i],5),5),5),5)
 
 
-(*((*obj).grad_b_eq))[1,*,i]=shift((*((*obj).feq))[1,*,i],-1)-(*((*obj).feq))[1,*,i]
-(*((*obj).grad_b_in))[1,*,i]=shift((*((*obj).fmax))[1,*,i],-1)-(*((*obj).fmax))[1,*,i]
-w=where((*((*obj).grad_b_eq))[1,*,i] ge 0,compl=w2)
-if w[0] ne -1 then (*((*obj).grad_b_eq))[1,w,i]=1
-if w2[0] ne -1 then (*((*obj).grad_b_eq))[1,w2,i]=0
-w=where((*((*obj).grad_b_in))[1,*,i] ge 0,compl=w2)
-if w[0] ne -1 then (*((*obj).grad_b_in))[1,w,i]=1
-if w2[0] ne -1 then (*((*obj).grad_b_in))[1,w2,i]=0
+;(*((*obj).grad_b_eq))[1,*,i]=shift((*((*obj).feq))[1,*,i],-1)-(*((*obj).feq))[1,*,i]
+;(*((*obj).grad_b_in))[1,*,i]=shift((*((*obj).fmax))[1,*,i],-1)-(*((*obj).fmax))[1,*,i]
+;w=where((*((*obj).grad_b_eq))[1,*,i] ge 0,compl=w2)
+;if w[0] ne -1 then (*((*obj).grad_b_eq))[1,w,i]=1
+;if w2[0] ne -1 then (*((*obj).grad_b_eq))[1,w2,i]=0
+;w=where((*((*obj).grad_b_in))[1,*,i] ge 0,compl=w2)
+;if w[0] ne -1 then (*((*obj).grad_b_in))[1,w,i]=1
+;if w2[0] ne -1 then (*((*obj).grad_b_in))[1,w2,i]=0
 
 endfor;latitude
 
@@ -249,11 +292,18 @@ endif else begin
 nd=n_elements((*((*((*obj).parent)).density)))
 if nd ne 0 then dens=(*((*((*obj).parent)).density))
 endelse
+;*********************
+;calcul du alt_min pour 'ionospheric' (partie SUD); modification 17/04/2015 - CL
+;*********************
+angle=atan((*(*obj).x_s)[2,*,*,*],sqrt((*(*obj).x_s)[0,*,*,*]^2+(*(*obj).x_s)[1,*,*,*]^2))
+alt_min=sqrt(1./(cos(angle)^2+sin(angle)^2/(1-flat)))
+
+;*********************
 for i=0,nd-1 do begin
 case (*(dens[i])).type of
     'stellar':     (*((*obj).dens_s))[*,*,*]=(*((*obj).dens_s))[*,*,*]+(*(dens[i])).rho0/total((*((*obj).x_s))^2,1)
     'ionospheric': (*((*obj).dens_s))[*,*,*]=(*((*obj).dens_s))[*,*,*]+(*(dens[i])).rho0*$
-          exp(-((sqrt(total((*((*obj).x_s))^2,1))-alt_min)>0)/(*(dens[i])).height)
+          exp(-((sqrt(total((*((*obj).x_s))^2,1))-(alt_min+(*(dens[i])).perp))>0)/((*(dens[i])).height))
     'torus':       (*((*obj).dens_s))[*,*,*]=(*((*obj).dens_s))[*,*,*]+(*(dens[i])).rho0*$
           exp(-sqrt((sqrt(total(((*((*obj).x_s))[0:1,*,*,*])^2,1))-(*(dens[i])).perp)^2+$
           ((*((*obj).x_s))[2,*,*,*])^2)/(*(dens[i])).height)
@@ -262,7 +312,7 @@ case (*(dens[i])).type of
           exp(-(sqrt(((*((*obj).x_s))[2,*,*,*])^2))/(*(dens[i])).height)
 endcase
 endfor;dens
-(*((*obj).dens_s))[*,*,*]=((0.009*sqrt((*((*obj).dens_s))[*,*,*]))/rebin(*parameters.freq.freq_tab,parameters.freq.n_freq,360,(*obj).nlat))^2
+(*((*obj).dens_s))[*,*,*]=((0.009*sqrt((*((*obj).dens_s))[*,*,*]))/rebin(*parameters.freq.freq_tab,parameters.freq.n_freq,360,(*obj).nlat))^2 ; wp^2/wc^2
 endif;south
 return;plot,sqrt(total((*((*obj).x_s))^2,1)),alog((*((*obj).dens_s))[*,90,*])
 end
@@ -296,7 +346,6 @@ end
 
 
 pro dipolar_field_N,name,obj,ff,ls,axisym,i,j
-
 fsb=2.79924835996
 bf=ff/fsb
 txt=strsplit(name,'_',/EXTRACT)
@@ -349,6 +398,7 @@ if (*obj).sat then (*((*obj).x_n))[*,*,j,i]=(*((*obj).x_n))[*,*,j,i]*(*((*((*obj
 theta=(asin(sqrt(1/a)) mod (0.5*!pi))
 z=cos(theta) & x=sin(theta)
 br=2.*g/(z^2+x^2)^2*z & bt=g/(z^2+x^2)^2*x & b=sqrt(br^2+bt^2)
+stop,'Verifier calcul de fmax (CL/LL), 16/04/2015'
     (*((*obj).fmax))[0,j,i]=b*fsb
 z=0 & x=a
 br=2.*g/(z^2+x^2)^2*z & bt=g/(z^2+x^2)^2*x & b=sqrt(br^2+bt^2)
@@ -410,9 +460,9 @@ theta=!pi-(asin(sqrt(1/a)) mod (0.5*!pi))
 z=cos(theta) & x=sin(theta)
 br=2.*g/(z^2+x^2)^2*z & bt=g/(z^2+x^2)^2*x & b=sqrt(br^2+bt^2)
     (*((*obj).fmax))[1,j,i]=b*fsb
+stop,'Verifier calcul de fmax (CL/LL), 16/04/2015'
 z=0 & x=a
 br=2.*g/(z^2+x^2)^2*z & bt=g/(z^2+x^2)^2*x & b=sqrt(br^2+bt^2)
     (*((*obj).feq))[1,j,i]=b*fsb
 return
 end
-

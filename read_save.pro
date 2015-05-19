@@ -540,6 +540,12 @@ if cnt ne 0 then begin
 	   		  error = [error,'Missing BODY.PERIOD Element.']
 		    endif  
 
+	    	test = where(key_list_lev1 eq 'FLAT',cnt)
+	    	if cnt eq 0 then begin 
+	    	  nerr +=1 
+	   		  error = [error,'Missing BODY.FLAT Element.']
+		    endif  
+
 	    	test = where(key_list_lev1 eq 'ORB_PER',cnt)
 	    	if cnt eq 0 then begin 
 	    	  nerr +=1 
@@ -625,7 +631,6 @@ if cnt ne 0 then begin
 	  			  		  nerr +=1 
 	   					  error = [error,'Missing BODY.DENS.ON Element.']
 			    		endif  
-
 	    				test = where(key_list_lev2 eq 'NAME',cnt)
 	    				if cnt eq 0 then begin 
 	    				  nerr +=1 
@@ -741,6 +746,12 @@ if cnt ne 0 then begin
 	    	  nerr +=1 
 	   		  error = [error,'Missing SOURCE.SUB Element.']
 		    endif  
+
+	    	test = where(key_list_lev1 eq 'AURORA_ALT',cnt)
+	    	if cnt eq 0 then begin 
+	    	  nerr +=1 
+	   		  error = [error,'Missing SOURCE.AURORA_ALT Element.']
+		    endif  
 		    
 	    	test = where(key_list_lev1 eq 'SAT',cnt)
 	    	if cnt eq 0 then begin 
@@ -776,6 +787,12 @@ if cnt ne 0 then begin
 	    	if cnt eq 0 then begin 
 	    	  nerr +=1 
 	   		  error = [error,'Missing SOURCE.CURRENT Element.']
+		    endif  
+
+	    	test = where(key_list_lev1 eq 'CONSTANT',cnt)
+	    	if cnt eq 0 then begin 
+	    	  nerr +=1 
+	   		  error = [error,'Missing SOURCE.CONSTANT Element.']
 		    endif  
 
 	    	test = where(key_list_lev1 eq 'ACCEL',cnt)
@@ -819,9 +836,9 @@ PRO init_serpe_structures,time,freq,observer,body,dens,src,spdyn,mov2d,mov3d
 time={TI,mini:0.,maxi:0.,nbr:0l,dt:0.}
 freq={FR,mini:0.,maxi:0.,nbr:0l,df:0.,name:'',log:0b,predef:0b}
 observer={OB,motion:0b,smaj:0.,smin:0.,decl:0.,alg:0.,incl:0.,phs:0.,predef:0b,name:'',parent:'',start:''}
-body={BO,on:0b,name:'',rad:0.,per:0.,orb1:0.,lg0:0.,sat:0b,smaj:0.,smin:0.,decl:0.,alg:0.,incl:0.,phs:0.,parent:'', mfl:'',dens:intarr(4),ipar:0}
+body={BO,on:0b,name:'',rad:0.,per:0.,flat:0.,orb1:0.,lg0:0.,sat:0b,smaj:0.,smin:0.,decl:0.,alg:0.,incl:0.,phs:0.,parent:'', mfl:'',dens:intarr(4),ipar:0}
 dens={DE,on:0b,name:'',type:'',rho0:0.,height:0.,perp:0.}
-src={SO,on:0b,name:'',parent:'',sat:'',type:'',loss:0b,width:0.,temp:0.,cold:0.,v:0.,lgmin:0.,lgmax:0.,lgstep:1.,latmin:0.,latmax:0.,latstep:1.,north:0b,south:0b,subcor:0.}
+src={SO,on:0b,name:'',parent:'',sat:'',type:'',loss:0b,cavity:0b,constant:0.,width:0.,temp:0.,cold:0.,v:0.,lgmin:0.,lgmax:0.,lgstep:1.,latmin:0.,latmax:0.,latstep:1.,north:0b,south:0b,subcor:0.,aurora_alt:0.}
 spdyn={SP,intensity:0b,polar:0b,f_t:0b,lg_t:0b,lat_t:0b,f_r:0b,lg_r:0b,lat_r:0b,f_lg:0b,lg_lg:0b,lat_lg:0b,f_lat:0b,lg_lat:0b,lat_lat:0b,f_lt:0b,lg_lt:0b,lat_lt:0b,$
 khz:0b,pdf:0b,log:0b,xrange:[0.,0.],lgrange:[0.,0.],larange:[0.,0.],ltrange:[0.,0.],nr:0,dr:0.,nlg:0,dlg:0.,nlat:0,dlat:0.,nlt:0,dlt:0.}
 mov2d={M2D,on:0b,sub:0,range:0.}
@@ -830,7 +847,7 @@ mov3d={M3D,on:0b,sub:0,xrange:[0.,0.],yrange:[0.,0.],zrange:[0.,0.],obs:0b,traj:
 end
 
 ;************************************************************** BUILD_SERPE_OBJ
-FUNCTION build_serpe_obj,adresse_lib,simulation_name,simulation_out,nbody,ndens,nsrc,time,freq,observer,bd,ds,sc,spdyn,mov2d,mov3d
+FUNCTION build_serpe_obj,adresse_lib,simulation_name,file_name,simulation_out,nbody,ndens,nsrc,time,freq,observer,bd,ds,sc,spdyn,mov2d,mov3d
 
 ; ***** number of objects to build *****
 nobj=n_elements(bd)-1+n_elements(ds)-1+2*(n_elements(sc)-1)+2+mov2d.on+mov3d.on+1;sacred
@@ -862,7 +879,7 @@ rank_bodies,bd
 start_bodies=n
 
 for i=0,n_elements(bd)-2 do begin
-	(parameters.objects[n])=PTR_NEW({BODY,name:(bd[i+1]).name,radius:(bd[i+1]).rad,period:(bd[i+1]).per,orb_1r:(bd[i+1]).orb1,lg0:(bd[i+1]).lg0,motion:(bd[i+1]).sat,$
+	(parameters.objects[n])=PTR_NEW({BODY,name:(bd[i+1]).name,radius:(bd[i+1]).rad,period:(bd[i+1]).per,flat:(bd[i+1]).flat,orb_1r:(bd[i+1]).orb1,lg0:(bd[i+1]).lg0,motion:(bd[i+1]).sat,$
 				parent:PTR_NEW(/ALLOCATE_HEAP),initial_phase:(bd[i+1]).phs,semi_major_axis:(bd[i+1]).smaj,semi_minor_axis:(bd[i+1]).smin,apoapsis_declination:(bd[i+1]).decl,$
 				apoapsis_longitude:(bd[i+1]).alg,orbit_inclination:(bd[i+1]).incl,traj_file:'',density:PTR_NEW(/ALLOCATE_HEAP),$
 				lg:PTR_NEW(/ALLOCATE_HEAP),lct:PTR_NEW(/ALLOCATE_HEAP),trajectory_xyz:PTR_NEW(/ALLOCATE_HEAP),trajectory_rtp:PTR_NEW(/ALLOCATE_HEAP),$
@@ -912,12 +929,11 @@ n=n+1
 
 
 ; ***** preparing SOURCE parameters *****
-
 for i=0,n_elements(sc)-2 do begin
 	if ((sc[i+1]).type eq 'attached to a satellite') then sat=1b else sat=0b
 	nm=(sc[i+1]).name+'_ft'
 	(parameters.objects[n])=PTR_NEW({FEATURE,name:nm,parent:PTR_NEW(/ALLOCATE_HEAP),folder:'',north:(sc[i+1]).north,south:(sc[i+1]).south,$
-				loffset:0.,l_min:(sc[i+1]).latmin,l_max:(sc[i+1]).latmax,nlat:1,sat:sat,lct:0b,subcor:(sc[i+1]).subcor,oval_lat0:0.,aurora_alt:0.,file_lat:'',file_lg:'',$
+				loffset:0.,l_min:(sc[i+1]).latmin,l_max:(sc[i+1]).latmax,nlat:1,sat:sat,lct:0b,subcor:(sc[i+1]).subcor,oval_lat0:0.,aurora_alt:(sc[i+1]).aurora_alt,file_lat:'',file_lg:'',$
 				b_n:PTR_NEW(/ALLOCATE_HEAP),x_n:PTR_NEW(/ALLOCATE_HEAP),bz_n:PTR_NEW(/ALLOCATE_HEAP),gb_n:PTR_NEW(/ALLOCATE_HEAP),$
 				b_s:PTR_NEW(/ALLOCATE_HEAP),x_s:PTR_NEW(/ALLOCATE_HEAP),bz_s:PTR_NEW(/ALLOCATE_HEAP),gb_s:PTR_NEW(/ALLOCATE_HEAP),$
 				fmax:PTR_NEW(/ALLOCATE_HEAP),feq:PTR_NEW(/ALLOCATE_HEAP),grad_b_eq:PTR_NEW(/ALLOCATE_HEAP),grad_b_in:PTR_NEW(/ALLOCATE_HEAP),$
@@ -979,7 +995,7 @@ for i=0,n_elements(sc)-2 do begin
 
 
 	n=n+1
-	(parameters.objects[n])=PTR_NEW({SOURCE,name:(sc[i+1]).name,parent:PTR_NEW(/ALLOCATE_HEAP),loss:(sc[i+1]).loss,ring:0b,cavity:(1b-(sc[i+1]).loss),rampe:0b,constant:0.,asymp:0.,width:(sc[i+1]).width,$
+	(parameters.objects[n])=PTR_NEW({SOURCE,name:(sc[i+1]).name,parent:PTR_NEW(/ALLOCATE_HEAP),loss:(sc[i+1]).loss,ring:0b,cavity:(sc[i+1]).cavity,rampe:0b,constant:(sc[i+1]).constant,asymp:0.,width:(sc[i+1]).width,$
 				temp:(sc[i+1]).temp,cold:(sc[i+1]).cold,vmin:(sc[i+1]).v,vmax:(sc[i+1]).v,vstep:1.,lgmin:(sc[i+1]).lgmin,lgmax:(sc[i+1]).lgmax,$
 				lgstep:(sc[i+1]).lgstep,latmin:0.,latmax:0.,latstep:1.,$
 				lgtov:0.,north:(sc[i+1]).north,south:(sc[i+1]).south,grad_eq:0,grad_in:0,shield:1b,$
@@ -1210,6 +1226,7 @@ for i=0,nbody-1 do begin
 		bd[n].name=((serpe_save['BODY'])[i])['NAME']
 		bd[n].rad=((serpe_save['BODY'])[i])['RADIUS']
 		bd[n].per=((serpe_save['BODY'])[i])['PERIOD']
+		bd[n].flat=((serpe_save['BODY'])[i])['FLAT']
 		bd[n].orb1=((serpe_save['BODY'])[i])['ORB_PER']
 		bd[n].lg0=((serpe_save['BODY'])[i])['INIT_AX']
 		bd[n].mfl=((serpe_save['BODY'])[i])['MAG']
@@ -1230,7 +1247,7 @@ for i=0,nbody-1 do begin
 		if on then begin
 			nd=nd+1
 			ds=[ds,dens]
-			bd[n].dens[i]=nd
+			bd[n].dens[nd-1]=nd
 			ds[nd].name=((((serpe_save['BODY'])[i])['DENS'])[l])['NAME']
 			ds[nd].type=((((serpe_save['BODY'])[i])['DENS'])[l])['TYPE']
 			ds[nd].rho0=((((serpe_save['BODY'])[i])['DENS'])[l])['RHO0']
@@ -1259,11 +1276,17 @@ for i=0,nsrc-1 do begin
 		sc[n].latmin=((serpe_save['SOURCE'])[i])['LAT']
 		sc[n].latmax=((serpe_save['SOURCE'])[i])['LAT']
 		sc[n].subcor=((serpe_save['SOURCE'])[i])['SUB']
+		sc[n].aurora_alt=((serpe_save['SOURCE'])[i])['AURORA_ALT']
 		sc[n].sat=((serpe_save['SOURCE'])[i])['SAT']
 		sc[n].north=((serpe_save['SOURCE'])[i])['NORTH']
 		sc[n].south=((serpe_save['SOURCE'])[i])['SOUTH']
 		sc[n].width=((serpe_save['SOURCE'])[i])['WIDTH']
-		sc[n].loss=(((serpe_save['SOURCE'])[i])['CURRENT'] eq 'Transient (Aflvénic)')
+		case ((serpe_save['SOURCE'])[i])['CURRENT'] of
+		 'Transient (Aflvénic)': sc[n].loss=1b
+		 'Steady-State': sc[n].cavity=1b
+		 'Constant': sc[n].constant=((serpe_save['SOURCE'])[i])['CONSTANT']
+		 else:
+		endcase
 		sc[n].v=sqrt(float(((serpe_save['SOURCE'])[i])['ACCEL'])/255.5)
 		sc[n].cold=float(((serpe_save['SOURCE'])[i])['TEMP'])/255.5
 		sc[n].temp=float(((serpe_save['SOURCE'])[i])['TEMPH'])/255.5
@@ -1271,13 +1294,12 @@ for i=0,nsrc-1 do begin
 endfor
 
 ; ***** building SERPE objects *****
-parameters = build_serpe_obj(adresse_lib,simulation_name,simulation_out,nbody,ndens,nsrc,time,freq,observer,bd,ds,sc,spdyn,mov2d,mov3d)
+parameters = build_serpe_obj(adresse_lib,simulation_name,file_name,simulation_out,nbody,ndens,nsrc,time,freq,observer,bd,ds,sc,spdyn,mov2d,mov3d)
 
 end
 
 ;************************************************************** READ_SAVE
 pro read_save,adresse_lib,file_name,parameters
-
 ; ***** initializing local variables *****
 init_serpe_structures,time,freq,observer,body,dens,src,spdyn,mov2d,mov3d
 
@@ -1604,88 +1626,88 @@ ds=[dens]
 n=0
 nd=0
 for i=1,nbody do begin
-readf,unit,lecture;<BODY>
-readf,unit,lecture;<ON=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-on=(lecture eq 'true')
-if on then begin
-	n=n+1
-	bd=[bd,body]
-readf,unit,lecture;<NAME=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-bd[n].name=lecture
-readf,unit,lecture;<RADIUS=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-bd[n].rad=float(lecture)
-readf,unit,lecture;<PERIOD=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-bd[n].per=float(lecture)
-readf,unit,lecture;<ORB_PER=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-bd[n].orb1=float(lecture)
-readf,unit,lecture;<INIT_AX=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-bd[n].lg0=float(lecture)
-readf,unit,lecture;<MAG=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-bd[n].mfl=lecture
-readf,unit,lecture;<MOTION=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-bd[n].sat=(lecture eq 'true')
-readf,unit,lecture;<PARENT=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-bd[n].parent=strtrim(lecture,2)
-readf,unit,lecture;<SEMI_MAJ=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-bd[n].smaj=float(lecture)
-readf,unit,lecture;<SEMI_MIN=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-bd[n].smin=float(lecture)
-readf,unit,lecture;<DECLINATION=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-bd[n].decl=float(lecture)
-readf,unit,lecture;<APO_LONG=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-bd[n].alg=float(lecture)
-readf,unit,lecture;<INCLINATION=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-bd[n].incl=float(lecture)
-readf,unit,lecture;<PHASE=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-bd[n].phs=float(lecture)
-	readf,unit,lecture;</BODY>
-for l=1,ndens do begin
-readf,unit,lecture;<DENSITY>
-readf,unit,lecture;<ON=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-on=(lecture eq 'true')
+	readf,unit,lecture;<BODY>
+	readf,unit,lecture;<ON=...>
+	lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+	on=(lecture eq 'true')
 	if on then begin
-		nd=nd+1
-		ds=[ds,dens]
-		bd[n].dens[i-1]=nd
-readf,unit,lecture;<NAME=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-ds[nd].name=lecture
-readf,unit,lecture;<TYPE=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-ds[nd].type=lecture
-readf,unit,lecture;<RHO0=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-ds[nd].rho0=float(lecture)
-readf,unit,lecture;<SCALE=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-ds[nd].height=float(lecture)
-readf,unit,lecture;<PERP=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-ds[nd].perp=float(lecture)
-readf,unit,lecture;</DENSITY>
-	endif else for j=0,5 do readf,unit,lecture
-endfor
-endif else begin
+		n=n+1
+		bd=[bd,body]
+		readf,unit,lecture;<NAME=...>
+		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+		bd[n].name=lecture
+		readf,unit,lecture;<RADIUS=...>
+		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+		bd[n].rad=float(lecture)
+		readf,unit,lecture;<PERIOD=...>
+		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+		bd[n].per=float(lecture)
+		readf,unit,lecture;<ORB_PER=...>
+		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+		bd[n].orb1=float(lecture)
+		readf,unit,lecture;<INIT_AX=...>
+		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+		bd[n].lg0=float(lecture)
+		readf,unit,lecture;<MAG=...>
+		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+		bd[n].mfl=lecture
+		readf,unit,lecture;<MOTION=...>
+		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+		bd[n].sat=(lecture eq 'true')
+		readf,unit,lecture;<PARENT=...>
+		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+		bd[n].parent=strtrim(lecture,2)
+		readf,unit,lecture;<SEMI_MAJ=...>
+		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+		bd[n].smaj=float(lecture)
+		readf,unit,lecture;<SEMI_MIN=...>
+		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+		bd[n].smin=float(lecture)
+		readf,unit,lecture;<DECLINATION=...>
+		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+		bd[n].decl=float(lecture)
+		readf,unit,lecture;<APO_LONG=...>
+		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+		bd[n].alg=float(lecture)
+		readf,unit,lecture;<INCLINATION=...>
+		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+		bd[n].incl=float(lecture)
+		readf,unit,lecture;<PHASE=...>
+		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+		bd[n].phs=float(lecture)
+		readf,unit,lecture;</BODY>
+		for l=1,ndens do begin
+			readf,unit,lecture;<DENSITY>
+			readf,unit,lecture;<ON=...>
+			lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+			on=(lecture eq 'true')
+			if on then begin
+				nd=nd+1
+				ds=[ds,dens]
+				bd[n].dens[nd-1]=nd ; 
+				readf,unit,lecture;<NAME=...>
+				lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+				ds[nd].name=lecture
+				readf,unit,lecture;<TYPE=...>
+				lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+				ds[nd].type=lecture
+				readf,unit,lecture;<RHO0=...>
+				lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+				ds[nd].rho0=float(lecture)
+				readf,unit,lecture;<SCALE=...>
+				lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+				ds[nd].height=float(lecture)
+				readf,unit,lecture;<PERP=...>
+				lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+				ds[nd].perp=float(lecture)
+				readf,unit,lecture;</DENSITY>
+			endif else for j=0,5 do readf,unit,lecture
+		endfor
+	endif else begin
 ;skip if body not used
-for j=0,14 do readf,unit,lecture
-for k=1,ndens do for j=0,7 do readf,unit,lecture
-endelse
+		for j=0,14 do readf,unit,lecture
+		for k=1,ndens do for j=0,7 do readf,unit,lecture
+	endelse
 endfor
 
 sc=[src]
@@ -1739,6 +1761,12 @@ sc[n].width=float(lecture)
 readf,unit,lecture;<CURRENT=...>
 lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
 sc[n].loss=(lecture eq 'Transient (Aflvénic)')
+sc[n].cavity=(lecture eq 'Steady-State')
+if lecture eq 'Constant' then begin
+	readf,unit,lecture;<CONSTANT=...>
+	lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
+	sc[n].constant=float(lecture)
+endif
 readf,unit,lecture;<ACCEL=...>
 lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
 sc[n].v=sqrt(float(lecture)/255.5)
@@ -1752,6 +1780,5 @@ readf,unit,lecture;</SOURCE>
 endif else for j=0,16 do readf,unit,lecture
 endfor
 
-parameters = build_serpe_obj(adresse_lib,simulation_name,simulation_out,nbody,ndens,nsrc,time,freq,observer,bd,ds,sc,spdyn,mov2d,mov3d)
-
+parameters = build_serpe_obj(adresse_lib,simulation_name,file_name,simulation_out,nbody,ndens,nsrc,time,freq,observer,bd,ds,sc,spdyn,mov2d,mov3d)
 end
