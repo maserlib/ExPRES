@@ -1,6 +1,6 @@
 ;***********************************************************
 ;***                                                     ***
-;***         SERPE V6.0                                  ***
+;***         SERPE V6.1                                  ***
 ;***                                                     ***
 ;***********************************************************
 ;***                                                     ***
@@ -10,29 +10,65 @@
 ;***     CALLBACK                                        ***
 ;***     FINALIZE                                        ***
 ;***                                                     ***
+;***     Version history                                 ***
+;***     [CL] V6.1: option to have a figure or not       ***
+;***     			at the end (keyword 'pdf')			 ***
+;***                                                     ***
 ;***********************************************************
 
 
 
 ;************************************************************** INIT_SPDYN
 pro init_spdyn,obj,parameters
+;**** on regarde ici ce qui sera demandé au tracé ((freq-time)-(freq-long)-(freq-lat)-etc...) ****
 n1=(((*obj).f_t+(*obj).f_r+(*obj).f_lg+(*obj).f_lt)<1)+$
 (((*obj).lg_t+(*obj).lg_r+(*obj).lg_lg+(*obj).lg_lt)<1)+$
-(((*obj).lat_t+(*obj).lat_r+(*obj).lat_lg+(*obj).lat_lt)<1);+$
-;(((*obj).lt_t+(*obj).lt_r+(*obj).lt_lg+(*obj).lt_lt)<1)
+(((*obj).lat_t+(*obj).lat_r+(*obj).lat_lg+(*obj).lat_lt)<1)
+
 nobj=n_elements(parameters.objects)
 n2=0
+tmp=0
+nsrc=[]
 for i=0,nobj-1 do begin
-if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SOURCE' then n2=n2+1
+	if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SOURCE' then begin
+		tmp=tmp+1 ; afin de connaitre le nombre de source.
+		nsrc=[nsrc,(*(parameters.objects[i])).lgnbr] ;Pour le nombre de longitude simulé par source, on verra plus bas
+		if (*(parameters.objects)[i]).lossbornes then tmp=tmp+2
+	endif
 endfor
+n2=tmp ; nombre de sources simulées
 if ~(*obj).src_each then (*obj).src_all=1b
 if n2 ge 8 then (*obj).dif_each=0b
-if (*obj).src_all then n2=1
-if (*obj).src_pole or (*obj).pol then n2=2*n2
+if (*obj).src_all then n2=1 ; il y aura un tableau d occurence pour tous les points
+if (*obj).src_pole or (*obj).pol then n2=2*n2 ; il y aura un tableau d occurence par polarisation
 n=n2*n1
+n=n+tmp*3 
 (*obj).nspd=n
+;************spdyn.out*************
+;****Dans spdyn.out il y aura :***
+;**** 1) si utilisateurs veut les infos en sortie (spdyn.save_out=1) :
+;****		pour chaque source : 1 tab_theta, 1 tab_azimut, 1 tab_long, 1 tab_occurence_NORD, 1 tab_occurence_SUD
+;**** 2) si l utilisateur ne veut pas les infos en sortie (spdyn.save_out=0) :
+;**** 	 	1 tab_occurence_NORD, 1 tab_occurence_SUD
 *((*obj).out)=PTRarr(n,/ALLOCATE_HEAP)
 n=1
+
+;**** tableau pour valeur de theta pour chaque source ******
+for i=n,n+tmp-1 do begin
+	(*((*((*obj).out))[i-1]))=fltarr(parameters.time.n_step,parameters.freq.n_freq,nsrc(i-1))
+endfor
+n=n+tmp
+;**** tableau pour valeur de l azimut pour chaque source ******
+for i=n,n+tmp-1 do begin
+	(*((*((*obj).out))[i-1]))=fltarr(parameters.time.n_step,parameters.freq.n_freq,nsrc(i-tmp-1))
+endfor
+n=n+tmp
+;**** tableau pour valeur de la longitude pour chaque source ******
+for i=n,n+tmp-1 do begin
+	(*((*((*obj).out))[i-1]))=fltarr(parameters.time.n_step,nsrc(i-2*tmp-1))
+endfor
+n=n+tmp
+;**** tableau pour occurence emissions et tracés******
 if (*obj).f_t then begin
     (*obj).f=n
     for i=n,n+n2-1 do (*((*((*obj).out))[i-1]))=bytarr(parameters.freq.n_freq,parameters.time.n_step)
@@ -48,11 +84,6 @@ if (*obj).lat_t then begin
     for i=n,n+n2-1 do (*((*((*obj).out))[i-1]))=bytarr((*obj).nlat,parameters.time.n_step)
     n=n+n2
 endif
-;if (*obj).lt_t then begin
-;    (*obj).lct=n
-;    for i=n,n+n2-1 do (*((*((*obj).out))[i-1]))=bytarr((*obj).nlat,parameters.time.n_step)
-;    n=n+n2
-;endif
 return
 end
 
@@ -76,7 +107,6 @@ lat=(FIX((lg-(*obj).lgmin)/(*obj).latstp)>0)<((*obj).nlat-1)
 
 if (*obj).src_each then n2=n2+1
 if (*obj).src_each and ((*obj).src_pole or (*obj).pol) then n2=n2+1
-;stop
 if ((*obj).f_t+(*obj).f_r+(*obj).f_lg+(*obj).f_lt) ne 0 then begin
 (*((*((*obj).out))[(*obj).f+n2-1]))[*,t]=(*((*((*obj).out))[(*obj).f+n2-1]))[*,t]+$
 totale(totale((*((*(parameters.objects[i])).spdyn))[*,*,0:1-((*obj).src_pole+(*obj).pol)],3),2)
@@ -97,16 +127,20 @@ if ((*obj).src_pole or (*obj).pol) then for j=0,n_elements(lat)-1 do $
 (*((*((*obj).out))[(*obj).lat+n2]))[lat[j],t]=(*((*((*obj).out))[(*obj).lat+n2]))[lat[j],t]+$
 totale((*((*(parameters.objects[i])).spdyn))[*,j,1],1)
 endif
-
-endif;boucle
+endif
 return
 end
 
 ;************************************************************** FZ_SPDYN
 pro fz_spdyn,obj,parameters
+
+if (*obj).pdf eq 0 then return ; no pdf file
+
 nom=parameters.out & if nom eq '' then nom='out'
 t=parameters.time.istep
+
 nobj=n_elements(parameters.objects)
+
 for i=0,nobj-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'OBSERVER' then begin
 r=(fix(((*((*(parameters.objects[i])).trajectory_rtp))[0,*]-(*obj).rmin)/(*obj).rstp)>0)<((*obj).nr-1)
 olg=(fix(((*((*(parameters.objects[i])).lg))-(*obj).lgmin)/(*obj).lgstp)>0)<((*obj).nlg-1)
@@ -117,6 +151,7 @@ set_plot,'ps'
 !p.font=1
 !p.multi=[0,1,1]
 n2=0
+
 for i=0,nobj-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SOURCE' then n2=n2+1
 w=intarr(n2)
 if (*obj).src_all then n2=1
@@ -139,39 +174,61 @@ if (*obj).src_each then begin
  nom1=nom1+'_'+(*parameters.objects[w[nsrc+1]]).name
 endif
 if (*obj).src_pole and ((nsrc mod 2) eq 0) then begin
-title=title+' North'
+ title=title+' North'
  nom1=nom1+'_North'
 endif
 if (*obj).src_pole and ((nsrc mod 2) eq 1) then begin
-title=title+' South'
+ title=title+' South'
  nom1=nom1+'_South'
 endif
 ytit='Frequency ' & if (*obj).kHz then ytit=ytit+'(kHz)' else ytit=ytit+'(MHz)'
 f=*parameters.freq.freq_tab
 ;if (*obj).khz then f=f*1000.
+
 if (*obj).log eq 0 then $
 U=((parameters.freq.fmin)+(findgen(parameters.freq.n_freq)/float(parameters.freq.n_freq-1L)*$
 ((parameters.freq.fmax)-(parameters.freq.fmin)))) $
 else $
 U=10^(alog10(parameters.freq.fmin)+(findgen(parameters.freq.n_freq)/(parameters.freq.n_freq-1L)*$
 (alog10(parameters.freq.fmax)-alog10(parameters.freq.fmin))))
-image=fix(transpose(*((*((*obj).out))[ntab]))) & if (*obj).pol then image=image-fix(transpose(*((*((*obj).out))[ntab+1])))
+if (*obj).pol then begin
+	k=0
+	for i=0,nobj-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SOURCE' then begin
+		if k eq 0 then begin
+			if ((*parameters.objects[i]).north eq 1) then image=-fix(transpose(*((*((*obj).out))[ntab]))) $
+			else if ((*parameters.objects[i]).south eq 1) then image=fix(transpose(*((*((*obj).out))[ntab])))
+		endif else begin
+			if ((*parameters.objects[i]).north eq 1) then image=image-fix(transpose(*((*((*obj).out))[ntab+1]))) $
+			else if ((*parameters.objects[i]).south eq 1) then image=image+fix(transpose(*((*((*obj).out))[ntab+1])))
+		endelse
+		k=k+1
+	endif
+	k=0
+endif else $
+image=fix(transpose(*((*((*obj).out))[ntab])))
+
+;if (*obj).pol then image=image-fix(transpose(*((*((*obj).out))[ntab+1])))
+
+
 for j=0l,parameters.time.n_step-1l do image(j,*)=interpol(float(image(j,*)),f,u)
 
 if (*obj).khz then U=U*1000.
 if (*obj).f_t then begin
-device,filename=nom1+'_f_t.ps',/landscape,bits=8
-xtit='Time (min)'
-if (*obj).log eq 1 then spdynps,image,parameters.time.debut,parameters.time.fin,min(U),max(U),xtit,ytit,title,1,0,0,0,1.,/log else $
-spdynps,image,parameters.time.debut,parameters.time.fin,min(U),max(U),xtit,ytit,title,0,0,0,0,1.
-device,/close
-if (*obj).pdf then begin
-print,'PDF'
-cmd='/opt/local/bin/ps2pdf '+nom1+'_f_t.ps '+nom1+'_f_t.pdf'
-print,cmd
-  spawn,cmd
-  spawn,'rm -f '+nom1+'_f_t.ps'
-endif
+		device,filename=nom1+'_f_t.ps',/landscape,bits=8
+		xtit='Time (hours)'
+		if (*obj).pol eq 0 then if (*obj).log eq 1 then spdynps,image,parameters.time.debut/60.,parameters.time.fin/60.,min(U),max(U),xtit,ytit,title,0,0,0,0,1.,/log else $
+		spdynps,image,parameters.time.debut/60.,parameters.time.fin/60.,min(U),max(U),xtit,ytit,title,0,0,0,0,1. $
+		else if (*obj).pol eq 1 then if (*obj).log eq 1 then spdynps,image,parameters.time.debut/60.,parameters.time.fin/60.,min(U),max(U),xtit,ytit,title,0,0,0,-1.,1.,/log else $
+		spdynps,image,parameters.time.debut/60.,parameters.time.fin/60.,min(U),max(U),xtit,ytit,title,0,0,0,-1.,1.
+			
+		device,/close
+		if (*obj).pdf then begin
+			print,'PDF'
+			cmd='/opt/local/bin/ps2pdf '+nom1+'_f_t.ps '+nom1+'_f_t.pdf'
+			print,cmd
+			  spawn,cmd
+			  spawn,'rm -f '+nom1+'_f_t.ps'
+		endif
 endif
 
 if (*obj).f_r then begin
@@ -267,13 +324,13 @@ if (*obj).src_pole and ((nsrc mod 2) eq 1) then begin
 title=title+' South'
  nom1=nom1+'_South'
 endif
-ytit='Source Longitude (Degrees)
+ytit='Source Longitude (Degrees)'
 image=fix(transpose(*((*((*obj).out))[ntab]))) & if (*obj).pol then image=image-fix(transpose(*((*((*obj).out))[ntab+1])))
 
 if (*obj).lg_t then begin
 device,filename=nom1+'_lg_t.ps',/landscape,bits=8
 xtit='Time (min)'
-spdynps,image,parameters.time.debut,parameters.time.fin,(*obj).lgmin,(*obj).lgmin+(*obj).nlg*(*obj).lgstp,xtit,ytit,title,0,0,0,0,1.
+spdynps,image,parameters.time.debut/60.,parameters.time.fin/60.,(*obj).lgmin,(*obj).lgmin+(*obj).nlg*(*obj).lgstp,xtit,ytit,title,0,0,0,0,1.
 device,/close
 if (*obj).pdf then begin
 print,'PDF'
