@@ -52,7 +52,6 @@ pro init_sacred,obj,parameters
 
 nom_f=parameters.out & if nom_f eq '' then nom_f='out'
 nom=parameters.name
-;nom_f=nom_f+nom
 sz=parameters.freq.n_freq
 nobj=n_elements(parameters.objects)
 for i=0,nobj-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SOURCE' then begin
@@ -108,10 +107,8 @@ end
 
 ;************************************************************** CB_SACRED
 pro cb_sacred,obj,parameters
-
 nom_f=parameters.out & if nom_f eq '' then nom_f='out'
 nom=parameters.name
-;nom_f=nom_f+nom
 date=(*obj).date
 date_glb=julday(date[1],date[2],date[0],date[3],date[4],date[5])
 nobj=n_elements(parameters.objects)
@@ -157,15 +154,9 @@ for i=0,nobj-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SOURCE' then b
 			printf,unit,txt
 
 ;***** Writing data for current line *****
-			;txt='<TD>'
-			;for k=0,nf-2 do txt=txt+strtrim((strsplit(fix(sp[k,j,0]),'.',/EXTRACT))[0],2)+' '
-			;txt=txt+strtrim((strsplit(fix(sp[nf-1,j,0]),'.',/EXTRACT))[0],2)+'</TD>'
 			txt='<TD encoding="base64">'
 			txt=txt+code64(sp[*,j,0])+'</TD>'
 			printf,unit,txt
-			;txt='<TD>'
-			;for k=0,nf-2 do txt=txt+strtrim((strsplit(fix(sp[k,j,1]),'.',/EXTRACT))[0],2)+' '
-			;txt=txt+strtrim((strsplit(fix(sp[nf-1,j,1]),'.',/EXTRACT))[0],2)+'</TD>'
 			txt='<TD encoding="base64">'
 			txt=txt+code64(sp[*,j,1])+'</TD>'
 			printf,unit,txt
@@ -185,7 +176,6 @@ pro fz_sacred,obj,parameters
 
 nom_f=parameters.out & if nom_f eq '' then nom_f='out'
 nom=parameters.name
-;nom_f=nom_f+nom
 sz=parameters.freq.n_freq
 nobj=n_elements(parameters.objects)
 for i=0,nobj-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SOURCE' then begin

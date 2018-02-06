@@ -1,6 +1,6 @@
 ;***********************************************************
 ;***                                                     ***
-;***         SERPE V6.0                                  ***
+;***         SERPE V6.1                                  ***
 ;***                                                     ***
 ;***********************************************************
 ;***                                                     ***
@@ -20,29 +20,36 @@
 
 ;************************************************************** INIT_BODY
 pro init_body,obj,parameters
-;initialise les donnees d'un objet BODY ou SAT
+
+; initialise les donnees d un objet BODY ou SAT
 (*obj).rot=[[cos(!pi/180.*(*obj).lg0),-sin(!pi/180.*(*obj).lg0),0.],$
 [sin(!pi/180.*(*obj).lg0),cos(!pi/180.*(*obj).lg0),0.],[0.,0.,1.]]
-;CML du corp parent
+
+; CML du corp parent
 (*obj).lct=PTR_NEW((*obj).lg0+findgen(parameters.time.n_step)*360.*parameters.time.step/(*obj).period)
-;longitude x=0
+
+; longitude x=0
 (*obj).lg=PTR_NEW((*obj).lg0+findgen(parameters.time.n_step)*360.*parameters.time.step/(*obj).period)
+
 end
 
 ;************************************************************** CB_BODY
 pro cb_body,obj,parameters
-;fait tourner la planete ou le satellite
+
+; fait tourner la planete ou le satellite
 lg=(*obj).lg0+360.*parameters.time.time/(*obj).period
 (*obj).rot=[[cos(!pi/180.*lg),-sin(!pi/180.*lg),0.],[sin(!pi/180.*lg),cos(!pi/180.*lg),0.],[0.,0.,1.]]
 end
 
 ;************************************************************** INIT_ORB
-PRO init_orb,obj,parameters;TESTE
-;Calcule la trajectoire de l'objet en orbite
+PRO init_orb,obj,parameters
+
+; Calcule la trajectoire de l objet en orbite
 ns=parameters.time.n_step
 traj_xyz=fltarr(3,ns)
 traj_rtp=fltarr(3,ns)
-help,(*obj),/str
+
+
 if (*obj).traj_file eq '' then begin
 	n_steps_orb = 3600
 	step_orb = 2.*!pi/n_steps_orb
@@ -93,8 +100,9 @@ if (*obj).traj_file eq '' then begin
 			e=e+1
 			if e eq 3600 then e=0
 			dpdt=dpdt+b*rpd(2,e)
+
 ;*********** et on calcule la nouvelle phase p
-			if i ne 0 then p=p+dpdt*parameters.time.step;*60. ; directement en min dans calc_orbite SH(12/06)
+			if i ne 0 then p=p+dpdt*parameters.time.step 
 			if p gt 2.*!pi then p=p-2.*!pi
 			if p lt 0. then p=p+2.*!pi
 ;*********** et le nouveau e correspondant a p
@@ -110,7 +118,7 @@ if (*obj).traj_file eq '' then begin
 			r=r+b*rpd(0,e)
 ;***********
 
-;*********** on passe de la phase a x et y (dans le plan de l'orbite)
+;*********** on passe de la phase a x et y (dans le plan de l orbite)
 			y=r*sin(p)
 			x=r*cos(p)
 ;*********** puis a r,t,p en utilisant (*orb).orbit_inclination  et (*orb).apoapsis_longitude
@@ -126,30 +134,42 @@ if (*obj).traj_file eq '' then begin
 			traj_rtp[*,i]=rtp
 		endfor
 	endelse
-endif else begin
-	openr,unit,(*obj).traj_file,/get_lun
-	a=fltarr(3)
-	for i=0,ns-1 do begin
-		;readu,unit,traj_rtp
-		readf,unit,a
-		traj_xyz[*,i]=a
-	endfor
-	close,unit & free_lun,unit
-	traj_rtp=xyz_to_rtp(traj_xyz)
-endelse
 
+endif else begin
+
+
+;*********** on a a chaque pas de t la valeur de la distance à Jupiter, la longitude et l inclinaison
+	alpha=(*(obj)).initial_phase*!dtor
+	c = sqrt((*(obj)).semi_major_axis(*)^2-(*(obj)).semi_minor_axis(*)^2)
+	x = (*(obj)).semi_major_axis(*)*cos(alpha(*))+c
+	y = (*(obj)).semi_minor_axis(*)*sin(alpha(*))
+	z = fltarr(ns)
+
+	r=sqrt(x^2+y^2+z^2)
+	rp=shift(r,-1)
+	corec=2.*abs(rp-r)/(rp+r)*360./2./!pi+1.
+	rtp = XYZ_TO_RTP(transpose([[x],[y],[z]]))
+
+	rtp[1,*]=!pi*0.5-(*(obj)).apoapsis_declination(*)*!dtor
+
+	xyz=fltarr(3,ns)
+	xyz(2,*)=rtp(0,*)*cos(rtp(1,*))
+	xyz(0,*)=rtp(0,*)*sin(rtp(1,*))*cos(rtp(2,*))
+	xyz(1,*)=rtp(0,*)*sin(rtp(1,*))*sin(rtp(2,*))
+	traj_rtp[*,*]=rebin(rtp,3,ns)
+	traj_xyz[*,*]=rebin(xyz,3,ns)
+endelse
+; ****************
 help,*((*obj).parent),out=out
 if n_elements(out) eq 2 then out=out[0]+out[1]
-;if PTR_VALID(((*obj).parent)) then begin
 if ~total(STRMATCH(out,'*UNDEF*',/fold)) then begin
 	pxyz=(*((*((*obj).parent)).trajectory_xyz))
 endif else begin
 	pxyz=0.
 endelse
 
-
 if tag_names(*obj,/str) eq 'BODY' then begin
-	l=(*((*obj).lct))-(traj_rtp[2,*]-traj_rtp[2,0])/!pi*180. mod 360.
+	l=((*((*obj).lct))-(traj_rtp[2,*]-traj_rtp[2,0])/!pi*180.) mod 360.
 	w=where(l lt 0) & if w[0] ne -1 then l[w]=360.+l[w]
 
 	(*obj).lct=PTR_NEW(l)
@@ -159,9 +179,12 @@ endif
 traj_rtp=xyz_to_rtp(traj_xyz)
 (*obj).trajectory_rtp=PTR_NEW(traj_rtp)
 
+
 if tag_names(*obj,/str) eq 'OBSERVER' then begin
-	*((*obj).lg)=fltarr(parameters.time.n_step)
+	if (*obj).predef then *((*obj).lg)=-(*obj).initial_phase $
+		else *((*obj).lg)=fltarr(parameters.time.n_step)
 endif
+
 
 return
 end
@@ -169,7 +192,11 @@ end
 ;************************************************************** CB_ORB
 pro cb_orb,obj,parameters
 t=fix(parameters.time.istep)
-(*((*obj).lg))[t]=((*((*obj).parent)).lg0+360.*parameters.time.time/(*((*obj).parent)).period-(*((*obj).trajectory_rtp))[2,t]*!radeg) mod 360.
+;*************
+; si obs.predef = 1 alors on a déjà défini plus haut (init_orb) la longitude de l observer a chaque pas de temps
+; reste juste le cas donc où observer.predef = 0, qui est comme avant 
+;*************
+if (*obj).predef eq 0 then (*((*obj).lg))[t]=((*((*obj).parent)).lg0+360.*parameters.time.time/(*((*obj).parent)).period-(*((*obj).trajectory_rtp))[2,t]*!radeg) mod 360.
 if (*((*obj).lg))[t] lt 0. then (*((*obj).lg))[t]=360.+(*((*obj).lg))[t]
 return
 end
