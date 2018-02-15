@@ -26,7 +26,8 @@ if adresse eq 'adresse_lib' then adresse_out='/Groups/SERPE/data'
 if adresse eq 'adresse_save' then adresse_out='/Groups/SERPE/SERPE_6.1/result/'
 	;#  ------ pour ecrire directement sur kronos ------
 	;if adresse eq 'adresse_save' then adresse_out='/Users/serpe/Volumes/kronos/serpe/data/'+observer+'/'+year+'/'+month+'/'
-
-
+; ------ adresse des fonctions ------
+if adresse eq 'ps2pdf' then adresse_out='/opt/ghostscript/lib/'
+if adresse eq 'ffmpeg' then adresse_out='/opt/local/bin/'
 return,adresse_out
 END
