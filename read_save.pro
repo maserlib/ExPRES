@@ -1150,7 +1150,7 @@ date='20'+STRMID((serpe_save['OBSERVER'])['SCTIME'],0,8) else $				; -> YEAR 20*
 date='19'+STRMID((serpe_save['OBSERVER'])['SCTIME'],0,8)					; if 50<=YY -> YEAR 19**
 date=date+':'+STRMID((serpe_save['OBSERVER'])['SCTIME'],8,2)					; rewriting date for hours
 
-adresse_ephem=loadpath('adresse_ephem')
+adresse_ephem=loadpath('adresse_ephem',parameters)
 
 if ((observer.motion+observer.predef) eq 0b) then begin
 	if size(((serpe_save['OBSERVER'])['FIXE_DIST']),/type) eq 7 then begin			; if fixe_dist="auto"

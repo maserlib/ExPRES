@@ -134,7 +134,6 @@ end
 ;************************************************************** FZ_SPDYN
 pro fz_spdyn,obj,parameters
 
-stop
 if (*obj).pdf eq 0 then return ; no pdf file
 
 nom=parameters.out & if nom eq '' then nom='out'
@@ -225,7 +224,7 @@ if (*obj).f_t then begin
 		device,/close
 		if (*obj).pdf then begin
 			print,'PDF'
-			adr=loadpath('ps2pdf')
+			adr=loadpath('ps2pdf',parameters)
 			cmd=adr+'ps2pdf '+nom1+'_f_t.ps '+nom1+'_f_t.pdf'
 			print,cmd
 			  spawn,cmd
@@ -245,7 +244,7 @@ spdynps,im,(*obj).rmin,max(r0),min(U),max(U),xtit,ytit,title,0,0,0,0,1.
 device,/close
 if (*obj).pdf then begin
 print,'PDF'
-adr=loadpath('ps2pdf')
+adr=loadpath('ps2pdf',parameters)
 cmd=adr+'ps2pdf '+nom1+'_f_r.ps '+nom1+'_f_r.pdf'
 print,cmd
   spawn,cmd
@@ -264,7 +263,7 @@ spdynps,im,(*obj).rmin,max(r0),min(U),max(U),xtit,ytit,title,0,0,0,0,1.
 device,/close
 if (*obj).pdf then begin
 print,'PDF'
-adr=loadpath('ps2pdf')
+adr=loadpath('ps2pdf',parameters)
 cmd=adr+'ps2pdf '+nom1+'_f_lg.ps '+nom1+'_f_lg.pdf'
 print,cmd
   spawn,cmd
@@ -283,7 +282,7 @@ spdynps,im,(*obj).rmin,max(r0),min(U),max(U),xtit,ytit,title,0,0,0,0,1.
 device,/close
 if (*obj).pdf then begin
 print,'PDF'
-adr=loadpath('ps2pdf')
+adr=loadpath('ps2pdf',parameters)
 cmd=adr+'ps2pdf '+nom1+'_f_lat.ps '+nom1+'_f_lat.pdf'
 print,cmd
   spawn,cmd
@@ -302,7 +301,7 @@ spdynps,image,(*obj).rmin,max(r0),min(U),max(U),xtit,ytit,title,0,0,0,0,1.
 device,/close
 if (*obj).pdf then begin
 print,'PDF'
-adr=loadpath('ps2pdf')
+adr=loadpath('ps2pdf',parameters)
 cmd=adr+'ps2pdf '+nom1+'_f_lt.ps '+nom1+'_f_lt.pdf'
 print,cmd
   spawn,cmd
@@ -340,7 +339,7 @@ spdynps,image,parameters.time.debut/60.,parameters.time.fin/60.,(*obj).lgmin,(*o
 device,/close
 if (*obj).pdf then begin
 print,'PDF'
-adr=loadpath('ps2pdf')
+adr=loadpath('ps2pdf',parameters)
 cmd=adr+'ps2pdf '+nom1+'_lg_t.ps '+nom1+'_lg_t.pdf'
 print,cmd
   spawn,cmd
@@ -358,7 +357,7 @@ spdynps,im,(*obj).rmin,r0,min(U),max(U),xtit,ytit,title,0,0,0,0,1.
 device,/close
 if (*obj).pdf then begin
 print,'PDF'
-adr=loadpath('ps2pdf')
+adr=loadpath('ps2pdf',parameters)
 cmd=adr+'ps2pdf '+nom1+'_lg_r.ps '+nom1+'_lg_r.pdf'
 print,cmd
   spawn,cmd
@@ -377,7 +376,7 @@ spdynps,im,(*obj).rmin,max(r0),min(U),max(U),xtit,ytit,title,0,0,0,0,1.
 device,/close
 if (*obj).pdf then begin
 print,'PDF'
-adr=loadpath('ps2pdf')
+adr=loadpath('ps2pdf',parameters)
 cmd=adr+'ps2pdf '+nom1+'_lg_lg.ps '+nom1+'_lg_lg.pdf'
 print,cmd
   spawn,cmd
@@ -396,7 +395,7 @@ spdynps,im,(*obj).rmin,max(r0),min(U),max(U),xtit,ytit,title,0,0,0,0,1.
 device,/close
 if (*obj).pdf then begin
 print,'PDF'
-adr=loadpath('ps2pdf')
+adr=loadpath('ps2pdf',parameters)
 cmd=adr+'ps2pdf '+nom1+'_lg_lat.ps '+nom1+'_lg_lat.pdf'
 print,cmd
   spawn,cmd
@@ -414,7 +413,7 @@ if (*obj).log eq 1 then spdynps,im,(*obj).rmin,max(r0),min(U),max(U),xtit,ytit,t
 spdynps,im,(*obj).rmin,max(r0),min(U),max(U),xtit,ytit,title,0,0,0,0,1.
 device,/close
 print,'PDF'
-adr=loadpath('ps2pdf')
+adr=loadpath('ps2pdf',parameters)
 cmd=adr+'ps2pdf '+nom1+'_lg_lt.ps '+nom1+'_lg_lt.pdf'
 if (*obj).pdf then begin
   spawn,cmd

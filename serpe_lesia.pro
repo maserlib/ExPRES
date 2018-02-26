@@ -115,7 +115,7 @@ comd='mv '+name_rold+' '+name_r
 spawn,comd
 
 
-adresse_lib=loadpath('adresse_lib')
+adresse_lib=loadpath('adresse_lib',parameters)
 
 
 
@@ -135,7 +135,7 @@ for i=0,nobj-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'OBSERVER' then
 if observer eq '' then observer='earth'
 
 ;adresse_save_tmp='/Groups/SERPE/SERPE_6.1/Corentin/result/Juno/'
-adresse_save_tmp=loadpath('adresse_save')
+adresse_save_tmp=loadpath('adresse_save',parameters)
 adresse_save=adresse_save_tmp+strmid(tmp,0,strlen(tmp)-5)
 
 parameters.out=adresse_save
@@ -155,7 +155,7 @@ INIT,parameters
 
 print,'Looping...'
 for i=0,parameters.time.n_step-1 do begin
-	print,parameters.time.debut+i*parameters.time.step
+	;print,parameters.time.debut+i*parameters.time.step
 	parameters.time.time=float(i)*parameters.time.step+parameters.time.t0
 	parameters.time.istep=i
 	CALLBACK,parameters
@@ -303,11 +303,12 @@ endif
 ;*********************************
 ;*********** Deleting of ephemeris files ***********
 
-adresse_ephem=loadpath('adresse_ephem')
+adresse_ephem=loadpath('adresse_ephem',parameters)
 cmdobs='rm '+adresse_ephem+'ephemobs'+strtrim(parameters.ticket,1)+'.txt'
 cmdbody='rm '+adresse_ephem+'ephembody'+strtrim(parameters.ticket,1)+'.txt'
 spawn,cmdobs
 spawn,cmdbody
+stop
 cmdvot1='rm '+adresse_save+'_Source1.vot'
 cmdvot2='rm '+adresse_save+'_Source2.vot'
 spawn,cmdvot1
