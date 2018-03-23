@@ -308,7 +308,7 @@ cmdobs='rm '+adresse_ephem+'ephemobs'+strtrim(parameters.ticket,1)+'.txt'
 cmdbody='rm '+adresse_ephem+'ephembody'+strtrim(parameters.ticket,1)+'.txt'
 spawn,cmdobs
 spawn,cmdbody
-stop
+
 cmdvot1='rm '+adresse_save+'_Source1.vot'
 cmdvot2='rm '+adresse_save+'_Source2.vot'
 spawn,cmdvot1

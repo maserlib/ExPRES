@@ -1512,11 +1512,14 @@ for i=0,nbody-1 do begin
 
 					w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
 					if bd[n].name eq 'Io' then begin
-						if long((serpe_save['OBSERVER'])['SCTIME']) lt 1701010000 then $
+						if long(observer.start) ge 1601010000 and long(observer.start) lt 1701010000 then $
 						restore,adresse_ephem+'Juno/2016_001-366.sav'
-						if long((serpe_save['OBSERVER'])['SCTIME']) ge 1701010000 then $
+						if long(observer.start) ge 1701010000 and long(observer.start) lt 1801010000 then $
 						restore,adresse_ephem+'Juno/2017_001-365.sav'
-						bd[n].phs=360.-(ephem(w).oblon+180.-ephem(w).iophase)
+            if long(observer.start) ge 1801010000 and long(observer.start) lt 1901010000 then $
+            restore,adresse_ephem+'Juno/2018_001-365.sav'
+						if long(observer.start) ge 1901010000 then stop,'you have to define ephem for this date'
+            bd[n].phs=360.-(ephem(w).oblon+180.-ephem(w).iophase)
 					endif else if bd[n].name eq 'Europa' then begin
 						if long(observer.start) ge 1601010000 and long(observer.start) lt 1701010000 then begin
 							restore,adresse_ephem+'Europa/Europa_ephemeris_2016.sav'
@@ -1524,7 +1527,9 @@ for i=0,nbody-1 do begin
 						endif else if long(observer.start) ge 1701010000 and long(observer.start) lt 1801010000 then begin
 							restore,adresse_ephem+'Europa/Europa_ephemeris_2017.sav'
 							bd[n].phs=360.-ephem(w).oblon
-
+            endif else if long(observer.start) ge 1801010000 and long(observer.start) lt 1901010000 then begin
+              restore,adresse_ephem+'Europa/Europa_ephemeris_2018.sav'
+              bd[n].phs=360.-ephem(w).oblon
 						endif else stop,'you have to define ephem for this date'
 					endif else if bd[n].name eq 'Ganymede' then begin
 						if long(observer.start) ge 1601010000 and long(observer.start) lt 1701010000 then begin
@@ -1533,6 +1538,9 @@ for i=0,nbody-1 do begin
 						endif else if long(observer.start) ge 1701010000 and long(observer.start) lt 1801010000 then begin
 							restore,adresse_ephem+'Ganymede/Ganymede_ephemeris_2017.sav'
 							bd[n].phs=360.-ephem(w).oblon
+            endif else if long(observer.start) ge 1801010000 and long(observer.start) lt 1901010000 then begin
+              restore,adresse_ephem+'Ganymede/Ganymede_ephemeris_2018.sav'
+              bd[n].phs=360.-ephem(w).oblon
 						endif else stop,'you have to define ephem for this date'
 					endif
 				
