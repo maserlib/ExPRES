@@ -70,7 +70,6 @@ for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i
 		endelse
 
 	ener(h)=strtrim(long(((*(parameters.objects[i])).vmin)^2*255.5),2)+'keV'
-	stop
 	wid(h) ='wid'+strtrim(long((*parameters.objects[i]).width),2)+'deg'
 	
 	
@@ -82,7 +81,6 @@ for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i
 	if (*(*parameters.objects(i)).parent).sat then originsrc(h)=(*(*(*parameters.objects(i)).parent).parent).name $
 		else originsrc(h)=strtrim(lon,2)+'d-'+strtrim(lat,2)+'R'
 	
-	stop
 	if (*(parameters.objects[i])).loss then sourcetype(h)='lossc' else $
 	if (*(parameters.objects[i])).constant then sourcetype(h)='cst'+strmid(strtrim((*(parameters.objects[i])).constant,1),0,6) else $
 	if (*(parameters.objects[i])).cavity then sourcetype(h)='cavity'
