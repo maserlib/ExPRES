@@ -70,6 +70,7 @@ for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i
 		endelse
 
 	ener(h)=strtrim(long(((*(parameters.objects[i])).vmin)^2*255.5),2)+'keV'
+	stop
 	wid(h) ='wid'+strtrim(long((*parameters.objects[i]).width),2)+'deg'
 	
 	
@@ -81,7 +82,7 @@ for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i
 	if (*(*parameters.objects(i)).parent).sat then originsrc(h)=(*(*(*parameters.objects(i)).parent).parent).name $
 		else originsrc(h)=strtrim(lon,2)+'d-'+strtrim(lat,2)+'R'
 	
-	
+	stop
 	if (*(parameters.objects[i])).loss then sourcetype(h)='lossc' else $
 	if (*(parameters.objects[i])).constant then sourcetype(h)='cst'+strmid(strtrim((*(parameters.objects[i])).constant,1),0,6) else $
 	if (*(parameters.objects[i])).cavity then sourcetype(h)='cavity'
@@ -129,7 +130,7 @@ for i=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[i]
 	dated=string(format='(I04,"-",I02,"-",I02,"T",I02,":",I02,":",I02)',(*parameters.objects(i)).date(0:5))
 	datefilename=string(format='(I04,I02,I02)',(*parameters.objects(i)).date(0:2))
 	
-	caldat,julday((*parameters.objects(i)).date(1),(*parameters.objects(i)).date(2),(*parameters.objects(i)).date(0),0,0,0)+parameters.time.fin/60./24.,month,day,year,h,m,s
+	caldat,julday((*parameters.objects(i)).date(1),(*parameters.objects(i)).date(2),(*parameters.objects(i)).date(0),(*parameters.objects(i)).date(3),(*parameters.objects(i)).date(4),(*parameters.objects(i)).date(5))+parameters.time.fin/60./24.,month,day,year,h,m,s
 	datef=string(format='(I04,"-",I02,"-",I02,"T",I02,":",I02,":",I02)',year,month,day,h,m,s)
 endif
 
@@ -141,7 +142,8 @@ skt_file = filename+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_v01
 master_file = filename+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_v01.cdf'
 
 
-build_serpe_skt,*parameters.freq.freq_tab,Freq_Label,parameters.freq.log,Src_ID_Label,originsrc,hemisphere,sourcetype,observer,planet,wid,ener,refr,sourcedescr,dt,dated,datef,skt_file
+for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]),/str) eq 'CDF' then opt=*parameters.objects[j]
+build_serpe_skt,*parameters.freq.freq_tab,Freq_Label,parameters.freq.log,Src_ID_Label,originsrc,hemisphere,sourcetype,observer,planet,wid,ener,refr,sourcedescr,dt,dated,datef,skt_file,opt
 spawn,'rm -rf '+master_file
 spawn,'/Applications/cdf/cdf36_3-dist/bin/skeletoncdf '+skt_file+' -cdf '+master_file
 
@@ -161,7 +163,7 @@ make_cdf,master_file,filename+'.cdf',data
 id = cdf_open(filename+'.cdf')
 basename=strsplit(filename,'/',/extract)
 cdf_attput,id,'Logical_file_id',0,basename[n_elements(basename)-1]
-CDF_ATTPUT, id, 'SCALEMAX', 'ObsDistance', max(ObsDistance)
+if opt.obsdistance then CDF_ATTPUT, id, 'SCALEMAX', 'ObsDistance', max(ObsDistance)
 
 (*obj).id=id
 end
@@ -192,8 +194,7 @@ fx = fltarr(nsrc,ndat,nfreq)
 fx(*,*,*)=-1.0e+31
 fmax=fltarr(nsrc,ndat)
 srcpos=fltarr(nsrc,ndat,3,nfreq)
-
-
+srcpos(*,*,*,*)=-1.0e+31
 var=0
 
 for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]),/str) eq 'SOURCE' then begin
@@ -213,28 +214,30 @@ for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]
 	if wn0(0) ne -1 then $
 		if (*parameters.objects[j]).north eq 1 then polarization(i,wn0)=-1 $
 			else polarization(i,wn0)=+1
+	for ipos=0,2 do begin
+		if wthet[0] ne -1 then srcpos(h,i,ipos,wthet)=((*(*parameters.objects(j)).x)(ipos,wthet,0,var))
+	endfor
 	h=h+1
 endif
-
 
 w0=where(polarization(i,*) eq 0)
 polarization(i,w0)=32767
 
 id=(*obj).id
+for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]),/str) eq 'CDF' then opt=*parameters.objects[j]
 
-	cdf_varput,id,'Theta',reform(theta[*,i,*],nsrc,nfreq),REC_START=i
-	cdf_varput,id,'Azimuth',reform(azimuth[*,i,*],nsrc,nfreq),REC_START=i
-	cdf_varput,id,'FP',reform(fp2[*,i,*],nsrc,nfreq),REC_START=i
-
-	cdf_varput,id,'SrcLongitude',reform(longitude[*,i],nsrc),REC_START=i
 	cdf_varput,id,'Polarization',reform(polarization[i,*],nfreq),REC_START=i
+	if opt.theta then	cdf_varput,id,'Theta',reform(theta[*,i,*],nsrc,nfreq),REC_START=i
+	if opt.azimuth then	cdf_varput,id,'Azimuth',reform(azimuth[*,i,*],nsrc,nfreq),REC_START=i
 
-	cdf_varput,id,'SrcFreqMax',reform(fmax[*,i],nsrc),REC_START=i
-	
 
+	if opt.SrcLongitude then	cdf_varput,id,'SrcLongitude',reform(longitude[*,i],nsrc),REC_START=i
+	if opt.SrcFreqMax then	cdf_varput,id,'SrcFreqMax',reform(fmax[*,i],nsrc),REC_START=i
+	if opt.SrcPos then	cdf_varput,id,'SrcPosition',transpose(reform(srcpos(*,i,*,*),nsrc,3,nfreq),[1,0,2]),REC_START=i
+	;if opt.SrcPos then cdf_varput,id,'SrcPosition',reform(srcpos[*,i,*,*],nsrc,3,nfreq),REC_START=i
+	if opt.fp then	cdf_varput,id,'FP',reform(fp2[*,i,*],nsrc,nfreq),REC_START=i
 ; ici f=fx=fce*sqrt(1-v_r^2/c^2)
-	cdf_varput,id,'FC',reform(fx[*,i,*],nsrc,nfreq),REC_START=i	
-	
+	if opt.fc then	cdf_varput,id,'FC',reform(fx[*,i,*],nsrc,nfreq),REC_START=i	
 
 end
 
