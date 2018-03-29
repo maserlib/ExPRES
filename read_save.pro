@@ -238,6 +238,12 @@ if cnt ne 0 then begin
     	end
     endcase
 
+    test = where(key_list_lev1 eq 'EPHEM',cnt)
+    if cnt eq 0 then begin 
+      nerr +=1 
+      error = [error,'Missing OBSERVER.EPHEM Element.']
+    endif
+
     test = where(key_list_lev1 eq 'FIXE_DIST',cnt)
     if cnt eq 0 then begin 
       nerr +=1 
@@ -426,6 +432,12 @@ if cnt ne 0 then begin
       nerr +=1 
       error = [error,'Missing SPDYN.PDF Element.']
     endif  
+
+    test = where(key_list_lev1 eq 'CDF',cnt)
+    if cnt eq 0 then begin 
+      nerr +=1 
+      error = [error,'Missing SPDYN.CDF Element.']
+    endif 
 
 	test = where(key_list_lev1 eq 'INFOS',cnt)
     if cnt eq 0 then begin 
@@ -850,30 +862,31 @@ return, nerr
 end
 
 ;************************************************************** BUILD_SERPE_OBJ
-PRO init_serpe_structures,time,freq,observer,body,dens,src,spdyn,mov2d,mov3d
+PRO init_serpe_structures,time,freq,observer,body,dens,src,spdyn,cdf,mov2d,mov3d
 
 ; ***** initializing local structures *****
-time={TI,mini:0.,maxi:0.,nbr:0l,dt:0.}
+time={TI,mini:0d,maxi:0d,nbr:0l,dt:0.}
 freq={FR,mini:0.,maxi:0.,nbr:0l,df:0.,name:'',log:0b,predef:0b}
 observer={OB,motion:0b,smaj:0.,smin:0.,decl:0.,alg:0.,incl:0.,phs:0.,predef:0b,name:'',parent:'',start:''}
 body={BO,on:0b,name:'',rad:0.,per:0.,flat:0.,orb1:0.,lg0:0.,sat:0b,smaj:0.,smin:0.,decl:0.,alg:0.,incl:0.,phs:0.,parent:'', mfl:'',dens:intarr(4),ipar:0}
 dens={DE,on:0b,name:'',type:'',rho0:0.,height:0.,perp:0.}
-src={SO,on:0b,name:'',parent:'',sat:'',type:'',loss:0b,lossbornes:0b,ring:0b,cavity:0b,constant:0.,width:0.,temp:0.,cold:0.,v:0.,lgauto:'',lgmin:0.,lgmax:0.,lgnbr:1,lgstep:1.,latmin:0.,latmax:0.,latstep:1.,north:0b,south:0b,subcor:0.,aurora_alt:0.,refract:0b}
+src={SO,on:0b,name:'',parent:'',sat:'',type:'',loss:0b,lossbornes:0b,ring:0b,cavity:0b,constant:0.,width:0.,temp:0d,cold:0d,v:0d,lgauto:'',lgmin:0.,lgmax:0.,lgnbr:1,lgstep:1.,latmin:0.,latmax:0.,latstep:1.,north:0b,south:0b,subcor:0.,aurora_alt:0d,refract:0b}
 spdyn={SP,intensity:0b,polar:0b,f_t:0b,lg_t:0b,lat_t:0b,f_r:0b,lg_r:0b,lat_r:0b,f_lg:0b,lg_lg:0b,lat_lg:0b,f_lat:0b,lg_lat:0b,lat_lat:0b,f_lt:0b,lg_lt:0b,lat_lt:0b,$
 khz:0b,pdf:0b,log:0b,xrange:[0.,0.],lgrange:[0.,0.],larange:[0.,0.],ltrange:[0.,0.],nr:0,dr:0.,nlg:0,dlg:0.,nlat:0,dlat:0.,nlt:0,dlt:0.,infos:0b}
+cdf={CD,theta:0b,fp:0b,fc:0b,azimuth:0b,obslatitude:0b,srclongitude:0b,srcfreqmax:0b,obsdistance:0b,obslocaltime:0b,cml:0b,srcpos:0b}
 mov2d={M2D,on:0b,sub:0,range:0.}
 mov3d={M3D,on:0b,sub:0,xrange:[0.,0.],yrange:[0.,0.],zrange:[0.,0.],obs:0b,traj:0b}
 
 end
 
 ;************************************************************** BUILD_SERPE_OBJ
-FUNCTION build_serpe_obj,adresse_lib,simulation_name,file_name,simulation_out,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,mov2d,mov3d
+FUNCTION build_serpe_obj,adresse_lib,simulation_name,file_name,simulation_out,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d
 
 ; ***** number of objects to build *****
 nobj=n_elements(bd)-1+n_elements(ds)-1+2*(n_elements(sc)-1)+2+mov2d.on+mov3d.on+2;sacred&cdf
 
 ; ***** initializing variables *****
-TEMPS={TIME,debut:time.mini,fin:time.maxi,step:time.dt,n_step:time.nbr,time:0.,t0:0.,istep:0}
+TEMPS={TIME,debut:time.mini,fin:time.maxi,step:time.dt,n_step:time.nbr,time:0d,t0:0.,istep:0}
 FREQUE={FREQ,fmin:freq.mini,fmax:freq.maxi,n_freq:freq.nbr,step:freq.df,file:freq.name,log:freq.log,freq_tab:PTR_NEW(/ALLOCATE_HEAP)}
 
 parameters={PARAMETERS,ticket:ticket,time:temps,freq:freque,name:simulation_name,objects:PTRARR(nobj,/ALLOCATE_HEAP),out:simulation_out}
@@ -1016,8 +1029,8 @@ for i=0,n_elements(sc)-2 do begin
 	n=n+1
 	(parameters.objects[n])=PTR_NEW({SOURCE,name:(sc[i+1]).name,parent:PTR_NEW(/ALLOCATE_HEAP),loss:(sc[i+1]).loss,lossbornes:(sc[i+1]).lossbornes,ring:(sc[i+1]).ring,cavity:(sc[i+1]).cavity,rampe:0b,constant:(sc[i+1]).constant,asymp:0.,width:(sc[i+1]).width,$
 				temp:(sc[i+1]).temp,cold:(sc[i+1]).cold,vmin:(sc[i+1]).v,vmax:(sc[i+1]).v,vstep:1.,lgauto:(sc[i+1]).lgauto,lgmin:(sc[i+1]).lgmin,lgmax:(sc[i+1]).lgmax,$
-				lgnbr:(sc[i+1]).lgnbr,lgstep:(sc[i+1]).lgstep,latmin:0.,latmax:0.,latstep:1.,$
-				lgtov:0.,north:(sc[i+1]).north,south:(sc[i+1]).south,refract:(sc[i+1]).refract,grad_eq:0,grad_in:0,shield:1b,$
+				lgnbr:(sc[i+1]).lgnbr,lgstep:(sc[i+1]).lgstep,latmin:(sc[i+1]).latmin,latmax:(sc[i+1]).latmax,latstep:(sc[i+1]).latstep,$
+				lgtov:0.,north:(sc[i+1]).north,south:(sc[i+1]).south,refract:(sc[i+1]).refract,grad_eq:0,grad_in:0,shield:0b,$
 				nsrc:1,spdyn:PTR_NEW(/ALLOCATE_HEAP),th:PTR_NEW(/ALLOCATE_HEAP),azimuth:PTR_NEW(/ALLOCATE_HEAP),fp:PTR_NEW(/ALLOCATE_HEAP),f:PTR_NEW(/ALLOCATE_HEAP),fmax:PTR_NEW(/ALLOCATE_HEAP),v:PTR_NEW(/ALLOCATE_HEAP),$
 				lat:PTR_NEW(/ALLOCATE_HEAP),lg:PTR_NEW(/ALLOCATE_HEAP),x:PTR_NEW(/ALLOCATE_HEAP),it:['init_src'],cb:['cb_src'],fz:['']})
 	(*((parameters.objects[n]))).parent=(parameters.objects[n-1])
@@ -1052,14 +1065,13 @@ endif
 ; ***** preparing SACRED parameters *****
 
 CALDAT,SYSTIME(/JULIAN), Mo, D, Y, H, Mi, S
-if (STRLEN(observer.start) eq 10) then begin
-	if (fix(strmid(observer.start,0,2)) lt 50) then Y=2000+fix(strmid(observer.start,0,2))$
-	else Y=1900+fix(strmid(observer.start,0,2))
-	Mo=fix(strmid(observer.start,2,2))
-	D=fix(strmid(observer.start,4,2))
-	H=fix(strmid(observer.start,6,2))
-	Mi=fix(strmid(observer.start,8,2))
-	S=0
+if (STRLEN(observer.start) ge 8) then begin
+	Y=fix(strmid(observer.start,0,4))
+	Mo=fix(strmid(observer.start,4,2))
+	D=fix(strmid(observer.start,6,2))
+	H=fix(strmid(observer.start,8,2))
+	Mi=fix(strmid(observer.start,10,2))
+	S=fix(strmid(observer.start,12,2))
 endif
 (parameters.objects[n])=PTR_NEW({SACRED,date:[Y,Mo,D,H,Mi,S],it:['init_sacred'],cb:['cb_sacred'],fz:['fz_sacred']})
 n=n+1
@@ -1067,7 +1079,8 @@ n=n+1
 ; ***** preparing CDF parameters *****
 
 	(parameters.objects[n])=PTR_NEW({CDF,id:0l,$
-				it:['init_cdf'],cb:['cb_cdf'],fz:['fz_cdf']})
+				it:['init_cdf'],cb:['cb_cdf'],fz:['fz_cdf'],$
+        theta:cdf.theta,fp:cdf.fp,fc:cdf.fc,azimuth:cdf.azimuth,obslatitude:cdf.obslatitude,srclongitude:cdf.srclongitude,srcfreqmax:cdf.srcfreqmax,obsdistance:cdf.obsdistance,obslocaltime:cdf.obslocaltime,cml:cdf.cml,srcpos:cdf.srcpos})
 ; ***** returning parameters *****
 
 return,parameters
@@ -1082,7 +1095,7 @@ pro read_save_json,adresse_lib,file_name,parameters
 
 
 ; ***** initializing local variables *****
-init_serpe_structures,time,freq,observer,body,dens,src,spdyn,mov2d,mov3d
+init_serpe_structures,time,freq,observer,body,dens,src,spdyn,cdf,mov2d,mov3d
 
 ; ***** loading JSON input *****
 serpe_save = json_parse(file_name)
@@ -1111,10 +1124,12 @@ ndens = fix((serpe_save['NUMBER'])['DENSITY'])
 nsrc = fix((serpe_save['NUMBER'])['SOURCE'])
 
 ; ***** loading TIME section *****
-time.mini = float((serpe_save['TIME'])['MIN'])+float(strmid((serpe_save['OBSERVER'])['SCTIME'],6,2))*60.+float(strmid((serpe_save['OBSERVER'])['SCTIME'],8,2))
-time.maxi = float((serpe_save['TIME'])['MAX'])+float(strmid((serpe_save['OBSERVER'])['SCTIME'],6,2))*60.+float(strmid((serpe_save['OBSERVER'])['SCTIME'],8,2))
-time.nbr = long((serpe_save['TIME'])['NBR'])
-time.dt=(time.maxi-time.mini)/float(time.nbr)
+if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
+  time.mini = double((serpe_save['TIME'])['MIN'])+double(strmid(observer.start,8,2))*60.+double(strmid(observer.start,10,2))
+  time.maxi = double((serpe_save['TIME'])['MAX'])+double(strmid(observer.start,8,2))*60.+double(strmid(observer.start,10,2))
+  time.nbr = long((serpe_save['TIME'])['NBR'])
+  time.dt=(time.maxi-time.mini)/float(time.nbr)
+endif
 
 ; ***** loading FREQ section *****
 freq.log=0b
@@ -1141,205 +1156,204 @@ case (serpe_save['OBSERVER'])['TYPE'] of
     'Orbiter' : observer.motion=1b
     'Fixed': 
 endcase
-
-;********** rewriting of the date, depending on the century **********
-;********** WARNING : will not work if we want simulation BEFORE 1950 or AFTER 2050**********
-if (float(STRMID((serpe_save['OBSERVER'])['SCTIME'],0,2)) ge 0) and $		
-(float(STRMID((serpe_save['OBSERVER'])['SCTIME'],0,2)) lt 50) then $		; if 00<=YY<50
-date='20'+STRMID((serpe_save['OBSERVER'])['SCTIME'],0,8) else $				; -> YEAR 20**
-date='19'+STRMID((serpe_save['OBSERVER'])['SCTIME'],0,8)					; if 50<=YY -> YEAR 19**
-date=date+':'+STRMID((serpe_save['OBSERVER'])['SCTIME'],8,2)					; rewriting date for hours
-
-adresse_ephem=loadpath('adresse_ephem',parameters)
-
-if ((observer.motion+observer.predef) eq 0b) then begin
-	if size(((serpe_save['OBSERVER'])['FIXE_DIST']),/type) eq 7 then begin			; if fixe_dist="auto"
-	
-		if ((serpe_save['OBSERVER'])['SC'] eq 'Cassini' and (long((serpe_save['OBSERVER'])['SCTIME']) ge 1603281700) and (long((serpe_save['OBSERVER'])['SCTIME']) lt 1701010000)) then begin
-
-			restore,adresse_ephem+'Cassini/Ephem_Cassini_2016088-366.sav'
-			date2=strmid(strtrim(amj_aj(long(strmid(date,0,8))),1),4,3)
-			heured=strmid(date,8,2)
-			mind=strmid(date,11,2)
-		
-			w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
-			longitude=ephem(w).oblon
-			distance=ephem(w).dist_RJ
-			lat=ephem(w).oblat
-		
-		endif else begin
-		; pour contrer les eventuels soucis de discussions avec l OV MIRIADE
-			error=1
-			error2=0
-			name=adresse_ephem+'ephemobs'+strtrim(ticket,1)+'.txt'
-			while (error eq 1) do begin
-				call_ephemph,(serpe_save['OBSERVER'])['PARENT'],spacecraft=(serpe_save['OBSERVER'])['SC'],date,name		; call ephemeride of Miriade VO
-				read_ephemph,name,distance=distance,longitude=longitude,lat=lat,error=error								; writing ephem of Miriade VO
-				if (error2 gt 30) then stop,'Please restart the simulation'
-				error2=error2+1
-			endwhile
-		
-				
-		endelse
-		; enregistrement des donnees lues
-		observer.smaj=distance[0]
-	    observer.smin=distance[0]
-	    observer.phs=-longitude[0]
-		observer.decl=lat[0]
-		
-		
-	endif else begin	; sinon enregistre donnees entrees par utilisateur
-		observer.smaj=float((serpe_save['OBSERVER'])['FIXE_DIST'])
-	    observer.smin=float((serpe_save['OBSERVER'])['FIXE_DIST'])
-		observer.phs=-float((serpe_save['OBSERVER'])['FIXE_SUBL'])
-		observer.decl=float((serpe_save['OBSERVER'])['FIXE_DECL'])
-	endelse
-endif else if (observer.predef eq 1b) then begin
-	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'juno' AND long((serpe_save['OBSERVER'])['SCTIME']) ge 1601010000 then begin
-		if long(strmid(date,0,8)) ge 20190101 then stop,'ephemeris after DoY 2018 365 are not defined. A file with the corresponding ephemeris needs to be loading, please contact the ExPRES team'
-		if (long((serpe_save['OBSERVER'])['SCTIME']) ge 1601010000) and (long((serpe_save['OBSERVER'])['SCTIME']) lt 1701010000) then $
-		restore,adresse_ephem+'Juno/2016_001-366.sav'
-		if (long((serpe_save['OBSERVER'])['SCTIME']) ge 1701010000) and (long((serpe_save['OBSERVER'])['SCTIME']) lt 1801010000) then $
-		restore,adresse_ephem+'Juno/2017_001-365.sav'
-		if (long((serpe_save['OBSERVER'])['SCTIME']) ge 1801010000) and (long((serpe_save['OBSERVER'])['SCTIME']) lt 1901010000) then $
-		restore,adresse_ephem+'Juno/2018_001-365.sav'
-		date2=strmid(strtrim(amj_aj(long(strmid(date,0,8))),1),4,3)
-		heured=strmid(date,8,2)
-		mind=strmid(date,11,2)
-	
-		w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
-		
-		longitude=dblarr(time.nbr)
-		distance=dblarr(time.nbr)
-		lat=dblarr(time.nbr)
-	
-		lat=dblarr(time.nbr)
-		for i=0,time.nbr-1 do begin
-			longitude(i)=ephem(w+i*time.dt).oblon
-			distance(i)=ephem(w+i*time.dt).dist_RJ
-			lat(i)=ephem(w+i*time.dt).oblat
-		endfor
-	endif else $
-	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'galileo' then begin
-		restore,adresse_ephem+'Galileo/1996_240-260.sav'
-		date2=strmid(strtrim(amj_aj(long(strmid(date,0,8))),1),4,3)
-		heured=strmid(date,8,2)
-		mind=strmid(date,11,2)
-	
-		w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
-		
-		longitude=dblarr(time.nbr)
-		distance=dblarr(time.nbr)
-		lat=dblarr(time.nbr)
-	
-		lat=dblarr(time.nbr)
-		for i=0,time.nbr-1 do begin
-			longitude(i)=ephem(w+i*time.dt).oblon
-			distance(i)=ephem(w+i*time.dt).dist_RJ
-			lat(i)=ephem(w+i*time.dt).oblat
-		endfor
-	
-	endif else $
-	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'voyager1' then begin
-		restore,adresse_ephem+'Voyager/Voyager1_ephem_1979.sav'
-		date2=strmid(strtrim(amj_aj(long(strmid(date,0,8))),1),4,3)
-		heured=strmid(date,8,2)
-		mind=strmid(date,11,2)
-	
-		w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
-		
-		longitude=dblarr(time.nbr)
-		distance=dblarr(time.nbr)
-		lat=dblarr(time.nbr)
-	
-		lat=dblarr(time.nbr)
-		for i=0,time.nbr-1 do begin
-			longitude(i)=ephem(w+i*time.dt).oblon
-			distance(i)=ephem(w+i*time.dt).dist_RJ
-			lat(i)=ephem(w+i*time.dt).oblat
-		endfor	
-	
-	endif else $
-	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'voyager2' then begin
-		restore,adresse_ephem+'Voyager/Voyager2_ephem_1979.sav'
-		date2=strmid(strtrim(amj_aj(long(strmid(date,0,8))),1),4,3)
-		heured=strmid(date,8,2)
-		mind=strmid(date,11,2)
-	
-		w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
-		
-		longitude=dblarr(time.nbr)
-		distance=dblarr(time.nbr)
-		lat=dblarr(time.nbr)
-	
-		lat=dblarr(time.nbr)
-		for i=0,time.nbr-1 do begin
-			longitude(i)=ephem(w+i*time.dt).oblon
-			distance(i)=ephem(w+i*time.dt).dist_RJ
-			lat(i)=ephem(w+i*time.dt).oblat
-		endfor	
-	
-	endif else begin
-	
-		if (time.nbr le 5000) then begin
-			nbdate=strtrim(time.nbr,2)
-			step=strtrim(time.dt,2)+'m'
-		endif else if (time.nbr gt 5000) then begin ; MIRIADE n accepte pas plus de 5000 entrées de date d un coup
-			step=strtrim(time.dt,2)+'m'
-			nbnbdate=time.nbr/5000
-			nbdate=intarr(nbnbdate+1)
-		
-			for i=0,nbnbdate-2 do nbdate(i)='5000'
-			nbdate(nbnbdate)=strtrim(time.nbr-5000*nbnbdate,2)
-		endif
-	
-		if (time.nbr le 5000) then begin
-			error=1
-			error2=0
-			name=adresse_ephem+'ephemobs'+strtrim(ticket,1)+'.txt'
-			while (error eq 1) do begin
-				call_ephemph,(serpe_save['OBSERVER'])['PARENT'],spacecraft=(serpe_save['OBSERVER'])['SC'],date,name,nbdate=nbdate,step=step		; appel ephemeride OV Miriade
-				read_ephemph,name,distance=distance,longitude=longitude,lat=lat,error=error												; lecture ephem OV Miriade
-				if (error2 gt 30) then stop,'Veuillez relancer la simulation'
-				error2=error2+1
-			endwhile
-		
-		endif else if (time.nbr gt 5000l) then begin
-			longitude=[]
-			distance=[]
-			lat=[]
-			for i=0,nbnbdate-1 do begin
-				error=1
-				error2=0
-				name=adresse_ephem+'ephemobs'+strtrim(ticket,1)+'.txt'
-				while (error eq 1) do begin
-					call_ephemph,(serpe_save['OBSERVER'])['PARENT'],spacecraft=(serpe_save['OBSERVER'])['SC'],date,name,nbdate=nbdate(i),step=step		; appel ephemeride OV Miriade
-					read_ephemph,name,distance=distance2,longitude=longitude2,lat=lat2,error=error							; lecture ephem OV Miriade
-					if (error2 gt 30) then stop,'Veuillez relancer la simulation'
-					error2=error2+1												
-				endwhile
-				longitude=[longitude,longitude2]
-				distance=[distance,distance2]
-				lat=[lat,lat2]
-			endfor
-		endif
-	endelse
-	
-	
-  ; enregistrement des donnees lues (tableau de dimension nbdate)
-  struct_replace_field,observer,'smaj',distance
-  struct_replace_field,observer,'smin',distance
-  struct_replace_field,observer,'phs',-longitude
-  struct_replace_field,observer,'decl',lat
-endif
-; ********* ********	
-	
-
-
 observer.parent=(serpe_save['OBSERVER'])['PARENT']
 observer.name=(serpe_save['OBSERVER'])['SC']
 observer.start=(serpe_save['OBSERVER'])['SCTIME']
 
+;************* epehemeris given by the users ************
+if (serpe_save['OBSERVER'])['EPHEM'] ne '' then begin
+  read_ephem_obs,(serpe_save['OBSERVER'])['EPHEM'],time,observer,longitude,distance,lat,error
+  if error eq 1 then stop,'Check your ephemeris'
+  struct_replace_field,observer,'SMAJ',distance
+  struct_replace_field,observer,'SMIN',distance
+  struct_replace_field,observer,'PHS',-longitude
+  struct_replace_field,observer,'DECL',lat
+endif
+
+if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
+  date=STRMID(observer.start,0,10)+':'+STRMID(observer.start,10,2)
+  adresse_ephem=loadpath('adresse_ephem',parameters)
+  if ((observer.motion+observer.predef) eq 0b) then begin
+  	if size(((serpe_save['OBSERVER'])['FIXE_DIST']),/type) eq 7 then begin			; if fixe_dist="auto"
+  		if ((serpe_save['OBSERVER'])['SC'] eq 'Cassini' and (long64(observer.start) ge 201603281700) and (long64(observer.start) lt 201701010000)) then begin
+  
+  			restore,adresse_ephem+'Cassini/Ephem_Cassini_2016088-366.sav'
+  			date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
+  			heured=strmid(date,8,2)
+  			mind=strmid(date,11,2)
+  		
+  			w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
+  			longitude=ephem(w).oblon
+  			distance=ephem(w).dist_RJ
+  			lat=ephem(w).oblat
+  		
+  		endif else begin
+  		; pour contrer les eventuels soucis de discussions avec l OV MIRIADE
+  			error=1
+  			error2=0
+  			name=adresse_ephem+'ephemobs'+strtrim(ticket,1)+'.txt'
+  			while (error eq 1) do begin
+  				call_ephemph,(serpe_save['OBSERVER'])['PARENT'],spacecraft=(serpe_save['OBSERVER'])['SC'],date,name		; call ephemeride of Miriade VO
+  				read_ephemph,name,distance=distance,longitude=longitude,lat=lat,error=error								; writing ephem of Miriade VO
+  				if (error2 gt 30) then stop,'Please restart the simulation'
+  				error2=error2+1
+  			endwhile
+  		
+  				
+  		endelse
+  		; enregistrement des donnees lues
+  		observer.smaj=distance[0]
+  	  observer.smin=distance[0]
+  	  observer.phs=-longitude[0]
+  		observer.decl=lat[0]
+  		
+  		
+  	endif else begin	; sinon enregistre donnees entrees par utilisateur
+  		observer.smaj=float((serpe_save['OBSERVER'])['FIXE_DIST'])
+  	  observer.smin=float((serpe_save['OBSERVER'])['FIXE_DIST'])
+  		observer.phs=-float((serpe_save['OBSERVER'])['FIXE_SUBL'])
+  		observer.decl=float((serpe_save['OBSERVER'])['FIXE_DECL'])
+  	endelse
+  endif else if (observer.predef eq 1b) then begin
+  	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'juno' AND long64(observer.start) ge 201601010000 then begin
+  		if long64(strmid(date,0,8)) ge 20190101 then stop,'ephemeris after DoY 2018 365 are not defined. A file with the corresponding ephemeris needs to be loading, please contact the ExPRES team'
+  		if (long64(observer.start) ge 201601010000) and (long64(observer.start) lt 201701010000) then $
+  		restore,adresse_ephem+'Juno/2016_001-366.sav'
+  		if (long64(observer.start) ge 201701010000) and (long64(observer.start) lt 201801010000) then $
+  		restore,adresse_ephem+'Juno/2017_001-365.sav'
+  		if (long64(observer.start) ge 201801010000) and (long64(observer.start) lt 201901010000) then $
+  		restore,adresse_ephem+'Juno/2018_001-365.sav'
+  		date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
+  		heured=strmid(date,8,2)
+  		mind=strmid(date,11,2)
+  	
+  		w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
+  		
+  		longitude=dblarr(time.nbr)
+  		distance=dblarr(time.nbr)
+  		lat=dblarr(time.nbr)
+  	
+  		lat=dblarr(time.nbr)
+  		for i=0,time.nbr-1 do begin
+  			longitude(i)=ephem(w+i*time.dt).oblon
+  			distance(i)=ephem(w+i*time.dt).dist_RJ
+  			lat(i)=ephem(w+i*time.dt).oblat
+  		endfor
+  	endif else $
+  	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'galileo' then begin
+  		restore,adresse_ephem+'Galileo/1996_240-260.sav'
+  		date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
+  		heured=strmid(date,8,2)
+  		mind=strmid(date,11,2)
+  	
+  		w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
+  		
+  		longitude=dblarr(time.nbr)
+  		distance=dblarr(time.nbr)
+  		lat=dblarr(time.nbr)
+  	
+  		lat=dblarr(time.nbr)
+  		for i=0,time.nbr-1 do begin
+  			longitude(i)=ephem(w+i*time.dt).oblon
+  			distance(i)=ephem(w+i*time.dt).dist_RJ
+  			lat(i)=ephem(w+i*time.dt).oblat
+  		endfor
+  	
+  	endif else $
+  	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'voyager1' then begin
+  		restore,adresse_ephem+'Voyager/Voyager1_ephem_1979.sav'
+  		date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
+  		heured=strmid(date,8,2)
+  		mind=strmid(date,11,2)
+  	
+  		w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
+  		
+  		longitude=dblarr(time.nbr)
+  		distance=dblarr(time.nbr)
+  		lat=dblarr(time.nbr)
+  	
+  		lat=dblarr(time.nbr)
+  		for i=0,time.nbr-1 do begin
+  			longitude(i)=ephem(w+i*time.dt).oblon
+  			distance(i)=ephem(w+i*time.dt).dist_RJ
+  			lat(i)=ephem(w+i*time.dt).oblat
+  		endfor	
+  	
+  	endif else $
+  	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'voyager2' then begin
+  		restore,adresse_ephem+'Voyager/Voyager2_ephem_1979.sav'
+  		date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
+  		heured=strmid(date,8,2)
+  		mind=strmid(date,11,2)
+  	
+  		w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
+  		
+  		longitude=dblarr(time.nbr)
+  		distance=dblarr(time.nbr)
+  		lat=dblarr(time.nbr)
+  	
+  		lat=dblarr(time.nbr)
+  		for i=0,time.nbr-1 do begin
+  			longitude(i)=ephem(w+i*time.dt).oblon
+  			distance(i)=ephem(w+i*time.dt).dist_RJ
+  			lat(i)=ephem(w+i*time.dt).oblat
+  		endfor	
+  	
+  	endif else begin
+  	
+  		if (time.nbr le 5000) then begin
+  			nbdate=strtrim(time.nbr,2)
+  			step=strtrim(time.dt,2)+'m'
+  		endif else if (time.nbr gt 5000) then begin ; MIRIADE n accepte pas plus de 5000 entrées de date d un coup
+  			step=strtrim(time.dt,2)+'m'
+  			nbnbdate=time.nbr/5000
+  			nbdate=intarr(nbnbdate+1)
+  		
+  			for i=0,nbnbdate-2 do nbdate(i)='5000'
+  			nbdate(nbnbdate)=strtrim(time.nbr-5000*nbnbdate,2)
+  		endif
+  	
+  		if (time.nbr le 5000) then begin
+  			error=1
+  			error2=0
+  			name=adresse_ephem+'ephemobs'+strtrim(ticket,1)+'.txt'
+  			while (error eq 1) do begin
+  				call_ephemph,(serpe_save['OBSERVER'])['PARENT'],spacecraft=(serpe_save['OBSERVER'])['SC'],date,name,nbdate=nbdate,step=step		; appel ephemeride OV Miriade
+  				read_ephemph,name,distance=distance,longitude=longitude,lat=lat,error=error												; lecture ephem OV Miriade
+  				if (error2 gt 30) then stop,'Veuillez relancer la simulation'
+  				error2=error2+1
+  			endwhile
+  		
+  		endif else if (time.nbr gt 5000l) then begin
+  			longitude=[]
+  			distance=[]
+  			lat=[]
+  			for i=0,nbnbdate-1 do begin
+  				error=1
+  				error2=0
+  				name=adresse_ephem+'ephemobs'+strtrim(ticket,1)+'.txt'
+  				while (error eq 1) do begin
+  					call_ephemph,(serpe_save['OBSERVER'])['PARENT'],spacecraft=(serpe_save['OBSERVER'])['SC'],date,name,nbdate=nbdate(i),step=step		; appel ephemeride OV Miriade
+  					read_ephemph,name,distance=distance2,longitude=longitude2,lat=lat2,error=error							; lecture ephem OV Miriade
+  					if (error2 gt 30) then stop,'Veuillez relancer la simulation'
+  					error2=error2+1												
+  				endwhile
+  				longitude=[longitude,longitude2]
+  				distance=[distance,distance2]
+  				lat=[lat,lat2]
+  			endfor
+  		endif
+  	endelse
+  	
+    ; enregistrement des donnees lues (tableau de dimension nbdate)
+    struct_replace_field,observer,'smaj',distance
+    struct_replace_field,observer,'smin',distance
+    struct_replace_field,observer,'phs',-longitude
+    struct_replace_field,observer,'decl',lat
+  endif
+endif
+; ********* ********	
+	
 if observer.motion then begin
 	observer.smaj=(serpe_save['OBSERVER'])['SEMI_MAJ']
 	observer.smin=(serpe_save['OBSERVER'])['SEMI_MIN']
@@ -1417,6 +1431,19 @@ endelse
 spdyn.khz=(serpe_save['SPDYN'])['KHZ']
 spdyn.log=(serpe_save['SPDYN'])['LOG']
 spdyn.pdf=(serpe_save['SPDYN'])['PDF']
+
+cdf.theta=((serpe_save['SPDYN'])['CDF'])['THETA']
+cdf.fp=((serpe_save['SPDYN'])['CDF'])['FP']
+cdf.fc=((serpe_save['SPDYN'])['CDF'])['FC']
+cdf.azimuth=((serpe_save['SPDYN'])['CDF'])['AZIMUTH']
+cdf.obslatitude=((serpe_save['SPDYN'])['CDF'])['OBSLATITUDE']
+cdf.srclongitude=((serpe_save['SPDYN'])['CDF'])['SRCLONGITUDE']
+cdf.srcfreqmax=((serpe_save['SPDYN'])['CDF'])['SRCFREQMAX']
+cdf.obsdistance=((serpe_save['SPDYN'])['CDF'])['OBSDISTANCE']
+cdf.obslocaltime=((serpe_save['SPDYN'])['CDF'])['OBSLOCALTIME']
+cdf.cml=((serpe_save['SPDYN'])['CDF'])['CML']
+cdf.srcpos=((serpe_save['SPDYN'])['CDF'])['SRCPOS']
+
 spdyn.infos=(serpe_save['SPDYN'])['INFOS']
 ; ***** loading MOVIE2D section *****
 mov2d.on=(serpe_save['MOVIE2D'])['ON']
@@ -1470,9 +1497,9 @@ for i=0,nbody-1 do begin
 ; si c est pas le cas, alors on fait appelle à MIRIADE pour les éphémérides au t=0 de la simulation
 		if size((((serpe_save['BODY'])[i])['PHASE']),/type) eq 7 then begin									; if phase = "auto"
 			if observer.predef eq 0 then begin
-				if ((observer.name eq 'Cassini') and (long(observer.start) ge 1603281700) and (long(observer.start) lt 1701010000)) then begin
+				if ((observer.name eq 'Cassini') and (long64(observer.start) ge 201603281700) and (long64(observer.start) lt 201701010000)) then begin
 					
-					date2=strmid(strtrim(amj_aj(long(strmid(date,0,8))),1),4,3)
+					date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
 					heured=strmid(date,8,2)
 					mind=strmid(date,11,2)
 
@@ -1506,39 +1533,39 @@ for i=0,nbody-1 do begin
 			endif else begin
 				if (observer.name eq 'Juno') then begin
 					
-					date2=strmid(strtrim(amj_aj(long(strmid(date,0,8))),1),4,3)
+					date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
 					heured=strmid(date,8,2)
 					mind=strmid(date,11,2)
 
 					w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
 					if bd[n].name eq 'Io' then begin
-						if long(observer.start) ge 1601010000 and long(observer.start) lt 1701010000 then $
+						if long64(observer.start) ge 201601010000 and long64(observer.start) lt 201701010000 then $
 						restore,adresse_ephem+'Juno/2016_001-366.sav'
-						if long(observer.start) ge 1701010000 and long(observer.start) lt 1801010000 then $
+						if long64(observer.start) ge 201701010000 and long64(observer.start) lt 201801010000 then $
 						restore,adresse_ephem+'Juno/2017_001-365.sav'
-            if long(observer.start) ge 1801010000 and long(observer.start) lt 1901010000 then $
+            if long64(observer.start) ge 201801010000 and long64(observer.start) lt 201901010000 then $
             restore,adresse_ephem+'Juno/2018_001-365.sav'
-						if long(observer.start) ge 1901010000 then stop,'you have to define ephem for this date'
+						if long64(observer.start) ge 201901010000 then stop,'you have to define ephem for this date'
             bd[n].phs=360.-(ephem(w).oblon+180.-ephem(w).iophase)
 					endif else if bd[n].name eq 'Europa' then begin
-						if long(observer.start) ge 1601010000 and long(observer.start) lt 1701010000 then begin
+						if long64(observer.start) ge 201601010000 and long64(observer.start) lt 201701010000 then begin
 							restore,adresse_ephem+'Europa/Europa_ephemeris_2016.sav'
 							bd[n].phs=360.-ephem(w).oblon
-						endif else if long(observer.start) ge 1701010000 and long(observer.start) lt 1801010000 then begin
+						endif else if long64(observer.start) ge 201701010000 and long64(observer.start) lt 201801010000 then begin
 							restore,adresse_ephem+'Europa/Europa_ephemeris_2017.sav'
 							bd[n].phs=360.-ephem(w).oblon
-            endif else if long(observer.start) ge 1801010000 and long(observer.start) lt 1901010000 then begin
+            endif else if long64(observer.start) ge 201801010000 and long64(observer.start) lt 201901010000 then begin
               restore,adresse_ephem+'Europa/Europa_ephemeris_2018.sav'
               bd[n].phs=360.-ephem(w).oblon
 						endif else stop,'you have to define ephem for this date'
 					endif else if bd[n].name eq 'Ganymede' then begin
-						if long(observer.start) ge 1601010000 and long(observer.start) lt 1701010000 then begin
+						if long64(observer.start) ge 201601010000 and long64(observer.start) lt 201701010000 then begin
 							restore,adresse_ephem+'Ganymede/Ganymede_ephemeris_2016.sav'
 							bd[n].phs=360.-ephem(w).oblon
-						endif else if long(observer.start) ge 1701010000 and long(observer.start) lt 1801010000 then begin
+						endif else if long64(observer.start) ge 201701010000 and long64(observer.start) lt 201801010000 then begin
 							restore,adresse_ephem+'Ganymede/Ganymede_ephemeris_2017.sav'
 							bd[n].phs=360.-ephem(w).oblon
-            endif else if long(observer.start) ge 1801010000 and long(observer.start) lt 1901010000 then begin
+            endif else if long64(observer.start) ge 201801010000 and long64(observer.start) lt 201901010000 then begin
               restore,adresse_ephem+'Ganymede/Ganymede_ephemeris_2018.sav'
               bd[n].phs=360.-ephem(w).oblon
 						endif else stop,'you have to define ephem for this date'
@@ -1548,7 +1575,7 @@ for i=0,nbody-1 do begin
         	if bd[n].name eq 'Io' then begin
           restore,adresse_ephem+'Io/Io_ephemeris_1979.sav'
 
-          date2=strmid(strtrim(amj_aj(long(strmid(date,0,8))),1),4,3)
+          date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
           heured=strmid(date,8,2)
           mind=strmid(date,11,2)
   
@@ -1564,13 +1591,13 @@ for i=0,nbody-1 do begin
 					endif else if (bd[n].name eq 'Callisto') then begin
 						long=(76.01+dt/0.424016*360.) mod 360.
 						bd[n].phs=360.-long
-					endif else stop,'Cette lune n"est pas prévu pour cette date'
+					endif else stop,"Cette lune n'est pas prévu pour cette date"
 
         endif else if (observer.name eq 'Voyager2') then begin
 					if bd[n].name eq 'Io' then begin
          restore,adresse_ephem+'Io/Io_ephemeris_1979.sav'
 
-          date2=strmid(strtrim(amj_aj(long(strmid(date,0,8))),1),4,3)
+          date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
           heured=strmid(date,8,2)
           mind=strmid(date,11,2)
   
@@ -1586,12 +1613,12 @@ for i=0,nbody-1 do begin
 					endif else if (bd[n].name eq 'Callisto') then begin
 						long=(358.34+dt/0.424016*360.) mod 360.
 						bd[n].phs=360.-long
-					endif else stop,'Cette lune n"est pas prévu pour cette date'
+					endif else stop,"Cette lune n'est pas prévu pour cette date"
 				
 				
 				endif else if (observer.name eq 'Galileo' or observer.name eq 'galileo' or observer.name eq 'GALILEO') then begin
 					restore,adresse_ephem+'Galileo/1996_240-260.sav'
-					date2=strmid(strtrim(amj_aj(long(strmid(date,0,8))),1),4,3)
+					date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
 					heured=strmid(date,8,2)
 					mind=strmid(date,11,2)
 
@@ -1674,8 +1701,8 @@ for i=0,nsrc-1 do begin
 		sc[n].south=((serpe_save['SOURCE'])[i])['SOUTH']
 		sc[n].width=((serpe_save['SOURCE'])[i])['WIDTH']
 		case ((serpe_save['SOURCE'])[i])['CURRENT'] of
-		 'Transient (Aflvénic)': sc[n].loss=1b
-		 'Transient (Aflvénic)+bornes': BEGIN
+		 'Transient (Aflvenic)': sc[n].loss=1b
+		 'Transient (Aflvenic)+bornes': BEGIN
 		 	sc[n].loss=1b
 		 	sc[n].lossbornes=1b
 		 END
@@ -1684,498 +1711,13 @@ for i=0,nsrc-1 do begin
      'Shell': sc[n].ring=1b
 		 else:
 		endcase
-		sc[n].v=sqrt(float(((serpe_save['SOURCE'])[i])['ACCEL'])/255.5)
-		sc[n].cold=float(((serpe_save['SOURCE'])[i])['TEMP'])/255.5
-		sc[n].temp=float(((serpe_save['SOURCE'])[i])['TEMPH'])/255.5
+		sc[n].v=sqrt(double(((serpe_save['SOURCE'])[i])['ACCEL'])/255.5)
+		sc[n].cold=double(((serpe_save['SOURCE'])[i])['TEMP'])/255.5
+		sc[n].temp=double(((serpe_save['SOURCE'])[i])['TEMPH'])/255.5
 		sc[n].refract=((serpe_save['SOURCE'])[i])['REFRACTION']
 	endif
 endfor
 ; ***** building SERPE objects *****
-parameters = build_serpe_obj(adresse_lib,simulation_name,file_name,simulation_out,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,mov2d,mov3d)
+parameters = build_serpe_obj(adresse_lib,simulation_name,file_name,simulation_out,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d)
 
-end
-
-;************************************************************** READ_SAVE
-pro read_save,adresse_lib,file_name,parameters
-; ***** initializing local variables *****
-init_serpe_structures,time,freq,observer,body,dens,src,spdyn,mov2d,mov3d
-
-lecture=''
-openr,unit,file_name,/get_lun
-readf,unit,lecture;<SIMU>
-if lecture ne '<SIMU>' then begin
-	print,'File is not a valid SERPE save file (<SIMU>)'
-	return
-endif
-readf,unit,lecture;<NAME=...>
-if strmid(lecture,0,6) ne '<NAME=' then begin
-	print,strmid(lecture,0,5)
-	print,'File is not a valid SERPE save file (<NAME>)'
-	return
-endif
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-simulation_name=lecture
-readf,unit,lecture;<OUT=...>
-if strmid(lecture,0,5) ne '<OUT=' then begin
-	print,'File is not a valid SERPE save file (<OUT>)'
-	return
-endif
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-simulation_out=lecture
-readf,unit,lecture;</SIMU>
-if lecture ne '</SIMU>' then begin
-	print,'File is not a valid SERPE save file (</SIMU>)'
-	return
-endif
-readf,unit,lecture;<NUMBER>
-if lecture ne '<NUMBER>' then begin
-	print,'File is not a valid SERPE save file (<NUMBER>)'
-	return
-endif
-readf,unit,lecture;<BODY=...>
-if strmid(lecture,0,6) ne '<BODY=' then begin
-	print,'File is not a valid SERPE save file (<BODY>)'
-	return
-endif
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-nbody=fix(lecture)
-readf,unit,lecture;<DENS=...>
-if strmid(lecture,0,9) ne '<DENSITY=' then begin
-	print,'File is not a valid SERPE save file (<DENSITY>)'
-	return
-endif
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-ndens=fix(lecture)
-readf,unit,lecture;<SOURCE=...>
-if strmid(lecture,0,8) ne '<SOURCE=' then begin
-	print,'File is not a valid SERPE save file (<SOURCE>)'
-	return
-endif
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-nsrc=fix(lecture)
-readf,unit,lecture;</NUMBER>
-if lecture ne '</NUMBER>' then begin
-	print,'File is not a valid SERPE save file (</NUMBER>)'
-	return
-endif
-readf,unit,lecture;<TIME>
-if lecture ne '<TIME>' then begin
-	print,'File is not a valid SERPE save file (<TIME>)'
-	return
-endif
-readf,unit,lecture;<MIN=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-time.mini=float(lecture)
-readf,unit,lecture;<MAX=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-time.maxi=float(lecture)
-readf,unit,lecture;<NBR=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-time.nbr=fix(lecture)
-time.dt=(time.maxi-time.mini)/float(time.nbr)
-readf,unit,lecture;</TIME>
-if lecture ne '</TIME>' then begin
-	print,'File is not a valid SERPE save file (</TIME>)'
-	return
-endif
-readf,unit,lecture;<FREQUENCY>
-if lecture ne '<FREQUENCY>' then begin
-	print,'File is not a valid SERPE save file (<FREQUENCY>)'
-	return
-endif
-readf,unit,lecture;<TYPE=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-if lecture eq 'Linear' then begin
-freq.log=0b & freq.predef=0b
-endif
-if lecture eq 'Log' then begin
-freq.log=1b & freq.predef=0b
-endif
-if lecture eq 'Pre-Defined' then begin
-freq.log=0b & freq.predef=1b
-endif
-readf,unit,lecture;<MIN=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-freq.mini=float(lecture)
-readf,unit,lecture;<MAX=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-freq.maxi=float(lecture)
-readf,unit,lecture;<NBR=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-freq.nbr=fix(lecture)
-freq.df=(time.maxi-time.mini)/float(time.nbr)
-readf,unit,lecture;<SC=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-if freq.predef then freq.name=(adresse_lib+'freq/'+lecture) else freq.name=''
-readf,unit,lecture;</FREQUENCY>
-if lecture ne '</FREQUENCY>' then begin
-	print,'File is not a valid SERPE save file (</FREQUENCY>)'
-	return
-endif
-readf,unit,lecture;<OBSERVER>
-if lecture ne '<OBSERVER>' then begin
-	print,'File is not a valid SERPE save file (<OBSERVER>)'
-	return
-endif
-readf,unit,lecture;<TYPE=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-if lecture eq 'Fixed' then begin
-observer.motion=0b & observer.predef=0b
-endif
-if lecture eq 'Orbiter' then begin
-observer.motion=1b & observer.predef=0b
-endif
-if lecture eq 'Pre-Defined' then begin
-observer.motion=0b & observer.predef=1b
-endif
-readf,unit,lecture;<FIXE_DIST=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-if ((observer.motion+observer.predef) eq 0b) then begin
-observer.smaj=float(lecture)
-observer.smin=float(lecture)
-endif
-readf,unit,lecture;<FIXE_SUBL=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-if ((observer.motion+observer.predef) eq 0b) then observer.phs=-float(lecture)
-readf,unit,lecture;<FIXE_DECL=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-if ((observer.motion+observer.predef) eq 0b) then observer.decl=float(lecture)
-readf,unit,lecture;<PARENT=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-observer.parent=lecture
-readf,unit,lecture;<SC=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-observer.name=lecture
-readf,unit,lecture;<SCTIME=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-observer.start=lecture
-readf,unit,lecture;<SEMI_MAJ=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-if observer.motion then observer.smaj=float(lecture)
-readf,unit,lecture;<SEMI_MIN=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-if observer.motion then observer.smin=float(lecture)
-readf,unit,lecture;<SUBL=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-if observer.motion then observer.alg=float(lecture)
-readf,unit,lecture;<DECL=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-if observer.motion then observer.decl=float(lecture)
-readf,unit,lecture;<PHASE=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-if observer.motion then observer.phs=float(lecture)
-readf,unit,lecture;<INCL=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-if observer.motion then observer.incl=float(lecture)
-readf,unit,lecture;</OBSERVER>
-if lecture ne '</OBSERVER>' then begin
-	print,'File is not a valid SERPE save file (</OBSERVER>)'
-	return
-endif
-readf,unit,lecture;<SPDYN>
-if lecture ne '<SPDYN>' then begin
-	print,'File is not a valid SERPE save file (<SPDYN>)'
-	return
-endif
-readf,unit,lecture;<INTENSITY=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-spdyn.intensity=(lecture eq 'true')
-readf,unit,lecture;<POLAR=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-spdyn.polar=(lecture eq 'true')
-readf,unit,lecture;<FREQ=...>
-lecture=STRSPLIT(((STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]),':',/EXTRACT)
-spdyn.f_t=(lecture[0] eq 'true')
-spdyn.f_r=(lecture[1] eq 'true')
-spdyn.f_lg=(lecture[2] eq 'true')
-spdyn.f_lat=(lecture[3] eq 'true')
-spdyn.f_lt=(lecture[4] eq 'true')
-lecture=''
-readf,unit,lecture;<LONG=...>
-lecture=STRSPLIT(((STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]),':',/EXTRACT)
-spdyn.lg_t=(lecture[0] eq 'true')
-spdyn.lg_r=(lecture[1] eq 'true')
-spdyn.lg_lg=(lecture[2] eq 'true')
-spdyn.lg_lat=(lecture[3] eq 'true')
-spdyn.lg_lt=(lecture[4] eq 'true')
-lecture=''
-readf,unit,lecture;<LAT=...>
-lecture=STRSPLIT(((STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]),':',/EXTRACT)
-spdyn.lat_t=(lecture[0] eq 'true')
-spdyn.lat_r=(lecture[1] eq 'true')
-spdyn.lat_lg=(lecture[2] eq 'true')
-spdyn.lat_lat=(lecture[3] eq 'true')
-spdyn.lat_lt=(lecture[4] eq 'true')
-lecture=''
-readf,unit,lecture;<DRANGE=...>
-lecture=STRSPLIT(((STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]),':',/EXTRACT)
-spdyn.xrange=float(lecture)
-if (spdyn.xrange[0] ne spdyn.xrange[1]) then begin 
-spdyn.nr=101
-spdyn.dr=(spdyn.xrange[1]-spdyn.xrange[0])*0.01
-endif else begin
-spdyn.nr=1
-spdyn.dr=1.
-endelse
-lecture=''
-readf,unit,lecture;<LGRANGE=...>
-lecture=STRSPLIT(((STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]),':',/EXTRACT)
-spdyn.lgrange=float(lecture)
-if (spdyn.lgrange[0] ne spdyn.lgrange[1]) then begin 
-spdyn.nlg=101
-spdyn.dlg=(spdyn.lgrange[1]-spdyn.lgrange[0])*0.01
-endif else begin
-spdyn.nlg=1
-spdyn.dlg=1.
-endelse
-lecture=''
-readf,unit,lecture;<LARANGE=...>
-lecture=STRSPLIT(((STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]),':',/EXTRACT)
-spdyn.larange=float(lecture)
-if (spdyn.larange[0] ne spdyn.larange[1]) then begin 
-spdyn.nlat=101
-spdyn.dlat=(spdyn.larange[1]-spdyn.larange[0])*0.01
-endif else begin
-spdyn.nlat=1
-spdyn.dlat=1.
-endelse
-lecture=''
-readf,unit,lecture;<LTRANGE=...>
-lecture=STRSPLIT(((STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]),':',/EXTRACT)
-spdyn.ltrange=float(lecture)
-if (spdyn.ltrange[0] ne spdyn.ltrange[1]) then begin 
-spdyn.nlt=101
-spdyn.dlt=(spdyn.ltrange[1]-spdyn.ltrange[0])*0.01
-endif else begin
-spdyn.nlt=1
-spdyn.dlt=1.
-endelse
-lecture=''
-readf,unit,lecture;<KHZ=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-spdyn.khz=(lecture eq 'true')
-readf,unit,lecture;<LOG=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-spdyn.log=(lecture eq 'true')
-readf,unit,lecture;<PDF=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-spdyn.pdf=(lecture eq 'true')
-readf,unit,lecture;</SPDYN>
-if lecture ne '</SPDYN>' then begin
-	print,'File is not a valid SERPE save file (</SPDYN>)'
-	return
-endif
-readf,unit,lecture;<MOVIE2D>
-if lecture ne '<MOVIE2D>' then begin
-	print,'File is not a valid SERPE save file (<MOVIE2D>)'
-	return
-endif
-readf,unit,lecture;<ON=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-mov2d.on=(lecture eq 'true')
-readf,unit,lecture;<SUBCYCLE=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-mov2d.sub=fix(lecture)>1
-readf,unit,lecture;<RANGE=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-mov2d.range=float(lecture)
-readf,unit,lecture;</MOVIE2D>
-if lecture ne '</MOVIE2D>' then begin
-	print,'File is not a valid SERPE save file (</MOVIE2D>)'
-	return
-endif
-readf,unit,lecture;<MOVIE3D>
-if lecture ne '<MOVIE3D>' then begin
-	print,'File is not a valid SERPE save file (<MOVIE3D>)'
-	return
-endif
-readf,unit,lecture;<ON=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-mov3d.on=(lecture eq 'true')
-readf,unit,lecture;<SUBCYCLE=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-mov3d.sub=fix(lecture)>1
-readf,unit,lecture;<XRANGE=...>
-lecture=STRSPLIT(((STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]),':',/EXTRACT)
-mov3d.xrange=float(lecture)
-lecture=''
-readf,unit,lecture;<YRANGE=...>
-lecture=STRSPLIT(((STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]),':',/EXTRACT)
-mov3d.yrange=float(lecture)
-lecture=''
-readf,unit,lecture;<ZRANGE=...>
-lecture=STRSPLIT(((STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]),':',/EXTRACT)
-mov3d.zrange=float(lecture)
-lecture=''
-readf,unit,lecture;<OBS=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-mov3d.obs=(lecture eq 'true')
-readf,unit,lecture;<TRAJ=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-mov3d.traj=(lecture eq 'true')
-readf,unit,lecture;</MOVIE3D>
-if lecture ne '</MOVIE3D>' then begin
-	print,'File is not a valid SERPE save file (</MOVIE3D>)'
-	return
-endif
-bd=[body]
-ds=[dens]
-n=0
-nd=0
-for i=1,nbody do begin
-	readf,unit,lecture;<BODY>
-	readf,unit,lecture;<ON=...>
-	lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-	on=(lecture eq 'true')
-	if on then begin
-		n=n+1
-		bd=[bd,body]
-		readf,unit,lecture;<NAME=...>
-		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-		bd[n].name=lecture
-		readf,unit,lecture;<RADIUS=...>
-		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-		bd[n].rad=float(lecture)
-		readf,unit,lecture;<PERIOD=...>
-		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-		bd[n].per=float(lecture)
-		readf,unit,lecture;<ORB_PER=...>
-		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-		bd[n].orb1=float(lecture)
-		readf,unit,lecture;<INIT_AX=...>
-		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-		bd[n].lg0=float(lecture)
-		readf,unit,lecture;<MAG=...>
-		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-		bd[n].mfl=lecture
-		readf,unit,lecture;<MOTION=...>
-		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-		bd[n].sat=(lecture eq 'true')
-		readf,unit,lecture;<PARENT=...>
-		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-		bd[n].parent=strtrim(lecture,2)
-		readf,unit,lecture;<SEMI_MAJ=...>
-		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-		bd[n].smaj=float(lecture)
-		readf,unit,lecture;<SEMI_MIN=...>
-		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-		bd[n].smin=float(lecture)
-		readf,unit,lecture;<DECLINATION=...>
-		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-		bd[n].decl=float(lecture)
-		readf,unit,lecture;<APO_LONG=...>
-		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-		bd[n].alg=float(lecture)
-		readf,unit,lecture;<INCLINATION=...>
-		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-		bd[n].incl=float(lecture)
-		readf,unit,lecture;<PHASE=...>
-		lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-		bd[n].phs=float(lecture)
-		readf,unit,lecture;</BODY>
-		for l=1,ndens do begin
-			readf,unit,lecture;<DENSITY>
-			readf,unit,lecture;<ON=...>
-			lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-			on=(lecture eq 'true')
-			if on then begin
-				nd=nd+1
-				ds=[ds,dens]
-				bd[n].dens[nd-1]=nd ; 
-				readf,unit,lecture;<NAME=...>
-				lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-				ds[nd].name=lecture
-				readf,unit,lecture;<TYPE=...>
-				lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-				ds[nd].type=lecture
-				readf,unit,lecture;<RHO0=...>
-				lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-				ds[nd].rho0=float(lecture)
-				readf,unit,lecture;<SCALE=...>
-				lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-				ds[nd].height=float(lecture)
-				readf,unit,lecture;<PERP=...>
-				lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-				ds[nd].perp=float(lecture)
-				readf,unit,lecture;</DENSITY>
-			endif else for j=0,5 do readf,unit,lecture
-		endfor
-	endif else begin
-;skip if body not used
-		for j=0,14 do readf,unit,lecture
-		for k=1,ndens do for j=0,7 do readf,unit,lecture
-	endelse
-endfor
-
-sc=[src]
-n=0
-for i=1,nsrc do begin
-readf,unit,lecture;<SOURCE>
-readf,unit,lecture;<ON=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-on=(lecture eq 'true')
-if on then begin
-	n=n+1
-	sc=[sc,src]
-readf,unit,lecture;<NAME=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-sc[n].name=lecture
-readf,unit,lecture;<PARENT=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-sc[n].parent=STRTRIM(lecture,2)
-readf,unit,lecture;<TYPE=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-sc[n].type=lecture
-readf,unit,lecture;<LG_MIN=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-sc[n].lgmin=float(lecture)
-readf,unit,lecture;<LG_MAX=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-sc[n].lgmax=float(lecture)
-readf,unit,lecture;<LG_NBR=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-sc[n].lgstep=(sc[n].lgmax-sc[n].lgmin)/float((fix(lecture)-1)>1)
-if sc[n].lgstep eq 0 then sc[n].lgstep=1
-readf,unit,lecture;<LAT=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-sc[n].latmin=float(lecture)
-sc[n].latmax=float(lecture)
-readf,unit,lecture;<SUB=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-sc[n].subcor=float(lecture)
-readf,unit,lecture;<SAT=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-sc[n].sat=STRTRIM(lecture,2)
-readf,unit,lecture;<NORTH=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-sc[n].north=(lecture eq 'true')
-readf,unit,lecture;<SOUTH=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-sc[n].south=(lecture eq 'true')
-readf,unit,lecture;<WIDTH=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-sc[n].width=float(lecture)
-readf,unit,lecture;<CURRENT=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-sc[n].loss=(lecture eq 'Transient (Aflvénic)')
-sc[n].cavity=(lecture eq 'Steady-State')
-if lecture eq 'Constant' then begin
-	readf,unit,lecture;<CONSTANT=...>
-	lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-	sc[n].constant=float(lecture)
-endif
-readf,unit,lecture;<ACCEL=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-sc[n].v=sqrt(float(lecture)/255.5)
-readf,unit,lecture;<TEMP=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-sc[n].cold=float(lecture)/255.5
-readf,unit,lecture;<TEMPH=...>
-lecture=(STRSPLIT(((STRSPLIT(lecture,'=',/EXTRACT))[1]),'>',/EXTRACT))[0]
-sc[n].temp=float(lecture)/255.5
-readf,unit,lecture;</SOURCE>
-endif else for j=0,16 do readf,unit,lecture
-endfor
-
-parameters = build_serpe_obj(adresse_lib,simulation_name,file_name,simulation_out,nbody,ndens,nsrc,time,freq,observer,bd,ds,sc,spdyn,mov2d,mov3d)
 end
