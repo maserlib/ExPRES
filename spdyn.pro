@@ -211,15 +211,24 @@ image=fix(transpose(*((*((*obj).out))[ntab])))
 
 
 for j=0l,parameters.time.n_step-1l do image(j,*)=interpol(float(image(j,*)),f,u)
+for i=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SACRED' then begin
+	if ((*parameters.objects[i]).date[3]+(*parameters.objects[i]).date[4]/60.+parameters.time.fin/60.)-(*parameters.objects[i]).date[3]+(*parameters.objects[i]).date[4]/60. le 24. then begin
+		tt1=(*parameters.objects[i]).date[3]+(*parameters.objects[i]).date[4]/60.
+		tt2=(*parameters.objects[i]).date[3]+(*parameters.objects[i]).date[4]/60.+parameters.time.fin/60.
+	endif else begin
+		tt1=amj_aj(double(string(format='(I04,I02,I02)',(*parameters.objects[i]).date[0:2])))+(*parameters.objects[i]).date[3]/24.+(*parameters.objects[i]).date[4]/24./60.+(*parameters.objects[i]).date[5]/24./60./60.
+		tt2=tt1+parameters.time.fin/60./24.
+	endelse
+endif
 
 if (*obj).khz then U=U*1000.
 if (*obj).f_t then begin
 		device,filename=nom1+'_f_t.ps',/landscape,bits=8
 		xtit='Time (hours)'
-		if (*obj).pol eq 0 then if (*obj).log eq 1 then spdynps,image,parameters.time.debut/60.,parameters.time.fin/60.,min(U),max(U),xtit,ytit,title,0,0,0,0,1.,/log else $
-		spdynps,image,parameters.time.debut/60.,parameters.time.fin/60.,min(U),max(U),xtit,ytit,title,0,0,0,0,1. $
-		else if (*obj).pol eq 1 then if (*obj).log eq 1 then spdynps,image,parameters.time.debut/60.,parameters.time.fin/60.,min(U),max(U),xtit,ytit,title,0,0,0,-1.,1.,/log else $
-		spdynps,image,parameters.time.debut/60.,parameters.time.fin/60.,min(U),max(U),xtit,ytit,title,0,0,0,-1.,1.
+		if (*obj).pol eq 0 then if (*obj).log eq 1 then spdynps,tt1,tt2,min(U),max(U),xtit,ytit,title,0,0,0,0,1.,/log else $
+		spdynps,tt1,tt2,min(U),max(U),xtit,ytit,title,0,0,0,0,1. $
+		else if (*obj).pol eq 1 then if (*obj).log eq 1 then spdynps,tt1,tt2,min(U),max(U),xtit,ytit,title,0,0,0,-1.,1.,/log else $
+		spdynps,image,tt1,tt2,min(U),max(U),xtit,ytit,title,0,0,0,-1.,1.
 			
 		device,/close
 		if (*obj).pdf then begin
@@ -335,7 +344,7 @@ image=fix(transpose(*((*((*obj).out))[ntab]))) & if (*obj).pol then image=image-
 if (*obj).lg_t then begin
 device,filename=nom1+'_lg_t.ps',/landscape,bits=8
 xtit='Time (min)'
-spdynps,image,parameters.time.debut/60.,parameters.time.fin/60.,(*obj).lgmin,(*obj).lgmin+(*obj).nlg*(*obj).lgstp,xtit,ytit,title,0,0,0,0,1.
+spdynps,image,tt1,tt2,(*obj).lgmin,(*obj).lgmin+(*obj).nlg*(*obj).lgstp,xtit,ytit,title,0,0,0,0,1.
 device,/close
 if (*obj).pdf then begin
 print,'PDF'
