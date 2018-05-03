@@ -760,7 +760,7 @@ if option.srcpos eq 1 then begin
 	printf,lun,"  ! --------        ----       -----"
 	printf,lun,""
 
-	printf,lun,"    ""UCD""     	CDF_CHAR     { ""pos.bodyrc.lon;src"" }"
+	printf,lun,"    ""UCD""     	CDF_CHAR     { ""pos.cartesian;src"" }"
 	printf,lun,"    ""SCALEMIN""     	CDF_REAL4     { -100.0 }"
 	printf,lun,"    ""SCALEMAX""     	CDF_REAL4     { +100.0 }"
 	printf,lun,"    ""CATDESC""     CDF_CHAR     { ""Location of Source"" }"
