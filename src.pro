@@ -196,6 +196,7 @@ n=nv*nlg*nlat
 *((*obj).fp)=dblarr(parameters.freq.n_freq,(*obj).nsrc,2)
 *((*obj).f)=dblarr(parameters.freq.n_freq,(*obj).nsrc,2)
 *((*obj).fmax)=dblarr((*obj).nsrc,2)
+*((*obj).fmaxCMI)=dblarr((*obj).nsrc,2)
 *((*obj).x)=fltarr(3,parameters.freq.n_freq,(*obj).nsrc,2)
 return
 end
@@ -259,6 +260,7 @@ x=fltarr(3,parameters.freq.n_freq,nlg*nlat)		;position
 d=fltarr(parameters.freq.n_freq,nlg*nlat)		;densite = wp^2/wc^2
 gb=fltarr(parameters.freq.n_freq,nlg*nlat)		;gradient angle
 f=fltarr(nlg*nlat);frequence max
+fCMI=fltarr(nlg*nlat);frequence max avec condition CMI wp/wc<0.1
 if (*obj).north then begin ; Magnetic north pole
 	var=0
 	for i=0,3 do begin
@@ -270,6 +272,7 @@ if (*obj).north then begin ; Magnetic north pole
 		d=d+(*((*((*obj).parent)).dens_n))[*,lg2,lat2]*coef[0,*,*,i]
 		gb=gb+(*((*((*obj).parent)).gb_n))[*,lg2,lat2]*coef[0,*,*,i]
 		f=f+(*((*((*obj).parent)).fmax))[var,lg2,lat2]*coef[0,0,*,i]
+		fCMI=fCMI+(*((*((*obj).parent)).fmaxCMI))[var,lg2,lat2]*coef[0,0,*,i]
 	endfor
 endif else begin if (*obj).south then begin				; Magnetic south pole
 	var=1
@@ -282,12 +285,14 @@ endif else begin if (*obj).south then begin				; Magnetic south pole
 		d=d+(*((*((*obj).parent)).dens_s))[*,lg2,lat2]*coef[0,*,*,i]
 		gb=gb+(*((*((*obj).parent)).gb_s))[*,lg2,lat2]*coef[0,*,*,i]
 		f=f+(*((*((*obj).parent)).fmax))[var,lg2,lat2]*coef[0,0,*,i]
+		fCMI=fCMI+(*((*((*obj).parent)).fmaxCMI))[var,lg2,lat2]*coef[0,0,*,i]
 	endfor
 endif
 endelse
 coef=0b
 
 (*(*obj).fmax)[*,var]=f
+(*(*obj).fmaxCMI)[*,var]=fCMI
 ; *** positions des sources sauvegardees pour les animations ***
 (*((*obj).x))[*,*,*,var]=reform(rebin(reform(x,3,parameters.freq.n_freq,nlg*nlat,1),3,parameters.freq.n_freq,nlg*nlat,nv),$
 		3,parameters.freq.n_freq,nlg*nlat*nv)

@@ -102,7 +102,8 @@ if keyword_set(spacecraft) then begin
 	else if spacecraft eq 'Voyager2' then observer_fin='-observer=@-32&' $; Voyager2
 	else if spacecraft eq 'Ganymede' then observer_fin='-observer=@-503&' $
 	else if spacecraft eq 'Juno' then observer_fin='-observer=@-61&' $
-	else if spacecraft eq '' then observer='-observer=@500&' $; Terre
+	else if spacecraft eq 'Earth' then observer_fin='-observer=@500&' $; Terre
+	else if spacecraft eq '' then observer_fin='-observer=@500&' $; Terre
 	else begin 
 		observer_fin='-observer=@500&'
 		print,observer_fin

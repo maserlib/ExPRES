@@ -73,8 +73,10 @@ if planet eq 'Ganymede' then Rayon=71492.00
 if planet eq 'Callisto' then Rayon=71492.00
 if planet eq 'Amalthea' then Rayon=71492.00
 if planet eq 'Jupiter' then Rayon=71492.00
+if planet eq 'Uranus' then Rayon=25559.00
+if planet eq 'Saturn' then Rayon=60268.00
 
-if planet eq 'Mercure' or planet eq 'Venus' or planet eq 'Earth' or planet eq 'Mars' or planet eq 'Saturn' or planet eq 'Uranus' then stop,'ajouter rayon planete dans read_ephemph.pro'
+if planet eq 'Mercure' or planet eq 'Venus' or planet eq 'Earth' or planet eq 'Mars' then stop,'ajouter rayon planete dans read_ephemph.pro'
 
 tmp=(STRSPLIT(buf,' ',/EXTRACT))
 if tmp(n_elements(tmp)-1) eq 'spacecraft' then j=5 else j=4
@@ -154,7 +156,7 @@ endif else begin
 endelse
 
 	data_new(i).Date=Date & datefin(i)=Date
-	data_new(i).LONGSEP=LONGSEP & longitude(i)=360.-LONGSEP ; longitude comptée WEST (360.-EAST)
+	data_new(i).LONGSEP=LONGSEP & if planet eq 'Uranus' then longitude(i)=LONGSEP else longitude(i)=360.-LONGSEP ; longitude comptée WEST (360.-EAST)
 	data_new(i).LATSEP=LATSEP & lat(i)=LATSEP
 	data_new(i).LONGSSP=LONGSSP
 	data_new(i).LATSSP=LATSSP

@@ -873,7 +873,7 @@ dens={DE,on:0b,name:'',type:'',rho0:0.,height:0.,perp:0.}
 src={SO,on:0b,name:'',parent:'',sat:'',type:'',loss:0b,lossbornes:0b,ring:0b,cavity:0b,constant:0.,width:0.,temp:0d,cold:0d,v:0d,lgauto:'',lgmin:0.,lgmax:0.,lgnbr:1,lgstep:1.,latmin:0.,latmax:0.,latstep:1.,north:0b,south:0b,subcor:0.,aurora_alt:0d,refract:0b}
 spdyn={SP,intensity:0b,polar:0b,f_t:0b,lg_t:0b,lat_t:0b,f_r:0b,lg_r:0b,lat_r:0b,f_lg:0b,lg_lg:0b,lat_lg:0b,f_lat:0b,lg_lat:0b,lat_lat:0b,f_lt:0b,lg_lt:0b,lat_lt:0b,$
 khz:0b,pdf:0b,log:0b,xrange:[0.,0.],lgrange:[0.,0.],larange:[0.,0.],ltrange:[0.,0.],nr:0,dr:0.,nlg:0,dlg:0.,nlat:0,dlat:0.,nlt:0,dlt:0.,infos:0b}
-cdf={CD,theta:0b,fp:0b,fc:0b,azimuth:0b,obslatitude:0b,srclongitude:0b,srcfreqmax:0b,obsdistance:0b,obslocaltime:0b,cml:0b,srcpos:0b}
+cdf={CD,theta:0b,fp:0b,fc:0b,azimuth:0b,obslatitude:0b,srclongitude:0b,srcfreqmax:0b,srcfreqmaxCMI:0b,obsdistance:0b,obslocaltime:0b,cml:0b,srcpos:0b}
 mov2d={M2D,on:0b,sub:0,range:0.}
 mov3d={M3D,on:0b,sub:0,xrange:[0.,0.],yrange:[0.,0.],zrange:[0.,0.],obs:0b,traj:0b}
 
@@ -966,7 +966,7 @@ for i=0,n_elements(sc)-2 do begin
 				loffset:0.,l_min:(sc[i+1]).latmin,l_max:(sc[i+1]).latmax,nlat:1,sat:sat,lct:0b,subcor:(sc[i+1]).subcor,oval_lat0:0.,aurora_alt:(sc[i+1]).aurora_alt,file_lat:'',file_lg:'',$
 				b_n:PTR_NEW(/ALLOCATE_HEAP),x_n:PTR_NEW(/ALLOCATE_HEAP),bz_n:PTR_NEW(/ALLOCATE_HEAP),gb_n:PTR_NEW(/ALLOCATE_HEAP),$
 				b_s:PTR_NEW(/ALLOCATE_HEAP),x_s:PTR_NEW(/ALLOCATE_HEAP),bz_s:PTR_NEW(/ALLOCATE_HEAP),gb_s:PTR_NEW(/ALLOCATE_HEAP),$
-				fmax:PTR_NEW(/ALLOCATE_HEAP),feq:PTR_NEW(/ALLOCATE_HEAP),grad_b_eq:PTR_NEW(/ALLOCATE_HEAP),grad_b_in:PTR_NEW(/ALLOCATE_HEAP),$
+				fmax:PTR_NEW(/ALLOCATE_HEAP),fmaxCMI:PTR_NEW(/ALLOCATE_HEAP),feq:PTR_NEW(/ALLOCATE_HEAP),grad_b_eq:PTR_NEW(/ALLOCATE_HEAP),grad_b_in:PTR_NEW(/ALLOCATE_HEAP),$
 				dens_n:PTR_NEW(/ALLOCATE_HEAP),dens_s:PTR_NEW(/ALLOCATE_HEAP),rot:fltarr(3,3),lg:0.,pos_xyz:fltarr(3),$
 				it:['init_field'],cb:['cb_rot_field'],fz:[''],latitude:fltarr(360),longitude:findgen(360)})
 	x=bd[*].name
@@ -1021,8 +1021,13 @@ for i=0,n_elements(sc)-2 do begin
     'JRM09 Connerney CS' : fld='JRM09'
 		'SPV': fld='SPV'
 		'Z3': fld='Z3'
-		else: fld=''
-	endcase
+    'Q3': fld ='Q3'
+    'AH5': fld ='AH5'
+		else: BEGIN
+      fld=mfl
+      print,'Is your MFL model correct ?'
+	   END
+  endcase
 
 	if strmid(mfl,0,6) eq 'Dipole' then fld=mfl else fld=adresse_lib+'/mfl/'+fld
 	if ((sc[i+1]).type eq 'fixed in latitude') then (*((parameters.objects[n]))).folder=fld+'_lat' else (*((parameters.objects[n]))).folder=fld+'_lsh'
@@ -1033,7 +1038,7 @@ for i=0,n_elements(sc)-2 do begin
 				temp:(sc[i+1]).temp,cold:(sc[i+1]).cold,vmin:(sc[i+1]).v,vmax:(sc[i+1]).v,vstep:1.,lgauto:(sc[i+1]).lgauto,lgmin:(sc[i+1]).lgmin,lgmax:(sc[i+1]).lgmax,$
 				lgnbr:(sc[i+1]).lgnbr,lgstep:(sc[i+1]).lgstep,latmin:(sc[i+1]).latmin,latmax:(sc[i+1]).latmax,latstep:(sc[i+1]).latstep,$
 				lgtov:0.,north:(sc[i+1]).north,south:(sc[i+1]).south,refract:(sc[i+1]).refract,grad_eq:0,grad_in:0,shield:0b,$
-				nsrc:1,spdyn:PTR_NEW(/ALLOCATE_HEAP),th:PTR_NEW(/ALLOCATE_HEAP),azimuth:PTR_NEW(/ALLOCATE_HEAP),fp:PTR_NEW(/ALLOCATE_HEAP),f:PTR_NEW(/ALLOCATE_HEAP),fmax:PTR_NEW(/ALLOCATE_HEAP),v:PTR_NEW(/ALLOCATE_HEAP),$
+				nsrc:1,spdyn:PTR_NEW(/ALLOCATE_HEAP),th:PTR_NEW(/ALLOCATE_HEAP),azimuth:PTR_NEW(/ALLOCATE_HEAP),fp:PTR_NEW(/ALLOCATE_HEAP),f:PTR_NEW(/ALLOCATE_HEAP),fmax:PTR_NEW(/ALLOCATE_HEAP),fmaxCMI:PTR_NEW(/ALLOCATE_HEAP),v:PTR_NEW(/ALLOCATE_HEAP),$
 				lat:PTR_NEW(/ALLOCATE_HEAP),lg:PTR_NEW(/ALLOCATE_HEAP),x:PTR_NEW(/ALLOCATE_HEAP),it:['init_src'],cb:['cb_src'],fz:['']})
 	(*((parameters.objects[n]))).parent=(parameters.objects[n-1])
 
@@ -1082,7 +1087,7 @@ n=n+1
 
 	(parameters.objects[n])=PTR_NEW({CDF,id:0l,$
 				it:['init_cdf'],cb:['cb_cdf'],fz:['fz_cdf'],$
-        theta:cdf.theta,fp:cdf.fp,fc:cdf.fc,azimuth:cdf.azimuth,obslatitude:cdf.obslatitude,srclongitude:cdf.srclongitude,srcfreqmax:cdf.srcfreqmax,obsdistance:cdf.obsdistance,obslocaltime:cdf.obslocaltime,cml:cdf.cml,srcpos:cdf.srcpos})
+        theta:cdf.theta,fp:cdf.fp,fc:cdf.fc,azimuth:cdf.azimuth,obslatitude:cdf.obslatitude,srclongitude:cdf.srclongitude,srcfreqmax:cdf.srcfreqmax,srcfreqmaxCMI:cdf.srcfreqmaxCMI,obsdistance:cdf.obsdistance,obslocaltime:cdf.obslocaltime,cml:cdf.cml,srcpos:cdf.srcpos})
 ; ***** returning parameters *****
 
 return,parameters
@@ -1262,7 +1267,7 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   		endfor
   	
   	endif else $
-  	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'voyager1' then begin
+  	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'voyager1' and strmid((serpe_save['OBSERVER'])['SCTIME'],0,4) eq '1979' then begin
   		restore,adresse_ephem+'Voyager/Voyager1_ephem_1979.sav'
   		date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
   		heured=strmid(date,8,2)
@@ -1282,7 +1287,7 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   		endfor	
   	
   	endif else $
-  	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'voyager2' then begin
+  	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'voyager2' and strmid((serpe_save['OBSERVER'])['SCTIME'],0,4) eq '1979' then begin
   		restore,adresse_ephem+'Voyager/Voyager2_ephem_1979.sav'
   		date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
   		heured=strmid(date,8,2)
@@ -1441,6 +1446,7 @@ cdf.azimuth=((serpe_save['SPDYN'])['CDF'])['AZIMUTH']
 cdf.obslatitude=((serpe_save['SPDYN'])['CDF'])['OBSLATITUDE']
 cdf.srclongitude=((serpe_save['SPDYN'])['CDF'])['SRCLONGITUDE']
 cdf.srcfreqmax=((serpe_save['SPDYN'])['CDF'])['SRCFREQMAX']
+cdf.srcfreqmaxCMI=((serpe_save['SPDYN'])['CDF'])['SRCFREQMAX']
 cdf.obsdistance=((serpe_save['SPDYN'])['CDF'])['OBSDISTANCE']
 cdf.obslocaltime=((serpe_save['SPDYN'])['CDF'])['OBSLOCALTIME']
 cdf.cml=((serpe_save['SPDYN'])['CDF'])['CML']

@@ -88,6 +88,13 @@ for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i
 	h=h+1
 endif
 
+test=0
+for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'FEATURE' then begin
+	if test eq 0 then $
+		b_model=strlowcase((strsplit((*(parameters.objects[i])).name,'_',/extract))[0])
+		b_model=strlowcase((strsplit(b_model,'+',/extract))[0])
+	test=test+1
+endif
 
 Src_ID_Label = originsrc+' '+hemisphere
 
@@ -145,9 +152,9 @@ build_serpe_skt,*parameters.freq.freq_tab,Freq_Label,parameters.freq.log,Src_ID_
 spawn,'rm -rf '+master_file
 spawn,'/Applications/cdf/cdf36_3-dist/bin/skeletoncdf '+skt_file+' -cdf '+master_file
 
+filename=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc[0])+'_'+b_model+'_'+strlowcase(sourcetype[0])+'-'+strlowcase(wid[0])+'_'+strlowcase(ener[0])+strlowcase(refr[0])+'_'+strlowcase(datefilename)+'_v01'
 
 
-filename=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc[0])+'_'+strlowcase(sourcetype[0])+'-'+strlowcase(wid[0])+'_'+strlowcase(ener[0])+strlowcase(refr[0])+'_'+strlowcase(datefilename)+'_v01'
 
 data = {Epoch:epoch,$
 		CML:reform(cml),$
@@ -155,7 +162,7 @@ data = {Epoch:epoch,$
 		;ObsLocalTime:reform(obslocaltime),$
 		ObsDistance:reform(ObsDistance)$
 		}
-		
+
 		
 make_cdf,master_file,filename+'.cdf',data
 id = cdf_open(filename+'.cdf')
@@ -191,6 +198,7 @@ fp2(*,*,*)=-1.0e+31
 fx = fltarr(nsrc,ndat,nfreq)
 fx(*,*,*)=-1.0e+31
 fmax=fltarr(nsrc,ndat)
+fmaxCMI=fltarr(nsrc,ndat)
 srcpos=fltarr(nsrc,ndat,3,nfreq)
 srcpos(*,*,*,*)=-1.0e+31
 var=0
@@ -207,7 +215,7 @@ for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]
 	longitude(h,i)=(*(*parameters.objects[j]).parent).lg+(*(*parameters.objects[j]).lg)
 
 	fmax(h,i)=(*(*parameters.objects[j]).fmax)(*,var)
-	
+	fmaxCMI(h,i)=(*(*parameters.objects[j]).fmaxCMI)(*,var)
 	wn0=where(theta(h,i,*) gt 0.)
 	if wn0(0) ne -1 then $
 		if (*parameters.objects[j]).north eq 1 then polarization(i,wn0)=-1 $
@@ -231,6 +239,7 @@ for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]
 
 	if opt.SrcLongitude then	cdf_varput,id,'SrcLongitude',reform(longitude[*,i],nsrc),REC_START=i
 	if opt.SrcFreqMax then	cdf_varput,id,'SrcFreqMax',reform(fmax[*,i],nsrc),REC_START=i
+	if opt.SrcFreqMaxCMI then	cdf_varput,id,'SrcFreqMaxCMI',reform(fmaxCMI[*,i],nsrc),REC_START=i
 	if opt.SrcPos then	cdf_varput,id,'SrcPosition',transpose(reform(srcpos(*,i,*,*),nsrc,3,nfreq),[1,0,2]),REC_START=i
 	;if opt.SrcPos then cdf_varput,id,'SrcPosition',reform(srcpos[*,i,*,*],nsrc,3,nfreq),REC_START=i
 	if opt.fp then	cdf_varput,id,'FP',reform(fp2[*,i,*],nsrc,nfreq),REC_START=i
