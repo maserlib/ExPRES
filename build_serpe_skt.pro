@@ -15,7 +15,7 @@
 ;***********************************************************
 
 
-PRO BUILD_SERPE_SKT,frequency,Freq_Label,Flog,Src_ID_Label,originsrc,hemisphere,sourcetype,observer,planet,wid,ener,refr,sourcedescr,dt,dated,datef,file,option
+PRO BUILD_SERPE_SKT,frequency,Freq_Label,Flog,Src_ID_Label,originsrc,hemisphere,b_model,sourcetype,observer,planet,wid,ener,refr,sourcedescr,dt,dated,datef,file,option
 if ~keyword_set(file) then begin
 	file=string(format='(I12.12)',long(systime(1)))+'.skt'
 endif else begin 
@@ -68,9 +68,9 @@ printf,lun,"  ""Discipline""          1:    CDF_CHAR     { ""Space "" -"
 printf,lun,"                                             ""Physics>Magnetospheric "" -"
 printf,lun,"                                             ""Science"" } ."
 printf,lun,""
-printf,lun,"  ""Data_type""           1:    CDF_CHAR     { """+observer[0]+"_"+planet[0]+"_"+originsrc[0]+""" } ."
+printf,lun,"  ""Data_type""           1:    CDF_CHAR     { """+strlowcase(observer[0])+"_"+strlowcase(planet[0])+"_"+strlowcase(originsrc[0])+""" } ."
 printf,lun,""
-printf,lun,"  ""Descriptor""          1:    CDF_CHAR     { """+sourcetype[0]+'-'+wid[0]+"_"+ener[0]+refr[0]+""" } ."
+printf,lun,"  ""Descriptor""          1:    CDF_CHAR     { """+strlowcase(b_model[0])+"_"+sourcetype[0]+"-"+wid[0]+"_"+strlowcase(ener[0])+refr[0]+""" } ."
 printf,lun,""
 printf,lun,"  ""File_naming_convention"""
 printf,lun,"                        1:    CDF_CHAR     { "" source_datatype_descriptor_yyyyMMdd"" } ."
@@ -89,7 +89,7 @@ printf,lun,"  ""Instrument_type""     1:    CDF_CHAR     { ""Model"" } ."
 printf,lun,""
 printf,lun,"  ""Mission_group""       1:    CDF_CHAR     { ""MASER"" } ."
 printf,lun,""
-printf,lun,"  ""Logical_source""      1:    CDF_CHAR     { ""expres_"+observer[0]+"_"+planet[0]+"_"+originsrc[0]+""" } ."
+printf,lun,"  ""Logical_source""      1:    CDF_CHAR     { ""expres_"+strlowcase(observer[0])+"_"+strlowcase(planet[0])+"_"+strlowcase(originsrc[0])+""" } ."
 printf,lun,""
 printf,lun,"  ""Logical_file_id""     1:    CDF_CHAR     { "" "" } ."
 printf,lun,""
