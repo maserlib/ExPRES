@@ -1222,8 +1222,9 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   		observer.decl=float((serpe_save['OBSERVER'])['FIXE_DECL'])
   	endelse
   endif else if (observer.predef eq 1b) then begin
-  	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'juno' AND long64(observer.start) ge 201601010000 then begin
-  		if long64(strmid(date,0,8)) ge 20190101 then stop,'ephemeris after DoY 2018 365 are not defined. A file with the corresponding ephemeris needs to be loading, please contact the ExPRES team'
+  	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'juno' then begin
+  		if long64(strmid(date,0,8)) le 20151231 then stop,'ephemeris before DoY 2015 365 are not defined. A file with the corresponding ephemeris needs to be loading, please contact the ExPRES team'
+      if long64(strmid(date,0,8)) ge 20190101 then stop,'ephemeris after DoY 2018 365 are not defined. A file with the corresponding ephemeris needs to be loading, please contact the ExPRES team'
   		if (long64(observer.start) ge 201601010000) and (long64(observer.start) lt 201701010000) then $
   		restore,adresse_ephem+'Juno/2016_001-366.sav'
   		if (long64(observer.start) ge 201701010000) and (long64(observer.start) lt 201801010000) then $
