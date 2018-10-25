@@ -20,6 +20,7 @@
 .r caldat
 .r calc_lag
 .r loadpath
+.r read_ascii_file
 
 RESOLVE_ALL
 init_movie
