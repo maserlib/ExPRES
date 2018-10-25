@@ -1,4 +1,19 @@
-# Configuration file for SERPE (added in version 6.1)
+# Configuration file for SERPE (added in version 6.2)
+# Rename config.ini.template —> config.ini
+# Fill the following paths :
+# cdf_dist_path : path to the directory containing the cdf distribution
+#		cdf_dist_path = /Applications/cdf/cdf36_3-dist/
+# ephem_path : path to the directory containing the ephemeris files
+#		ephem_path = /Users/serpe/Volumes/kronos/serpe/ephem/6.1/
+# mfl_path : path to the directory containing the Magnetic Field Lines files
+#		mfl_path = /Groups/SERPE/data/mfl/
+# save_path : path to the directory containing the save files 
+#		save_path = /Groups/SERPE/SERPE_6.1/result/
+# ffmpeg_path : path to the directory containing the ffmpeg executable
+#		ffmpeg_path : /opt/local/bin/
+# ps2pdf_path : path to the directory containing the ps2pdf executable
+#		ps2pdf_path = /opt/ghostscript/lib/
+
 [Paths]
 cdf_dist_path = ...
 ephem_path = ...
@@ -6,5 +21,3 @@ mfl_path = ...
 save_path = ...
 ffmpeg_path = ...
 ps2pdf_path = ...
-
-
