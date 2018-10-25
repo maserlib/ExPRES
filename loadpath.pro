@@ -17,6 +17,9 @@
 
 ; =============================================================================
 function loadpath,adresse,parameters
+
+
+if adresse eq 'adresse_cdf' then adresse_out='/Applications/cdf/cdf36_3-dist/'
 ; #------ adresse des fichiers d ephemerides ------
 if adresse eq 'adresse_ephem' then adresse_out='/Groups/SERPE/SERPE_6.1/ephemerides/'
 ; #------ adresse des fichiers de lignes de champ magnetique ------
@@ -25,6 +28,7 @@ if adresse eq 'adresse_lib' then adresse_out='/Groups/SERPE/data'
 ;if adresse eq 'adresse_save' then adresse_out='/Groups/SERPE/SERPE_6.1/result/'
 ;#  ------ pour ecrire directement sur kronos ------
 if adresse eq 'adresse_save' then begin
+	adresse_save='/Users/serpe/Volumes/kronos/serpe/'
 	nobj=n_elements(parameters.objects)
 	for i=0,nobj-1 do begin
 		if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SACRED' then begin
@@ -34,13 +38,13 @@ if adresse eq 'adresse_save' then begin
 		if TAG_NAMES(*(parameters.objects[i]),/str) eq 'OBSERVER' then $
 			observer=strlowcase((*parameters.objects[i]).name)
 	endfor
-	cmd='mkdir /Users/serpe/Volumes/kronos/serpe/data/'+observer
+	cmd='mkdir '+adresse_save+'data/'+observer
 	spawn,cmd,resu
-	cmd='mkdir /Users/serpe/Volumes/kronos/serpe/data/'+observer+'/'+year
+	cmd='mkdir '+adresse_save+'data/'+observer+'/'+year
 	spawn,cmd,resu
-	cmd='mkdir /Users/serpe/Volumes/kronos/serpe/data/'+observer+'/'+year+'/'+month
+	cmd='mkdir '+adresse_save+'data/'+observer+'/'+year+'/'+month
 	spawn,cmd,resu
-	adresse_out='/Users/serpe/Volumes/kronos/serpe/data/'+observer+'/'+year+'/'+month+'/'
+	adresse_out=adresse_save+'data/'+observer+'/'+year+'/'+month+'/'
 endif
 ; #------ adresse des fonctions ------
 if adresse eq 'ps2pdf' then adresse_out='/opt/ghostscript/lib/'
