@@ -29,8 +29,8 @@ pro fz_movie,obj,parameters
 comd="rm -f "+parameters.out+"_movie.mp4"
 spawn,comd
 adr=loadpath('ffmpeg',parameters)
-comd=adr+"ffmpeg -f image2 -an -i "+parameters.out
-comd=comd+"_movie%03d.png -vcodec h264 -pix_fmt yuv420p -crf 22 "+parameters.out+"_movie.mp4"
+comd=adr+"ffmpeg -f image2 -i "+parameters.out
+comd=comd+"_movie%03d.png -an -vcodec h264 -pix_fmt yuv420p -crf 22 "+parameters.out+"_movie.mp4"
 spawn,comd
 comd="rm "+parameters.out+"_movie*.png"
 spawn,comd

@@ -16,8 +16,8 @@ pro fz_movie2d,obj,parameters
 comd="rm -f "+parameters.out+"_fov.mp4"
 spawn,comd
 adr=loadpath('ffmpeg')
-comd=adr+"ffmpeg -f image2 -an -i "+parameters.out
-comd=comd+"_fov%03d.png -vcodec h264 -pix_fmt yuv420p -crf 22 "+parameters.out+"_fov.mp4"
+comd=adr+"ffmpeg -f image2 -i "+parameters.out
+comd=comd+"_fov%03d.png -an -vcodec h264 -pix_fmt yuv420p -crf 22 "+parameters.out+"_fov.mp4"
 spawn,comd
 comd="rm "+parameters.out+"_fov*.png"
 spawn,comd
