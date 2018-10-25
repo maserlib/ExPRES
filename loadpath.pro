@@ -7,10 +7,10 @@
 ;***                                                     ***
 ;***       MODULE: LOADPATH                              ***
 ;***                                                     ***
-;***     function: loadpath 							 ***
+;***     function: loadpath 				 ***
 ;***                                                     ***
 ;***     Version history                                 ***
-;***     [CL] V6.1: First release					     ***
+;***     [CL] V6.1: First release		         ***
 ;***                                                     ***
 ;***********************************************************
 
