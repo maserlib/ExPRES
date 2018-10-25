@@ -1,3 +1,4 @@
+@compile_cdfx
 @compile_IDLmakecdf
 .r serpe_lesia
 .r orb_body
