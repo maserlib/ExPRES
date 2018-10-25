@@ -11,15 +11,15 @@
 .r movie2d
 .r m_sacred
 .r m_cdf
-.r ORB__DEFINE
-.r IDENTITY
-.r IDLEXVIEWMANIP__DEFINE
-.r IDLEXINSCRIBINGVIEW__DEFINE
-.r IDLEXOBJVIEW__DEFINE
-.r CROSSP
-.r CALDAT
-.r CALC_LAG
-.r LOADPATH
+.r orb__define
+.r identity
+.r idlexviewmanip__define
+.r idlexinscribingview__define
+.r idlexobjview__define
+.r crossp
+.r caldat
+.r calc_lag
+.r loadpath
 
 RESOLVE_ALL
 init_movie
