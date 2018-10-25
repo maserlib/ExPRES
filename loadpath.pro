@@ -19,7 +19,7 @@
 ; =============================================================================
 function loadpath,adresse,parameters
 
-if file_exist('config.ini') then begin 
+if file_test('config.ini') then begin 
     config_data = read_ascii_file('config.ini')
 endif else begin 
     stop,"Please configure your config.ini file (check config.ini.template file) in SERPE distribution directory"
