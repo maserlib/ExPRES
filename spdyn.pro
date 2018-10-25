@@ -234,7 +234,7 @@ if (*obj).f_t then begin
 		if (*obj).pdf then begin
 			print,'PDF'
 			adr=loadpath('ps2pdf',parameters)
-			cmd=adr+'ps2pdf '+nom1+'_f_t.ps '+nom1+'_f_t.pdf'
+			cmd=adr+'ps2pdf -dAutoRotatePages=/PageByPage '+nom1+'_f_t.ps '+nom1+'_f_t.pdf'
 			print,cmd
 			  spawn,cmd
 			  spawn,'rm -f '+nom1+'_f_t.ps'
@@ -254,7 +254,7 @@ device,/close
 if (*obj).pdf then begin
 print,'PDF'
 adr=loadpath('ps2pdf',parameters)
-cmd=adr+'ps2pdf '+nom1+'_f_r.ps '+nom1+'_f_r.pdf'
+cmd=adr+'ps2pdf -dAutoRotatePages=/PageByPage '+nom1+'_f_r.ps '+nom1+'_f_r.pdf'
 print,cmd
   spawn,cmd
   spawn,'rm -f '+nom1+'_f_r.ps'
@@ -273,7 +273,7 @@ device,/close
 if (*obj).pdf then begin
 print,'PDF'
 adr=loadpath('ps2pdf',parameters)
-cmd=adr+'ps2pdf '+nom1+'_f_lg.ps '+nom1+'_f_lg.pdf'
+cmd=adr+'ps2pdf -dAutoRotatePages=/PageByPage '+nom1+'_f_lg.ps '+nom1+'_f_lg.pdf'
 print,cmd
   spawn,cmd
   spawn,'rm -f '+nom1+'_f_lg.ps'
@@ -292,7 +292,7 @@ device,/close
 if (*obj).pdf then begin
 print,'PDF'
 adr=loadpath('ps2pdf',parameters)
-cmd=adr+'ps2pdf '+nom1+'_f_lat.ps '+nom1+'_f_lat.pdf'
+cmd=adr+'ps2pdf -dAutoRotatePages=/PageByPage '+nom1+'_f_lat.ps '+nom1+'_f_lat.pdf'
 print,cmd
   spawn,cmd
   spawn,'rm -f '+nom1+'_f_lat.ps'
@@ -311,7 +311,7 @@ device,/close
 if (*obj).pdf then begin
 print,'PDF'
 adr=loadpath('ps2pdf',parameters)
-cmd=adr+'ps2pdf '+nom1+'_f_lt.ps '+nom1+'_f_lt.pdf'
+cmd=adr+'ps2pdf -dAutoRotatePages=/PageByPage '+nom1+'_f_lt.ps '+nom1+'_f_lt.pdf'
 print,cmd
   spawn,cmd
   spawn,'rm -f '+nom1+'_f_lt.ps'
@@ -349,7 +349,7 @@ device,/close
 if (*obj).pdf then begin
 print,'PDF'
 adr=loadpath('ps2pdf',parameters)
-cmd=adr+'ps2pdf '+nom1+'_lg_t.ps '+nom1+'_lg_t.pdf'
+cmd=adr+'ps2pdf -dAutoRotatePages=/PageByPage '+nom1+'_lg_t.ps '+nom1+'_lg_t.pdf'
 print,cmd
   spawn,cmd
   spawn,'rm -f '+nom1+'_lg_t.ps'
@@ -367,7 +367,7 @@ device,/close
 if (*obj).pdf then begin
 print,'PDF'
 adr=loadpath('ps2pdf',parameters)
-cmd=adr+'ps2pdf '+nom1+'_lg_r.ps '+nom1+'_lg_r.pdf'
+cmd=adr+'ps2pdf -dAutoRotatePages=/PageByPage '+nom1+'_lg_r.ps '+nom1+'_lg_r.pdf'
 print,cmd
   spawn,cmd
   spawn,'rm -f '+nom1+'_lg_r.ps'
@@ -386,7 +386,7 @@ device,/close
 if (*obj).pdf then begin
 print,'PDF'
 adr=loadpath('ps2pdf',parameters)
-cmd=adr+'ps2pdf '+nom1+'_lg_lg.ps '+nom1+'_lg_lg.pdf'
+cmd=adr+'ps2pdf -dAutoRotatePages=/PageByPage '+nom1+'_lg_lg.ps '+nom1+'_lg_lg.pdf'
 print,cmd
   spawn,cmd
   spawn,'rm -f '+nom1+'_lg_lg.ps'
@@ -405,7 +405,7 @@ device,/close
 if (*obj).pdf then begin
 print,'PDF'
 adr=loadpath('ps2pdf',parameters)
-cmd=adr+'ps2pdf '+nom1+'_lg_lat.ps '+nom1+'_lg_lat.pdf'
+cmd=adr+'ps2pdf -dAutoRotatePages=/PageByPage '+nom1+'_lg_lat.ps '+nom1+'_lg_lat.pdf'
 print,cmd
   spawn,cmd
   spawn,'rm -f '+nom1+'_lg_lat.ps'
@@ -423,7 +423,7 @@ spdynps,im,(*obj).rmin,max(r0),min(U),max(U),xtit,ytit,title,0,0,0,0,1.
 device,/close
 print,'PDF'
 adr=loadpath('ps2pdf',parameters)
-cmd=adr+'ps2pdf '+nom1+'_lg_lt.ps '+nom1+'_lg_lt.pdf'
+cmd=adr+'ps2pdf -dAutoRotatePages=/PageByPage '+nom1+'_lg_lt.ps '+nom1+'_lg_lt.pdf'
 if (*obj).pdf then begin
   spawn,cmd
   spawn,'rm -f '+nom1+'_lg_lt.ps'
