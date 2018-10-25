@@ -115,13 +115,12 @@ comd='mv '+name_rold+' '+name_r
 spawn,comd
 
 
-adresse_lib=loadpath('adresse_lib',parameters)
+adresse_mfl=loadpath('adresse_mfl',parameters)
 
 
 
 case strlowcase(strmid(name_r,strlen(name_r)-3)) of
-  'srp' : read_save,adresse_lib,name_r,parameters
-  'son' : read_save_json,adresse_lib,name_r,parameters
+  'son' : read_save_json,adresse_mfl,name_r,parameters
   else: message,'Illegal input file name.'
 endcase 
 nobj=n_elements(parameters.objects)

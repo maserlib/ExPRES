@@ -21,9 +21,9 @@ function loadpath,adresse,parameters
 
 if adresse eq 'adresse_cdf' then adresse_out='/Applications/cdf/cdf36_3-dist/'
 ; #------ adresse des fichiers d ephemerides ------
-if adresse eq 'adresse_ephem' then adresse_out='/Groups/SERPE/SERPE_6.1/ephemerides/'
+if adresse eq 'adresse_ephem' then adresse_out='/Users/serpe/Volumes/kronos/serpe/ephem/6.1/'
 ; #------ adresse des fichiers de lignes de champ magnetique ------
-if adresse eq 'adresse_lib' then adresse_out='/Groups/SERPE/data'
+if adresse eq 'adresse_mfl' then adresse_out='/Groups/SERPE/data/mfl/'
 ; #------ adresse ou ecrire les resultats ------
 ;if adresse eq 'adresse_save' then adresse_out='/Groups/SERPE/SERPE_6.1/result/'
 ;#  ------ pour ecrire directement sur kronos ------

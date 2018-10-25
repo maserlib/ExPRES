@@ -880,7 +880,7 @@ mov3d={M3D,on:0b,sub:0,xrange:[0.,0.],yrange:[0.,0.],zrange:[0.,0.],obs:0b,traj:
 end
 
 ;************************************************************** BUILD_SERPE_OBJ
-FUNCTION build_serpe_obj,adresse_lib,simulation_name,file_name,simulation_out,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d
+FUNCTION build_serpe_obj,adresse_mfl,simulation_name,file_name,simulation_out,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d
 
 ; ***** number of objects to build *****
 nobj=n_elements(bd)-1+n_elements(ds)-1+2*(n_elements(sc)-1)+2+mov2d.on+mov3d.on+2;sacred&cdf
@@ -1029,7 +1029,7 @@ for i=0,n_elements(sc)-2 do begin
 	   END
   endcase
 
-	if strmid(mfl,0,6) eq 'Dipole' then fld=mfl else fld=adresse_lib+'/mfl/'+fld
+	if strmid(mfl,0,6) eq 'Dipole' then fld=mfl else fld=adresse_mfl+fld
 	if ((sc[i+1]).type eq 'fixed in latitude') then (*((parameters.objects[n]))).folder=fld+'_lat' else (*((parameters.objects[n]))).folder=fld+'_lsh'
 
 
@@ -1096,7 +1096,7 @@ end
 ;************************************************************** 
 ;READ_SAVE_JSON
 ;************************************************************** 
-pro read_save_json,adresse_lib,file_name,parameters
+pro read_save_json,adresse_mfl,file_name,parameters
 ;************************************************************** 
 
 
@@ -1152,7 +1152,8 @@ freq.nbr = long((serpe_save['FREQUENCY'])['NBR'])
 freq.df=(freq.maxi-freq.mini)/float(freq.nbr)
 freq.name=''
 if freq.predef then if (serpe_save['FREQUENCY'])['SC'] ne "" then begin 
-	freq.name=(adresse_lib+'freq/'+(serpe_save['FREQUENCY'])['SC']) 
+	stop,'External frequency list : not yet implemented - please contact the ExPRES team - contact.maser@obspm.fr'
+  ;freq.name=(adresse_lib+'freq/'+(serpe_save['FREQUENCY'])['SC']) 
 endif
 
 ; ***** loading OBSERVER section *****
@@ -1223,8 +1224,8 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   	endelse
   endif else if (observer.predef eq 1b) then begin
   	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'juno' then begin
-  		if long64(strmid(date,0,8)) le 20151231 then stop,'ephemeris before DoY 2015 365 are not defined. A file with the corresponding ephemeris needs to be loading, please contact the ExPRES team'
-      if long64(strmid(date,0,8)) ge 20190101 then stop,'ephemeris after DoY 2018 365 are not defined. A file with the corresponding ephemeris needs to be loading, please contact the ExPRES team'
+  		if long64(strmid(date,0,8)) le 20151231 then stop,'ephemeris before DoY 2015 365 are not defined. A file with the corresponding ephemeris needs to be loading, please contact the ExPRES team - contact.maser@obspm.fr'
+      if long64(strmid(date,0,8)) ge 20190101 then stop,'ephemeris after DoY 2018 365 are not defined. A file with the corresponding ephemeris needs to be loading, please contact the ExPRES team - contact.maser@obspm.fr'
   		if (long64(observer.start) ge 201601010000) and (long64(observer.start) lt 201701010000) then $
   		restore,adresse_ephem+'Juno/2016_001-366.sav'
   		if (long64(observer.start) ge 201701010000) and (long64(observer.start) lt 201801010000) then $
@@ -1727,6 +1728,6 @@ for i=0,nsrc-1 do begin
 	endif
 endfor
 ; ***** building SERPE objects *****
-parameters = build_serpe_obj(adresse_lib,simulation_name,file_name,simulation_out,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d)
+parameters = build_serpe_obj(adresse_mfl,simulation_name,file_name,simulation_out,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d)
 
 end
