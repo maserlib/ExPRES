@@ -8,7 +8,7 @@
 # mfl_path : path to the directory containing the Magnetic Field Lines files
 #		mfl_path = /Groups/SERPE/data/mfl/
 # save_path : path to the directory containing the save files 
-#		save_path = /Groups/SERPE/SERPE_6.1/result/
+#		save_path = /Groups/SERPE/SERPE_6.1/result/data/
 # ffmpeg_path : path to the directory containing the ffmpeg executable
 #		ffmpeg_path : /opt/local/bin/
 # ps2pdf_path : path to the directory containing the ps2pdf executable
