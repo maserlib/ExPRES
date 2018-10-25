@@ -31,7 +31,7 @@ for i=0,n_elements(config_data)-1 do begin
     this_line = strtrim(config_data[i],2)
 
     ; process lines that are not comments (starts with '#') nor section headers (starts with '[') nor this line is empty
-    if this_line[0] ne '#' and this_line[0] ne "[" and strlen(this_line) ne 0 then begin
+    if strmid(this_line,0,1) ne '#' and strmid(this_line,0,1) ne "[" and strlen(this_line) ne 0 then begin
         equal_sign_position = strpos(this_line, '=')
         this_path_name = strtrim(strmid(this_line, 0, equal_sign_position),2)
         this_path_value = strtrim(strmid(this_line, equal_sign_position+1),2)
