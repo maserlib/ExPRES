@@ -437,15 +437,72 @@ if cnt ne 0 then begin
     if cnt eq 0 then begin 
       nerr +=1 
       error = [error,'Missing SPDYN.CDF Element.']
-    endif 
+    endif else begin
+     key_list_lev2 = ((json_hash['SPDYN'])['CDF']).keys()
+
+        test = where(key_list_lev2 eq 'THETA',cnt)
+              if cnt eq 0 then begin 
+                  nerr +=1 
+                error = [error,'Missing SPDYN.CDF.THETA Element.']
+              endif  
+        test = where(key_list_lev2 eq 'FP',cnt)
+              if cnt eq 0 then begin 
+                  nerr +=1 
+                error = [error,'Missing SPDYN.CDF.FP Element.']
+              endif  
+        test = where(key_list_lev2 eq 'FC',cnt)
+              if cnt eq 0 then begin 
+                  nerr +=1 
+                error = [error,'Missing SPDYN.CDF.FC Element.']
+              endif  
+        test = where(key_list_lev2 eq 'AZIMUTH',cnt)
+              if cnt eq 0 then begin 
+                  nerr +=1 
+                error = [error,'Missing SPDYN.CDF.AZIMUTH Element.']
+              endif  
+        test = where(key_list_lev2 eq 'OBSLATITUDE',cnt)
+              if cnt eq 0 then begin 
+                  nerr +=1 
+                error = [error,'Missing SPDYN.CDF.OBSLATITUDE Element.']
+              endif  
+        test = where(key_list_lev2 eq 'SRCLONGITUDE',cnt)
+              if cnt eq 0 then begin 
+                  nerr +=1 
+                error = [error,'Missing SPDYN.CDF.SRCLONGITUDE Element.']
+              endif  
+        test = where(key_list_lev2 eq 'SRCFREQMAX',cnt)
+              if cnt eq 0 then begin 
+                  nerr +=1 
+                error = [error,'Missing SPDYN.CDF.SRCFREQMAX Element.']
+              endif  
+        test = where(key_list_lev2 eq 'OBSDISTANCE',cnt)
+              if cnt eq 0 then begin 
+                  nerr +=1 
+                error = [error,'Missing SPDYN.CDF.OBSDISTANCE Element.']
+              endif  
+        test = where(key_list_lev2 eq 'OBSLOCALTIME',cnt)
+              if cnt eq 0 then begin 
+                  nerr +=1 
+                error = [error,'Missing SPDYN.CDF.OBSLOCALTIME Element.']
+              endif  
+        test = where(key_list_lev2 eq 'CML',cnt)
+              if cnt eq 0 then begin 
+                  nerr +=1 
+                error = [error,'Missing SPDYN.CDF.CML Element.']
+              endif  
+        test = where(key_list_lev2 eq 'SRCPOS',cnt)
+              if cnt eq 0 then begin 
+                  nerr +=1 
+                error = [error,'Missing SPDYN.CDF.SRCPOS Element.']
+              endif  
+      endelse
 
 	test = where(key_list_lev1 eq 'INFOS',cnt)
     if cnt eq 0 then begin 
       nerr +=1 
       error = [error,'Missing SPDYN.INFOS Element.']
     endif 
-    
-    
+        
 endif else begin
     nerr +=1 
     error = [error,'Missing SPDYN Group.']
