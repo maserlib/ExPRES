@@ -1767,8 +1767,12 @@ for i=0,nsrc-1 do begin
 		sc[n].north=((serpe_save['SOURCE'])[i])['NORTH']
 		sc[n].south=((serpe_save['SOURCE'])[i])['SOUTH']
 		sc[n].width=((serpe_save['SOURCE'])[i])['WIDTH']
+
 		case ((serpe_save['SOURCE'])[i])['CURRENT'] of
-		 'Transient (Aflvenic)': sc[n].loss=1b
+		 'Transient (Alfvénic)': sc[n].loss=1b
+     'Transient (Alfvenic)': sc[n].loss=1b
+     'Transient (Aflvénic)': sc[n].loss=1b
+     'Transient (Aflvenic)': sc[n].loss=1b
 		 'Transient (Aflvenic)+bornes': BEGIN
 		 	sc[n].loss=1b
 		 	sc[n].lossbornes=1b
