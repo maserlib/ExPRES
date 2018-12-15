@@ -11,10 +11,20 @@ MIRIADE IMCCE webservice calls.
 * [cdawlib](cdawlib) is a placeholder for the NASA/GSFC CDAWLib library, required for the CDF files. 
 
 ## Configuration
-The `config.ini.template`file must be rename `config.ini` and edited with the adequate path strings.
+The `config.ini.template` file (in [src](src)) must be renamed `config.ini` and edited with the adequate paths:
+- `cdf_dist_path` must point to the local CDF distribution directory.
+- `ephem_path` is the path to the directory where the precomputed ephemerides files are
+located, and where temporary ephemerides files will be written.
+- `mfl_path` is the path to the directory where the precomputed magnetic field line data.
+- `save_path` is the path where the data will be saved.
+- `ffmpeg_path` points to the `ffmpeg` executable, e.g., `/opt/local/bin/ffmpeg`
+- `ps2pdf_path` points to the `ps2pdf` executable, e.g., `/opt/local/bin/ps2pdf`
+
+Examples are provided in the header of [config.ini.template](src/config.ini.template).
+
 
 ## Running the code
-The code has been tested under IDL 8.5. 
+The code has been tested under IDL 8.5. You must have a functional installation of IDL 8.5 (or better) on your system.
 
 The IDL interpreter must be configured to look for routines into the [src](src) and [cdawlib](cdawlib) directories.
 
