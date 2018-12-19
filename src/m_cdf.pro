@@ -68,8 +68,8 @@ for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i
 ;			sourcedescr(h)=''
 ; *********************************
 		endelse
-
-	ener(h)=strtrim(long(((*(parameters.objects[i])).vmin)^2*255.5),2)+'keV'
+;# here we do a string(long(string(ener))) to avoid rounding problems
+	ener(h)=strtrim(long(string(((*(parameters.objects[i])).vmin)^2*255.5)),2)+'keV'
 	wid(h) ='wid'+strtrim(long((*parameters.objects[i]).width),2)+'deg'
 	
 	
