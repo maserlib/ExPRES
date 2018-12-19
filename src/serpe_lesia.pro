@@ -137,7 +137,6 @@ if observer eq '' then observer='earth'
 adresse_save_tmp=loadpath('adresse_save',parameters)
 
 adresse_save=adresse_save_tmp+strmid(tmp,0,strlen(tmp)-5)
-
 parameters.out=adresse_save
 print,'Simulation file ok'
 print,'Results will be saved under the name ',parameters.out

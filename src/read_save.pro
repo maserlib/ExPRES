@@ -88,28 +88,6 @@ error = [""]
 
 key_list_lev0 = json_hash.keys()
 
-test = where(key_list_lev0 eq 'SIMU',cnt)
-if cnt ne 0 then begin 
-
-    key_list_lev1 = json_hash['SIMU'].keys()
-    
-    test = where(key_list_lev1 eq 'NAME',cnt)
-    if cnt eq 0 then begin 
-      nerr +=1 
-      error = [error,'Missing SIMU.NAME Element.']
-    endif
-    
-    test = where(key_list_lev1 eq 'OUT',cnt)
-    if cnt eq 0 then begin 
-      nerr +=1 
-      error = [error,'Missing SIMU.OUT Element.']
-    endif
-    
-endif else begin
-    nerr +=1 
-    error = [error,'Missing SIMU Group.']
-endelse
-
 test = where(key_list_lev0 eq 'NUMBER',cnt)
 if cnt ne 0 then begin 
 
@@ -937,7 +915,7 @@ mov3d={M3D,on:0b,sub:0,xrange:[0.,0.],yrange:[0.,0.],zrange:[0.,0.],obs:0b,traj:
 end
 
 ;************************************************************** BUILD_SERPE_OBJ
-FUNCTION build_serpe_obj,adresse_mfl,simulation_name,file_name,simulation_out,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d
+FUNCTION build_serpe_obj,adresse_mfl,file_name,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d
 
 ; ***** number of objects to build *****
 nobj=n_elements(bd)-1+n_elements(ds)-1+2*(n_elements(sc)-1)+2+mov2d.on+mov3d.on+2;sacred&cdf
@@ -945,8 +923,9 @@ nobj=n_elements(bd)-1+n_elements(ds)-1+2*(n_elements(sc)-1)+2+mov2d.on+mov3d.on+
 ; ***** initializing variables *****
 TEMPS={TIME,debut:time.mini,fin:time.maxi,step:time.dt,n_step:time.nbr,time:0d,t0:0.,istep:0}
 FREQUE={FREQ,fmin:freq.mini,fmax:freq.maxi,n_freq:freq.nbr,step:freq.df,file:freq.name,log:freq.log,freq_tab:PTR_NEW(/ALLOCATE_HEAP)}
-
-parameters={PARAMETERS,ticket:ticket,time:temps,freq:freque,name:simulation_name,objects:PTRARR(nobj,/ALLOCATE_HEAP),out:simulation_out}
+simu_name_tmp=strsplit(file_name,'/',/extract)
+simu_name_tmp=strsplit(simu_name_tmp[-1],'.',/extract)
+parameters={PARAMETERS,ticket:ticket,time:temps,freq:freque,name:simu_name_tmp[0],objects:PTRARR(nobj,/ALLOCATE_HEAP),out:''}
 
 
 ; ***** preparing DENSITY parameters *****
@@ -1177,10 +1156,6 @@ caldat,systime(/julian),month,day,year
 ticket=(serpe_save['SIMU'])['NAME']+'_'+strtrim(long((systime(/seconds)-aj_t70(amj_aj(year*10000+month*100+day-1))*24.*60.*60.)*1000),1)
 ;***** *****
 
-
-; ***** loading SIMU section *****
-simulation_name = (serpe_save['SIMU'])['NAME']
-simulation_out = (serpe_save['SIMU'])['OUT']
 
 ; ***** loading NUMBER section *****
 nbody = fix((serpe_save['NUMBER'])['BODY'])
@@ -1789,6 +1764,6 @@ for i=0,nsrc-1 do begin
 	endif
 endfor
 ; ***** building SERPE objects *****
-parameters = build_serpe_obj(adresse_mfl,simulation_name,file_name,simulation_out,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d)
+parameters = build_serpe_obj(adresse_mfl,file_name,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d)
 
 end
