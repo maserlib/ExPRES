@@ -15,7 +15,7 @@ def html_ls(url):
     url_fixed = url.strip('/')
 
     with urlopen(url_fixed) as ufile:
-       root = etree.parse(ufile, etree.HTMLParser())    
+        root = etree.parse(ufile, etree.HTMLParser())
 
     list_ls = []
     for tr in root.getroot().xpath('body/table/tr'):
@@ -23,9 +23,10 @@ def html_ls(url):
             for item in td.iter():
                 if item.tag == 'a':
                     if item.text != 'Parent Directory':
-                         list_ls.append('{}/{}'.format(url_fixed,item.text))
+                        list_ls.append('{}/{}'.format(url_fixed, item.text))
 
     return list_ls
+
 
 def html_cp(url, file):
     urlretrieve(url, file)  
@@ -33,13 +34,12 @@ def html_cp(url, file):
 
 def download_mfl(model_name=None):
 
+    model_name_list = _MFL_NAMES
     if model_name is not None:
         if model_name not in _MFL_NAMES:
-            stop
+            raise ValueError('"{}": this model name is not supported'.format(model_name))
         else:
             model_name_list = [model_name]
-    else:
-        model_name_list = _MFL_NAMES
 
     mfl_list = html_ls(_URL_MFL_ROOT)
 
@@ -76,4 +76,3 @@ def download_mfl(model_name=None):
                         print('Downloading: {}'.format(mfl_file_list_item_url))
                         print('       into: {}'.format(str(cur_file)))
                         html_cp(mfl_file_list_item_url, str(cur_file))
-
