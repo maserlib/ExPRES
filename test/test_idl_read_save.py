@@ -1,13 +1,14 @@
 from . import *
 import numpy
 import unittest
+import collections
 
 
 def init_test():
     idl = init_serpe_idl()
     cfg = get_config()
 
-    idl(".r read_save")
+    idl.run(".r read_save")
 
     return idl
 
@@ -17,282 +18,91 @@ class read_save(unittest.TestCase):
     Test cases for serpe/expres READ_SAVE.PRO
     """
 
-    def test_INIT_SERPE_STRUCTURES(self):
+    def setUp(self):
+        self.idl = init_test()
+        self.idl.run("init_serpe_structures,time,freq,observer,body,dens,src,spdyn,cdf,mov2d,mov3d")
 
-        def struct_attr_test(var, type, dtype, shape):
-            self.assertIsInstance(var, type)
-            self.assertEqual(var.dtype, dtype)
-            self.assertEqual(var.shape, shape)
+    def tearDown(self):
+        self.idl.run('.reset_session')
 
-        def test_INIT_SERPE_STRUCTURES__time(self):
-            idl = init_test()
-            idl("init_serpe_structures,time,freq,observer,body,dens,src,spdyn,cdf,mov2d,mov3d")
-            self.assertIsInstance(idl.time, dict)
-            self.assertSetEqual(set(idl.time.keys()), {'mini', 'maxi', 'nbr', 'dt'})
-            struct_attr_test(idl.time['mini'], numpy.ndarray, 'float64', ())
-            struct_attr_test(idl.time['maxi'], numpy.ndarray, 'float64', ())
-            struct_attr_test(idl.time['nbr'], numpy.ndarray, 'int32', ())
-            struct_attr_test(idl.time['dt'], numpy.ndarray, 'float32', ())
-            idl.close()
+    def test_INIT_SERPE_STRUCTURES__time(self):
 
-        def test_INIT_SERPE_STRUCTURES__freq(self):
-            idl = init_test()
-            idl("init_serpe_structures,time,freq,observer,body,dens,src,spdyn,cdf,mov2d,mov3d")
-            fix_empty_string_in_struct(idl, 'freq.name')
-            self.assertIsInstance(idl.freq, dict)
-            self.assertSetEqual(set(idl.freq.keys()), {'mini', 'maxi', 'nbr', 'df', 'name', 'log', 'predef'})
-            struct_attr_test(idl.freq['mini'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.freq['maxi'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.freq['nbr'], numpy.ndarray, 'int32', ())
-            struct_attr_test(idl.freq['df'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.freq['name'], numpy.ndarray, '<U4', ())
-            struct_attr_test(idl.freq['log'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.freq['predef'], numpy.ndarray, 'uint8', ())
-            fix_empty_string_in_struct(idl, 'freq.name', revert=True)
-            idl.close()
+        self.assertIsInstance(self.idl.time, collections.OrderedDict)
+        self.assertSetEqual(set(self.idl.time.keys()), {'MINI', 'MAXI', 'NBR', 'DT'})
 
-        def test_INIT_SERPE_STRUCTURES__observer(self):
-            idl = init_test()
-            idl("init_serpe_structures,time,freq,observer,body,dens,src,spdyn,cdf,mov2d,mov3d")
-            fix_empty_string_in_struct(idl, 'observer.name')
-            fix_empty_string_in_struct(idl, 'observer.parent')
-            fix_empty_string_in_struct(idl, 'observer.start')
-            self.assertIsInstance(idl.observer, dict)
-            self.assertSetEqual(set(idl.observer.keys()), {'motion', 'smaj', 'smin', 'decl', 'alg', 'incl', 'phs', 'predef', 'name', 'parent', 'start'})
-            struct_attr_test(idl.observer['motion'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.observer['smaj'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.observer['smin'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.observer['decl'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.observer['alg'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.observer['incl'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.observer['phs'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.observer['predef'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.observer['name'], numpy.ndarray, '<U4', ())
-            struct_attr_test(idl.observer['parent'], numpy.ndarray, '<U4', ())
-            struct_attr_test(idl.observer['start'], numpy.ndarray, '<U4', ())
-            fix_empty_string_in_struct(idl, 'observer.name', revert=True)
-            fix_empty_string_in_struct(idl, 'observer.parent', revert=True)
-            fix_empty_string_in_struct(idl, 'observer.start', revert=True)
-            idl.close()
+    def test_INIT_SERPE_STRUCTURES__freq(self):
+        self.assertIsInstance(self.idl.freq, collections.OrderedDict)
+        self.assertSetEqual(set(self.idl.freq.keys()), {'MINI', 'MAXI', 'NBR', 'DF', 'NAME', 'LOG', 'PREDEF'})
 
-        def test_INIT_SERPE_STRUCTURES__body(self):
-            idl = init_test()
-            idl("init_serpe_structures,time,freq,observer,body,dens,src,spdyn,cdf,mov2d,mov3d")
-            fix_empty_string_in_struct(idl, 'body.name')
-            fix_empty_string_in_struct(idl, 'body.parent')
-            fix_empty_string_in_struct(idl, 'body.mfl')
-            self.assertIsInstance(idl.body, dict)
-            self.assertSetEqual(set(idl.body.keys()), {'on', 'name', 'rad', 'per', 'flat', 'orb1', 'lg0', 'sat', 'smaj',
-                                                       'smin', 'decl', 'alg', 'incl', 'phs', 'parent', 'mfl', 'dens', 'ipar'})
-            struct_attr_test(idl.body['on'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.body['name'], numpy.ndarray, '<U4', ())
-            struct_attr_test(idl.body['rad'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.body['per'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.body['flat'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.body['orb1'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.body['lg0'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.body['sat'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.body['smaj'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.body['smin'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.body['decl'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.body['alg'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.body['incl'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.body['phs'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.body['parent'], numpy.ndarray, '<U4', ())
-            struct_attr_test(idl.body['mfl'], numpy.ndarray, '<U4', ())
-            struct_attr_test(idl.body['dens'], numpy.ndarray, 'int16', (4,))
-            struct_attr_test(idl.body['ipar'], numpy.ndarray, 'int16', ())
-            fix_empty_string_in_struct(idl, 'body.name', revert=True)
-            fix_empty_string_in_struct(idl, 'body.parent', revert=True)
-            fix_empty_string_in_struct(idl, 'body.mfl', revert=True)
-            idl.close()
+    def test_INIT_SERPE_STRUCTURES__observer(self):
+        self.assertIsInstance(self.idl.observer, collections.OrderedDict)
+        self.assertSetEqual(set(self.idl.observer.keys()), {'MOTION', 'SMAJ', 'SMIN', 'DECL', 'ALG', 'INCL', 'PHS',
+                                                            'PREDEF', 'NAME', 'PARENT', 'START'})
 
-        def test_INIT_SERPE_STRUCTURES__dens(self):
-            idl = init_test()
-            idl("init_serpe_structures,time,freq,observer,body,dens,src,spdyn,cdf,mov2d,mov3d")
-            fix_empty_string_in_struct(idl, 'dens.name')
-            fix_empty_string_in_struct(idl, 'dens.type')
-            self.assertIsInstance(idl.dens, dict)
-            self.assertSetEqual(set(idl.dens.keys()), {'on', 'name', 'type', 'rho0', 'height', 'perp'})
-            struct_attr_test(idl.dens['on'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.dens['name'], numpy.ndarray, '<U4', ())
-            struct_attr_test(idl.dens['type'], numpy.ndarray, '<U4', ())
-            struct_attr_test(idl.dens['rho0'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.dens['height'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.dens['perp'], numpy.ndarray, 'float32', ())
-            fix_empty_string_in_struct(idl, 'dens.name', revert=True)
-            fix_empty_string_in_struct(idl, 'dens.type', revert=True)
-            idl.close()
+    def test_INIT_SERPE_STRUCTURES__body(self):
+        self.assertIsInstance(self.idl.body, collections.OrderedDict)
+        self.assertSetEqual(set(self.idl.body.keys()), {'ON', 'NAME', 'RAD', 'PER', 'FLAT', 'ORB1', 'LG0', 'SAT', 'SMAJ',
+                                                   'SMIN', 'DECL', 'ALG', 'INCL', 'PHS', 'PARENT', 'MFL', 'DENS', 'IPAR'})
 
-        def test_INIT_SERPE_STRUCTURES__src(self):
-            idl = init_test()
-            idl("init_serpe_structures,time,freq,observer,body,dens,src,spdyn,cdf,mov2d,mov3d")
-            fix_empty_string_in_struct(idl, 'src.name')
-            fix_empty_string_in_struct(idl, 'src.parent')
-            fix_empty_string_in_struct(idl, 'src.sat')
-            fix_empty_string_in_struct(idl, 'src.type')
-            fix_empty_string_in_struct(idl, 'src.lgauto')
-            self.assertIsInstance(idl.src, dict)
-            self.assertSetEqual(set(idl.src.keys()), {'on', 'name', 'parent', 'sat', 'type', 'loss', 'lossbornes',
-                                                      'ring', 'cavity', 'constant', 'width', 'temp', 'cold', 'v',
-                                                      'lgauto', 'lgmin', 'lgmax', 'lgnbr', 'lgstep', 'latmin', 'latmax',
-                                                      'latstep', 'north', 'south', 'subcor', 'aurora_alt', 'refract'})
-            struct_attr_test(idl.src['on'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.src['name'], numpy.ndarray, '<U4', ())
-            struct_attr_test(idl.src['parent'], numpy.ndarray, '<U4', ())
-            struct_attr_test(idl.src['sat'], numpy.ndarray, '<U4', ())
-            struct_attr_test(idl.src['type'], numpy.ndarray, '<U4', ())
-            struct_attr_test(idl.src['loss'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.src['ring'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.src['cavity'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.src['constant'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.src['width'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.src['temp'], numpy.ndarray, 'float64', ())
-            struct_attr_test(idl.src['cold'], numpy.ndarray, 'float64', ())
-            struct_attr_test(idl.src['v'], numpy.ndarray, 'float64', ())
-            struct_attr_test(idl.src['lgauto'], numpy.ndarray, '<U4', ())
-            struct_attr_test(idl.src['lgmin'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.src['lgmax'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.src['lgnbr'], numpy.ndarray, 'int16', ())
-            struct_attr_test(idl.src['lgstep'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.src['latmin'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.src['latmax'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.src['latstep'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.src['north'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.src['south'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.src['subcor'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.src['aurora_alt'], numpy.ndarray, 'float64', ())
-            struct_attr_test(idl.src['refract'], numpy.ndarray, 'uint8', ())
-            fix_empty_string_in_struct(idl, 'src.name', revert=True)
-            fix_empty_string_in_struct(idl, 'src.parent', revert=True)
-            fix_empty_string_in_struct(idl, 'src.sat', revert=True)
-            fix_empty_string_in_struct(idl, 'src.type', revert=True)
-            fix_empty_string_in_struct(idl, 'src.lgauto', revert=True)
-            idl.close()
+    def test_INIT_SERPE_STRUCTURES__dens(self):
+        self.assertIsInstance(self.idl.dens, collections.OrderedDict)
+        self.assertSetEqual(set(self.idl.dens.keys()), {'ON', 'NAME', 'TYPE', 'RHO0', 'HEIGHT', 'PERP'})
 
-        def test_INIT_SERPE_STRUCTURES__spdyn(self):
-            idl = init_test()
-            idl("init_serpe_structures,time,freq,observer,body,dens,src,spdyn,cdf,mov2d,mov3d")
-            self.assertIsInstance(idl.spdyn, dict)
-            self.assertSetEqual(set(idl.spdyn.keys()), {'intensity', 'polar', 'f_t', 'lg_t', 'lat_t', 'f_r', 'lg_r',
-                                                        'lat_r', 'f_lg', 'lg_lg', 'lat_lg', 'f_lat', 'lg_lat',
-                                                        'lat_lat', 'f_lt', 'lg_lt', 'lat_lt', 'khz', 'pdf', 'log',
-                                                        'xrange', 'lgrange', 'larange', 'ltrange', 'nr', 'dr', 'nlg',
-                                                        'dlg', 'nlat', 'dlat', 'nlt', 'dlt', 'infos'})
-            struct_attr_test(idl.sdpyn['intensity'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.sdpyn['polar'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.sdpyn['f_t'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.sdpyn['lg_t'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.sdpyn['lat_t'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.sdpyn['f_r'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.sdpyn['lg_r'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.sdpyn['lat_r'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.sdpyn['f_lg'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.sdpyn['lg_lg'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.sdpyn['lat_lg'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.sdpyn['f_lat'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.sdpyn['lg_lat'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.sdpyn['lat_lat'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.sdpyn['f_lt'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.sdpyn['lg_lt'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.sdpyn['lat_lt'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.sdpyn['khz'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.sdpyn['pdf'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.sdpyn['log'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.sdpyn['xrange'], numpy.ndarray, 'float32', (2,))
-            struct_attr_test(idl.sdpyn['lgrange'], numpy.ndarray, 'float32', (2,))
-            struct_attr_test(idl.sdpyn['larange'], numpy.ndarray, 'float32', (2,))
-            struct_attr_test(idl.sdpyn['ltrange'], numpy.ndarray, 'float32', (2,))
-            struct_attr_test(idl.sdpyn['nr'], numpy.ndarray, 'int32', ())
-            struct_attr_test(idl.sdpyn['dr'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.sdpyn['nlg'], numpy.ndarray, 'int32', ())
-            struct_attr_test(idl.sdpyn['dlg'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.sdpyn['nlat'], numpy.ndarray, 'int32', ())
-            struct_attr_test(idl.sdpyn['dlat'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.sdpyn['nlt'], numpy.ndarray, 'int32', ())
-            struct_attr_test(idl.sdpyn['dlt'], numpy.ndarray, 'float32', ())
-            struct_attr_test(idl.sdpyn['infos'], numpy.ndarray, 'uint8', ())
-            idl.close()
+    def test_INIT_SERPE_STRUCTURES__src(self):
+        self.assertIsInstance(self.idl.src, collections.OrderedDict)
+        self.assertSetEqual(set(self.idl.src.keys()), {'ON', 'NAME', 'PARENT', 'SAT', 'TYPE', 'LOSS', 'LOSSBORNES',
+                                                  'RING', 'CAVITY', 'CONSTANT', 'WIDTH', 'TEMP', 'COLD', 'V',
+                                                  'LGAUTO', 'LGMIN', 'LGMAX', 'LGNBR', 'LGSTEP', 'LATMIN', 'LATMAX',
+                                                  'LATSTEP', 'NORTH', 'SOUTH', 'SUBCOR', 'AURORA_ALT', 'REFRACT'})
 
-        def test_INIT_SERPE_STRUCTURES__cdf(self):
-            idl = init_test()
-            idl("init_serpe_structures,time,freq,observer,body,dens,src,spdyn,cdf,mov2d,mov3d")
-            self.assertIsInstance(idl.cdf, dict)
-            self.assertSetEqual(set(idl.cdf.keys()), {'theta', 'fp', 'fc', 'azimuth', 'obslatitude', 'srclongitude',
-                                                       'srcfreqmax', 'srcfreqmaxcmi', 'obsdistance', 'obslocaltime',
-                                                       'cml', 'srcpos'})
-            struct_attr_test(idl.cdf['theta'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.cdf['fp'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.cdf['fc'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.cdf['azimuth'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.cdf['obslatitude'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.cdf['srclongitude'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.cdf['srcfreqmax'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.cdf['srcfreqmaxcmi'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.cdf['obsdistance'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.cdf['obslocaltime'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.cdf['cml'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.cdf['srcpos'], numpy.ndarray, 'uint8', ())
-            idl.close()
+    def test_INIT_SERPE_STRUCTURES__spdyn(self):
+        self.assertIsInstance(self.idl.spdyn, collections.OrderedDict)
+        self.assertSetEqual(set(self.idl.spdyn.keys()), {'INTENSITY', 'POLAR', 'F_T', 'LG_T', 'LAT_T', 'F_R', 'LG_R',
+                                                    'LAT_R', 'F_LG', 'LG_LG', 'LAT_LG', 'F_LAT', 'LG_LAT',
+                                                    'LAT_LAT', 'F_LT', 'LG_LT', 'LAT_LT', 'KHZ', 'PDF', 'LOG',
+                                                    'XRANGE', 'LGRANGE', 'LARANGE', 'LTRANGE', 'NR', 'DR', 'NLG',
+                                                    'DLG', 'NLAT', 'DLAT', 'NLT', 'DLT', 'INFOS'})
 
-        def test_INIT_SERPE_STRUCTURES__mov2d(self):
-            idl = init_test()
-            idl("init_serpe_structures,time,freq,observer,body,dens,src,spdyn,cdf,mov2d,mov3d")
-            self.assertIsInstance(idl.mov2d, dict)
-            self.assertSetEqual(set(idl.mov2d.keys()), {'on', 'sub', 'range'})
-            struct_attr_test(idl.mov2d['on'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.mov2d['sub'], numpy.ndarray, 'int16', ())
-            struct_attr_test(idl.mov2d['range'], numpy.ndarray, 'float32', ())
-            idl.close()
+    def test_INIT_SERPE_STRUCTURES__cdf(self):
+        self.assertIsInstance(self.idl.cdf, collections.OrderedDict)
+        self.assertSetEqual(set(self.idl.cdf.keys()), {'THETA', 'FP', 'FC', 'AZIMUTH', 'OBSLATITUDE', 'SRCLONGITUDE',
+                                                   'SRCFREQMAX', 'SRCFREQMAXCMI', 'OBSDISTANCE', 'OBSLOCALTIME',
+                                                   'CML', 'SRCPOS'})
 
-        def test_INIT_SERPE_STRUCTURES__mov3d(self):
-            idl = init_test()
-            idl("init_serpe_structures,time,freq,observer,body,dens,src,spdyn,cdf,mov2d,mov3d")
-            self.assertIsInstance(idl.mov3d, dict)
-            self.assertSetEqual(set(idl.mov3d.keys()), {'on', 'sub', 'xrange', 'yrange', 'zrange', 'obs', 'traj'})
-            struct_attr_test(idl.mov3d['on'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.mov3d['sub'], numpy.ndarray, 'int16', ())
-            struct_attr_test(idl.mov3d['xrange'], numpy.ndarray, 'float32', (2,))
-            struct_attr_test(idl.mov3d['yrange'], numpy.ndarray, 'float32', (2,))
-            struct_attr_test(idl.mov3d['zrange'], numpy.ndarray, 'float32', (2,))
-            struct_attr_test(idl.mov3d['obs'], numpy.ndarray, 'uint8', ())
-            struct_attr_test(idl.mov3d['traj'], numpy.ndarray, 'uint8', ())
-            idl.close()
+    def test_INIT_SERPE_STRUCTURES__mov2d(self):
+        self.assertIsInstance(self.idl.mov2d, collections.OrderedDict)
+        self.assertSetEqual(set(self.idl.mov2d.keys()), {'ON', 'SUB', 'RANGE'})
 
-        test_INIT_SERPE_STRUCTURES__time(self)
-        test_INIT_SERPE_STRUCTURES__freq(self)
-        test_INIT_SERPE_STRUCTURES__observer(self)
-        test_INIT_SERPE_STRUCTURES__body(self)
-        test_INIT_SERPE_STRUCTURES__dens(self)
-        test_INIT_SERPE_STRUCTURES__src(self)
-#        test_INIT_SERPE_STRUCTURES__spdyn(self)
-        test_INIT_SERPE_STRUCTURES__cdf(self)
-        test_INIT_SERPE_STRUCTURES__mov2d(self)
-        test_INIT_SERPE_STRUCTURES__mov3d(self)
-
+    def test_INIT_SERPE_STRUCTURES__mov3d(self):
+        self.assertIsInstance(self.idl.mov3d, collections.OrderedDict)
+        self.assertSetEqual(set(self.idl.mov3d.keys()), {'ON', 'SUB', 'XRANGE', 'YRANGE', 'ZRANGE', 'OBS', 'TRAJ'})
 
     def test_RANK_BODIES(self):
-        idl = init_test()
-        idl("init_serpe_structures,time,freq,observer,body,dens,src,spdyn,cdf,mov2d,mov3d")
-        fix_empty_string_in_struct(idl, 'body.mfl')
-        idl("bodies = [body, body]")
-        idl("bodies[0].name = 'Io'")
-        idl("bodies[0].parent = 'Jupiter'")
-        idl("bodies[0].name = 'Jupiter'")
-        idl("rank_bodies,bodies")
-        print(idl.bodies[0])
-        self.assertIsInstance(idl.bodies, numpy.ndarray)
-
-        idl.close()
+        self.idl.run("bodies = [body, body]")
+        self.idl.run("bodies[0].name = 'Io'")
+        self.idl.run("bodies[0].parent = 'Jupiter'")
+        self.idl.run("bodies[0].name = 'Jupiter'")
+        self.idl.run("rank_bodies,bodies")
+        print(self.idl.bodies[0])
+        self.assertIsInstance(self.idl.bodies, list)
+        self.assertIsInstance(self.idl.bodies[0], collections.OrderedDict)
 
     def test_READ_SAVE_JSON(self):
-        idl = init_serpe_idl()
-        cfg = get_config()
-
-        idl(".r loadpath")
-        idl(".r read_save")
-        idl("adresse_mfl = loadpath('adresse_mfl',parameters)")
-        idl("read_save_json, adresse_mfl, '{}', parameters".format(str(get_test_json_file())))
-        self.assertIsInstance(idl.parameters, numpy.ndarray)
-
-        idl.close()
+        self.idl.run(".r loadpath")
+        self.idl.run("adresse_mfl = loadpath('adresse_mfl',parameters)")
+        self.idl.run("read_save_json, adresse_mfl, '{}', param".format(str(get_test_json_file())))
+        self.idl.run("test = param.ticket")
+        self.assertTrue(self.idl.test.startswith("Io2015-04-30_"))
+        self.idl.run("test = param.time")
+        self.assertIsInstance(self.idl.test, collections.OrderedDict)
+        self.assertSetEqual(set(self.idl.test.keys()), {"DEBUT", "FIN", "STEP", "N_STEP", "TIME", "T0", "ISTEP"})
+        self.idl.run("test = *param.freq.freq_tab")
+        self.assertIsNone(self.idl.test)
+        self.idl.run("test = param.name")
+        self.assertEqual(self.idl.test, 'expres_earth_jupiter_io_jrm09_lossc-wid1deg_3kev_20150430_v01')
+        self.idl.run("test = n_elements(param.objects)")
+        self.assertEqual(self.idl.test, 12)
+        self.idl.run("test = *param.objects[0]")
+        self.assertSetEqual(set(self.idl.test.keys()), {"NAME", "TYPE", "RHO0", "HEIGHT", "PERP", "IT", "CB", "FZ"})
+        self.idl.run("test = (*param.objects[0]).name")
+        self.assertEqual(self.idl.test, "Body1_density1")
