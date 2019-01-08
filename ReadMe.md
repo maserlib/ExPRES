@@ -1,4 +1,4 @@
-# Exoplanetary and Planetary Radio Emission Simulator (ExPRES) V6.1
+# Exoplanetary and Planetary Radio Emission Simulator (ExPRES) V1.0.0
 
 ## Directories
 * [src](src) contains the ExPRES code IDL routines.
@@ -36,5 +36,5 @@ This compiles all the necessary routines in advance. Then the simulation can be 
 ```
 IDL> main,'file.json'
 ```
-where `file.json` is the input parameter file.
+where `file.json` is the input parameter file. This file must comply with the [ExPRES-v1.0 JSON-shema](https://voparis-ns.obspm.fr/maser/expres/v1.0.0/expres-v1.0.0.json)
 
