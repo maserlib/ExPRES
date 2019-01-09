@@ -1,9 +1,69 @@
 # Version History
 
-## Latest Release
+## Latest Release - Version  1.0.0 (2019)
+In this version, the code is called ExPRES (Exoplanetary and Planetary Radio Emissions Simulator)
 
-## Version 0.4.1 
+Contributors: C. Louis, S. L. G. Hess, P. Zarka, B. Cecconi, L. Lamy 
+
+Main addtions in this version:
+- open source licence and distrbution on github
+- better documentation
+
+## Version 0.6.1  (2018)
 In this version, the code is called SERPE (Simulation d'Emission Radio Planétaires et Exoplanétaires)
+
+Contributors: C. Louis, S. L. G. Hess, P. Zarka, B. Cecconi, L. Lamy 
+
+Main additions in this version:
+- better validation of the simulation steps
+- access IMCCE/Miriade ephemeris webservice for observers and natural body locations
+- output in CDF
+- input in JSON or SRP (original input file format) 
+
+Related publications:
+- Louis, C K, L Lamy, P Zarka, B Cecconi, and S L G Hess. 2017. “Detection of Jupiter Decametric Emissions Controlled by Europa and Ganymede with Voyager/PRA
+and Cassini/RPWS.” J. Geophys. Res. Space Physics 122 (September): 1–20. doi:10.1002/2016JA023779.
+- Louis, C K, L Lamy, P Zarka, B Cecconi, M Imai, W S Kurth, G Hospodarsky, et al. 2017. “Io-Jupiter Decametric Arcs Observed by Juno/Waves Compared to ExPRES Simulations.” Geophys. Res. Lett., 1–17. doi:10.1002/2017GL073036.
+
+## Version 0.6.0  (2011)
+In this version, the code is called SERPE (Simulation d'Emission Radio Planétaires et Exoplanétaires)
+
+Contributors: S. L. G. Hess, P. Zarka, B. Cecconi, L. Lamy 
+
+Main additions in this version:
+- major reorganization of the code
+- output of 3D movies added
+
+Related publication:
+- Cecconi, B, SLG Hess, A Hérique, Maria Rosaria Santovito, Daniel Santos-Costa, Philippe Zarka, G Alberti, et al. 2012. “Natural Radio Emission of Jupiter as Interferences for Radar Investigations of the Icy Satellites of Jupiter.” Planet. Space Sci. 61: 32–45. doi:10.1016/j.pss.2011.06.012.
+
+## Version 0.5.0  (2010)
+In this version, the code is called SERPE (Simulation d'Emission Radio Planétaires et Exoplanétaires)
+
+Contributors:  S. L. G. Hess, L. Lamy, P. Zarka, B. Cecconi
+
+Main additions in this version:
+- possibility to run simulations for exoplanetary radio emissions
+
+Related publication:
+- Hess, S L G, and P Zarka. 2011. “Modeling the Radio Signature of the Orbital Parameters, Rotation, and Magnetic Field of Exoplanets.” Astronomy and Astrophysics 531 (June): A29. doi:10.1051/0004-6361/201116510.
+
+## Version 0.4.2  (Feb 2008)
+In this version, the code is called SERPE (Simulation d'Emission Radio Planétaires et Exoplanétaires)
+
+Contributors: L. Lamy, S. L. G. Hess, P. Zarka, B. Cecconi
+
+Main additions in this version:
+- added altitude of aurora (fmax_alt) parameter 
+
+Related Publication:
+- Lamy, L, Philippe Zarka, B Cecconi, SLG Hess, and Renée Prangé. 2008. “Modeling of Saturn Kilometric Radiation Arcs and Equatorial Shadow Zone.” J. Geophys. Res. 113 (A10213). doi:10.1029/2008JA013464.
+- Lamy, L, B Cecconi, P Zarka, P Canu, P Schippers, W S Kurth, R L Mutel, D A Gurnett, D Menietti, and P Louarn. 2011. “Emission and Propagation of Saturn Kilometric Radiation: Magnetoionic Modes, Beaming Pattern, and Polarization State.” J. Geophys. Res. 116 (A04212). doi:10.1029/2010JA016195.
+
+## Version 0.4.1  (Oct 2007)
+In this version, the code is called SERPE (Simulation d'Emission Radio Planétaires et Exoplanétaires)
+
+Contributors: L. Lamy, S. L. G. Hess, P. Zarka, B. Cecconi
 
 Main additions in this version:
 - New feature to use any trajectory provided by the user.
@@ -11,12 +71,25 @@ Main additions in this version:
 
 More details in the version history part of the `serpe.pro` header. 
 
-## Version 0.3.7 (Feb 2007)
+Related publication:
+- Hess, SLG, A Pétin, Philippe Zarka, B Bonfond, and B Cecconi. 2010. “Lead Angles and Emitting Electron Energies of Io-Controlled Decameter Radio Arcs.” Planet. Space Sci. 58 (10): 1188–98. doi:10.1016/j.pss.2010.04.011.
+
+## Version 0.4.0 (Jun 2007)
 In this version, the code is called JUNO.
 
 Contributors: S. L. G. Hess, P. Zarka, B. Cecconi, L. Lamy 
 
-Minor fixes
+Main added features:
+- better portability (plotting option for Windows users)
+- added effect of plasma density
+
+## Version 0.3.7 (Mar 2007)
+In this version, the code is called JUNO.
+
+Contributors: L. Lamy, S. L. G. Hess, P. Zarka, B. Cecconi
+
+Main added features:
+- latitude axis output
 
 ## Version 0.3.6 (Feb 2007)
 In this version, the code is called JUNO.
@@ -41,7 +114,7 @@ Main added features:
 ## Version 0.3.4 (Nov 2006)
 In this version, the code is called JUNO.
 
-Contributors: S. L. G. Hess, P. Zarka, B. Cecconi
+Contributors: B. Cecconi, S. L. G. Hess, P. Zarka
 
 Main added features:
 - speed up of computing
@@ -49,7 +122,7 @@ Main added features:
 ## Version 0.3.3 (Nov 2006)
 In this version, the code is called JUNO.
 
-Contributors: S. L. G. Hess, P. Zarka, B. Cecconi
+Contributors: B. Cecconi, S. L. G. Hess, P. Zarka
 
 Main added features:
 - speed up of computing (vector computation instead of loop)
@@ -66,7 +139,7 @@ Main added features:
 ## Version 0.3.1 (Nov 2006)
 In this version, the code is called JUNO.
 
-Contributors: S. L. G. Hess, P. Zarka, B Cecconi
+Contributors: B Cecconi, S. L. G. Hess, P. Zarka
 
 Main added features:
 - spectral axis interpolation before computation (more accurate results)
@@ -75,7 +148,7 @@ Main added features:
 ## Version 0.3.0 (Oct 2006)
 In this version, the code is called JUNO.
 
-Contributors: S. L. G. Hess, P. Zarka, B. Cecconi
+Contributors: B. Cecconi, S. L. G. Hess, P. Zarka
 
 Main added features:
 - no more common blocks, using pointers instead
