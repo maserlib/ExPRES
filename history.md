@@ -1,15 +1,23 @@
-#Version History
+# Version History
 
-Each version of the code has seen new modules added and minor bugs fixed. Here is given a resume of the majors modifications. 
+## Latest Release
 
-The first versions ([0.2.0](https://github.com/maserlib/ExPRES/tree/0.2.0) to [0.3.7](https://github.com/maserlib/ExPRES/tree/0.3.7))
-of the ExPRES code were developed to predict and interpret the future observations of the NASA Juno space mission to Jupiter. 
+## Version 0.4.1 
+Version 0.4.1 is called SERPE (Simulation d'Emission Radio Planétaires et Exoplanétaires)
 
-Version [0.4.0](https://github.com/maserlib/ExPRES/tree/0.4.0) of the code allowed a generalization to Saturn and 
-version [0.5.0](https://github.com/maserlib/ExPRES/tree/0.5.0) to exoplanets. For version 
-[0.6.0](https://github.com/maserlib/ExPRES/tree/0.6.0), the code architecture has been completely redesigned and the production of 
-3D movies has been added. The current stable version is 1.0 and allows, from JSON formatted \citep{JSON} input files, 
-to produce the simulation results in CDF.
+Main additions in this version:
+- New feature to use any trajectory provided by the user.
+- Plasma disc density contribution included. 
 
-In Version [1.0.0](https://github.com/maserlib/ExPRES/tree/1.0.0), the input configuration file of the code is now a JSON file. 
-From that version on, the code is available online.  
+More details in the version history part of the `serpe.pro` header. 
+
+## Version 0.3.0
+
+## Version 0.2.0 (Oct 2006)
+This is the first tracked version. The code is called JUNO.
+
+Contributors: S. L. G. Hess, P. Zarka, B Cecconi
+
+Feature:
+- computation of the Jovian radio emission visibility from an observer
+- input of orbital parameters for observers in orbit around Jupiter 
