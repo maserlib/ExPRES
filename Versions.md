@@ -6,7 +6,7 @@ In this version, the code is called ExPRES (Exoplanetary and Planetary Radio Emi
 Contributors: C. Louis, S. L. G. Hess, P. Zarka, B. Cecconi, L. Lamy 
 
 Main addtions in this version:
-- open source licence and distrbution on github
+- open source licence and distribution on github
 - better documentation
 
 ## Version 0.6.1  (2018)
