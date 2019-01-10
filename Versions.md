@@ -22,7 +22,7 @@ Main additions in this version:
 
 Related publications:
 - Louis, C K, L Lamy, P Zarka, B Cecconi, and S L G Hess. 2017. “Detection of Jupiter Decametric Emissions Controlled by Europa and Ganymede with Voyager/PRA
-and Cassini/RPWS.” J. Geophys. Res. Space Physics 122 (September): 1–20. doi:10.1002/2016JA023779.
+and Cassini/RPWS.” J. Geophys. Res. Space Physics 122 (September): 1–20. [doi:10.1002/2016JA023779](https://dx.doi.org/10.1002/2016JA023779).
 - Louis, C K, L Lamy, P Zarka, B Cecconi, M Imai, W S Kurth, G Hospodarsky, et al. 2017. “Io-Jupiter Decametric Arcs Observed by Juno/Waves Compared to ExPRES Simulations.” Geophys. Res. Lett., 1–17. doi:10.1002/2017GL073036.
 
 ## Version 0.6.0  (2011)
