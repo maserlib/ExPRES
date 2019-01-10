@@ -23,7 +23,7 @@ Main additions in this version:
 Related publications:
 - Louis, C K, L Lamy, P Zarka, B Cecconi, and S L G Hess. 2017. “Detection of Jupiter Decametric Emissions Controlled by Europa and Ganymede with Voyager/PRA
 and Cassini/RPWS.” J. Geophys. Res. Space Physics 122 (September): 1–20. [doi:10.1002/2016JA023779](https://dx.doi.org/10.1002/2016JA023779).
-- Louis, C K, L Lamy, P Zarka, B Cecconi, M Imai, W S Kurth, G Hospodarsky, et al. 2017. “Io-Jupiter Decametric Arcs Observed by Juno/Waves Compared to ExPRES Simulations.” Geophys. Res. Lett., 1–17. doi:10.1002/2017GL073036.
+- Louis, C K, L Lamy, P Zarka, B Cecconi, M Imai, W S Kurth, G Hospodarsky, et al. 2017. “Io-Jupiter Decametric Arcs Observed by Juno/Waves Compared to ExPRES Simulations.” Geophys. Res. Lett., 1–17. [doi:10.1002/2017GL073036](https://dx.doi.org/10.1002/2017GL073036).
 
 ## Version 0.6.0  (2011)
 In this version, the code is called SERPE (Simulation d'Emission Radio Planétaires et Exoplanétaires)
@@ -35,7 +35,7 @@ Main additions in this version:
 - output of 3D movies added
 
 Related publication:
-- Cecconi, B, SLG Hess, A Hérique, Maria Rosaria Santovito, Daniel Santos-Costa, Philippe Zarka, G Alberti, et al. 2012. “Natural Radio Emission of Jupiter as Interferences for Radar Investigations of the Icy Satellites of Jupiter.” Planet. Space Sci. 61: 32–45. doi:10.1016/j.pss.2011.06.012.
+- Cecconi, B, SLG Hess, A Hérique, Maria Rosaria Santovito, Daniel Santos-Costa, Philippe Zarka, G Alberti, et al. 2012. “Natural Radio Emission of Jupiter as Interferences for Radar Investigations of the Icy Satellites of Jupiter.” Planet. Space Sci. 61: 32–45. [doi:10.1016/j.pss.2011.06.012](https://dx.doi.org/10.1016/j.pss.2011.06.012).
 
 ## Version 0.5.0  (2010)
 In this version, the code is called SERPE (Simulation d'Emission Radio Planétaires et Exoplanétaires)
@@ -46,7 +46,7 @@ Main additions in this version:
 - possibility to run simulations for exoplanetary radio emissions
 
 Related publication:
-- Hess, S L G, and P Zarka. 2011. “Modeling the Radio Signature of the Orbital Parameters, Rotation, and Magnetic Field of Exoplanets.” Astronomy and Astrophysics 531 (June): A29. doi:10.1051/0004-6361/201116510.
+- Hess, S L G, and P Zarka. 2011. “Modeling the Radio Signature of the Orbital Parameters, Rotation, and Magnetic Field of Exoplanets.” Astronomy and Astrophysics 531 (June): A29. [doi:10.1051/0004-6361/201116510](https://dx.doi.org/10.1051/0004-6361/201116510).
 
 ## Version 0.4.2  (Feb 2008)
 In this version, the code is called SERPE (Simulation d'Emission Radio Planétaires et Exoplanétaires)
@@ -58,7 +58,7 @@ Main additions in this version:
 
 Related Publication:
 - Lamy, L, Philippe Zarka, B Cecconi, SLG Hess, and Renée Prangé. 2008. “Modeling of Saturn Kilometric Radiation Arcs and Equatorial Shadow Zone.” J. Geophys. Res. 113 (A10213). doi:10.1029/2008JA013464.
-- Lamy, L, B Cecconi, P Zarka, P Canu, P Schippers, W S Kurth, R L Mutel, D A Gurnett, D Menietti, and P Louarn. 2011. “Emission and Propagation of Saturn Kilometric Radiation: Magnetoionic Modes, Beaming Pattern, and Polarization State.” J. Geophys. Res. 116 (A04212). doi:10.1029/2010JA016195.
+- Lamy, L, B Cecconi, P Zarka, P Canu, P Schippers, W S Kurth, R L Mutel, D A Gurnett, D Menietti, and P Louarn. 2011. “Emission and Propagation of Saturn Kilometric Radiation: Magnetoionic Modes, Beaming Pattern, and Polarization State.” J. Geophys. Res. 116 (A04212). [doi:10.1029/2010JA016195](https://dx.doi.org/10.1029/2010JA016195)
 
 ## Version 0.4.1  (Oct 2007)
 In this version, the code is called SERPE (Simulation d'Emission Radio Planétaires et Exoplanétaires)
@@ -72,7 +72,7 @@ Main additions in this version:
 More details in the version history part of the `serpe.pro` header. 
 
 Related publication:
-- Hess, SLG, A Pétin, Philippe Zarka, B Bonfond, and B Cecconi. 2010. “Lead Angles and Emitting Electron Energies of Io-Controlled Decameter Radio Arcs.” Planet. Space Sci. 58 (10): 1188–98. doi:10.1016/j.pss.2010.04.011.
+- Hess, SLG, A Pétin, Philippe Zarka, B Bonfond, and B Cecconi. 2010. “Lead Angles and Emitting Electron Energies of Io-Controlled Decameter Radio Arcs.” Planet. Space Sci. 58 (10): 1188–98. [doi:10.1016/j.pss.2010.04.011](https://dx.doi.org/10.1016/j.pss.2010.04.011).
 
 ## Version 0.4.0 (Jun 2007)
 In this version, the code is called JUNO.
