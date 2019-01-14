@@ -6,8 +6,8 @@ Data should be downloaded from http://maser.obspm.fr/support/expres/mfl/
 
 The following precomputed datasets are available:
 - [ISaAC_lsh](http://maser.obspm.fr/support/expres/mfl/ISaAC_lsh) ([tgz](http://maser.obspm.fr/support/expres/mfl/ISaAC_lsh.tgz)): Jupiter ISaAC magnetic field model (ref?)
-- [JRM09_lsh](): Jupiter JRM09 magnetic field model (ref?)
-- [VIPAL_lsh](): Jupiter VIPAL magnetic field model ([Hess et al. 2011](#hess_2011))
+- [JRM09_lsh](): Jupiter JRM09 magnetic field model ([Connerney et al. 2018](#jrm09))
+- [VIPAL_lsh](): Jupiter VIPAL magnetic field model ([Hess et al. 2011](#vipal))
 
 
 
@@ -47,4 +47,5 @@ Variables:
 
 ## References
 
-- <a name='hess_2011'></a> Hess, Sébastien L. G., Bertrand Bonfond, Philippe Zarka, and Denis Grodent. 2011. “Model of the Jovian Magnetic Field Topology Constrained by the Io Auroral Emissions.” J. Geophys. Res. 116 (A5): 177. [doi:10.1029/2010JA016262](https://doi.org/10.1029/2010JA016262)
+- <a name='vipal'></a>Hess, Sébastien L. G., Bertrand Bonfond, Philippe Zarka, and Denis Grodent. 2011. “Model of the Jovian Magnetic Field Topology Constrained by the Io Auroral Emissions.” J. Geophys. Res. 116 (A5): 177. [doi:10.1029/2010JA016262](https://dx.doi.org/10.1029/2010JA016262)
+- <a name='jrm09'></a>Connerney, J E P, S Kotsiaros, R J Oliversen, J R Espley, J L Joergensen, P S Joergensen, J M G Merayo, et al. 2018. “A New Model of Jupiter‘S Magnetic Field From Juno’S First Nine Orbits.” Geophys. Res. Lett. 45 (6): 2590–96. [doi:10.1007/s11214-009-9621-7](https:/dx.doi.org/10.1007/s11214-009-9621-7).
