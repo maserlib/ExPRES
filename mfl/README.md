@@ -21,7 +21,8 @@ Data should be downloaded from http://maser.obspm.fr/support/expres/mfl/
    |_ files (0,1,2,...359, -0,-1,...,-359)
 	numbers correspond to longitudes (sign to north/south)
 
-	field lines are stored from 2.9*(1E-3 *dip moment in Gauss) MHz to the max frequency by steps of 2.9*(1E-3 *dip moment in Gauss) MHz
+	field lines are stored from 2.9*(1E-3 *dip moment in Gauss) MHz to the max frequency by steps 
+	of 2.9*(1E-3 *dip moment in Gauss) MHz
 ```
 
 ## Data format
