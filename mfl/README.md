@@ -47,4 +47,4 @@ Variables:
 
 ## References
 
-- [](){:name='hess_2011'} Hess, Sébastien L. G., Bertrand Bonfond, Philippe Zarka, and Denis Grodent. 2011. “Model of the Jovian Magnetic Field Topology Constrained by the Io Auroral Emissions.” J. Geophys. Res. 116 (A5): 177. [doi:10.1029/2010JA016262](https://doi.org/10.1029/2010JA016262)
+- <a name='hess_2011'></a> Hess, Sébastien L. G., Bertrand Bonfond, Philippe Zarka, and Denis Grodent. 2011. “Model of the Jovian Magnetic Field Topology Constrained by the Io Auroral Emissions.” J. Geophys. Res. 116 (A5): 177. [doi:10.1029/2010JA016262](https://doi.org/10.1029/2010JA016262)
