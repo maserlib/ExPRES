@@ -4,6 +4,11 @@
 
 Data should be downloaded from http://maser.obspm.fr/support/expres/mfl/ 
 
+The following precomputed datasets are available:
+- [ISaAC_lsh](http://maser.obspm.fr/support/expres/mfl/ISaAC_lsh) ([tgz](http://maser.obspm.fr/support/expres/mfl/ISaAC_lsh.tgz)): Jupiter ISaAC magnetic field model (ref?)
+- [JRM09_lsh](): Jupiter JRM09 magnetic field model (ref?)
+- [VIPAL_lsh](): Jupiter VIPAL magnetic field model ([Hess et al. 2011](#hess_2011))
+
 
 
 ## Directory setup
@@ -39,3 +44,7 @@ Variables:
   FLOAT  [3,n] bz = b basis zenith vector
   FLOAT  [n] gb = grad b direction (in b basis)
 ```
+
+## References
+
+- [](){:name='hess_2011'} Hess, Sébastien L. G., Bertrand Bonfond, Philippe Zarka, and Denis Grodent. 2011. “Model of the Jovian Magnetic Field Topology Constrained by the Io Auroral Emissions.” J. Geophys. Res. 116 (A5): 177. [doi:10.1029/2010JA016262](https://doi.org/10.1029/2010JA016262)
