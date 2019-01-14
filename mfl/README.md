@@ -26,14 +26,16 @@ Data should be downloaded from http://maser.obspm.fr/support/expres/mfl/
 
 ## Data format
 ```
-LONG  [1]  n = number of points in the file
-LONG  [n]  x = x position of the points
-LONG  [n]  y = y position of the points
-LONG  [n]  z = z position of the points
-LONG  [3,n] b = b unitary vector
-LONG  [n]  f = frequencies
---------------------------------------------- ^ equiv old versions of SERPE
-LONG  [n]  Gwc = delta ln(wc) over c/wc
-LONG  [3,n] bz = b basis zenith vector
-LONG  [3,n] gb = grad b direction (in b basis)
+Format: Binary file, big endian
+Variables:
+  LONG  [1]  n = number of points in the file
+  LONG  [n]  x = x position of the points
+  LONG  [n]  y = y position of the points
+  LONG  [n]  z = z position of the points
+  LONG  [3,n] b = b unitary vector
+  LONG  [n]  f = frequencies
+  --------------------------------------------- ^ equiv old versions of SERPE
+  LONG  [n]  Gwc = delta ln(wc) over c/wc
+  LONG  [3,n] bz = b basis zenith vector
+  LONG  [3,n] gb = grad b direction (in b basis)
 ```
