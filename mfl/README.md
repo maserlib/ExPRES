@@ -29,13 +29,13 @@ Data should be downloaded from http://maser.obspm.fr/support/expres/mfl/
 ```
 Format: Binary file, big endian
 Variables:
-  LONG  [1]  n = number of points in the file
+  LONG  [1]  n = number of data points in the file
   FLOAT  [n]  x = x position of the points
   FLOAT  [n]  y = y position of the points
   FLOAT  [n]  z = z position of the points
-  FLOAT  [3,n] b = b unitary vector
+  FLOAT  [3,n] b = b unit vector
   FLOAT  [n]  f = frequencies
   FLOAT  [n]  Gwc = delta ln(wc) over c/wc
   FLOAT  [3,n] bz = b basis zenith vector
-  FLOAT  [3,n] gb = grad b direction (in b basis)
+  FLOAT  [n] gb = grad b direction (in b basis)
 ```
