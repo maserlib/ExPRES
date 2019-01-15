@@ -3,8 +3,8 @@
 ## Directories
 * [src](src) contains the ExPRES code IDL routines.
 * [mfl](mfl) stores the magnetic field lines used by ExPRES. When installing the code, precomputed data 
-files must be retrieved from [http://maser.obspm.fr/support/serpe/mfl](http://maser.obspm.fr/support/serpe/mfl).
-That URL provides precomputed data files as well as the IDL routines that can be used for computing the files.
+files must be retrieved from [http://maser.obspm.fr/support/expres/mfl](http://maser.obspm.fr/support/expres/mfl). 
+See [this file](mfl/README.md) for more details.
 * [ephem](ephem) stores ephemerides files used by ExPRES. IDL saveset files (.sav) are available for precomputed
 ephemerides. Other files (plain text format, .txt) will be stored here, and correspond to the output of the 
 MIRIADE IMCCE webservice calls.
