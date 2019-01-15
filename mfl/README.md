@@ -9,7 +9,7 @@ The following precomputed datasets are available:
 - [JRM09_lsh](http://maser.obspm.fr/support/expres/mfl/JRM09_lsh) (bundled [tgz](http://maser.obspm.fr/support/expres/mfl/JRM09_lsh.tgz), 4.0 GB): Jupiter JRM09 magnetic field model ([Connerney et al. 2018](#jrm09))
 - [VIPAL_lsh](http://maser.obspm.fr/support/expres/mfl/VIPAL_lsh) (bundled [tgz](http://maser.obspm.fr/support/expres/mfl/VIPAL_lsh.tgz)): Jupiter VIPAL magnetic field model ([Hess et al. 2011](#vipal))
 - [VIT4_lsh](http://maser.obspm.fr/support/expres/mfl/VIT4_lsh) (bundled [tgz](http://maser.obspm.fr/support/expres/mfl/VIT4_lsh.tgz)): Jupiter VIT4 magnetic field model (ref?)
-- [VIP4_lsh](http://maser.obspm.fr/support/expres/mfl/VIP4_lsh) (bundled [tgz](http://maser.obspm.fr/support/expres/mfl/VIP4_lsh.tgz)): Jupiter VIP4 magnetic field model (ref?)
+- [VIP4_lsh](http://maser.obspm.fr/support/expres/mfl/VIP4_lsh) (bundled [tgz](http://maser.obspm.fr/support/expres/mfl/VIP4_lsh.tgz)): Jupiter VIP4 magnetic field model ([Connerney et al. 1998](#vip4))
 
 
 
@@ -49,6 +49,7 @@ Variables:
 
 ## References
 
-- <a name='jrm09'></a>Connerney, J E P, S Kotsiaros, R J Oliversen, J R Espley, J L Joergensen, P S Joergensen, J M G Merayo, et al. 2018. “A New Model of Jupiter‘S Magnetic Field From Juno’S First Nine Orbits.” Geophys. Res. Lett. 45 (6): 2590–96. [doi:10.1007/s11214-009-9621-7](https:/dx.doi.org/10.1007/s11214-009-9621-7).
+- <a name='vip4'></a>Connerney, J. E. P., M. H. Acuna, N. F. Ness, and T. Satoh. 1998. “New Models of Jupiter's Magnetic Field Constrained by the Io Flux Tube Footprint.” J. Geophys. Res. 103 (A6): 11929–39. [doi:10.1029/97JA03726](https://dx.doi.org/10.1029/97JA03726)
+- <a name='jrm09'></a>Connerney, J. E. P., S. Kotsiaros, R. J. Oliversen, J. R. Espley, J. L. Joergensen, P. S. Joergensen, J. M. G. Merayo, et al. 2018. “A New Model of Jupiter‘S Magnetic Field From Juno’S First Nine Orbits.” Geophys. Res. Lett. 45 (6): 2590–96. [doi:10.1007/s11214-009-9621-7](https:/dx.doi.org/10.1007/s11214-009-9621-7).
 - <a name='isaac'></a>Hess, Sébastien L. G.,  Bertrand Bonfond, Fran Bagenal, and Laurent Lamy. 2017. "A Model of the Jovian Internal Field Derived from in-situ and Auroral Constraints", PRE8 Proceedings, Austrian Academy of Science. [doi:10.1553/PRE8s157](https://dx.doi.org/10.1553/PRE8s157).
 - <a name='vipal'></a>Hess, Sébastien L. G., Bertrand Bonfond, Philippe Zarka, and Denis Grodent. 2011. “Model of the Jovian Magnetic Field Topology Constrained by the Io Auroral Emissions.” J. Geophys. Res. 116 (A5): 177. [doi:10.1029/2010JA016262](https://dx.doi.org/10.1029/2010JA016262)
