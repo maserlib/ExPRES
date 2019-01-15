@@ -59,6 +59,7 @@ Main additions in this version:
 Related Publication:
 - Lamy, L, Philippe Zarka, B Cecconi, SLG Hess, and Renée Prangé. 2008. “Modeling of Saturn Kilometric Radiation Arcs and Equatorial Shadow Zone.” J. Geophys. Res. 113 (A10213). doi:10.1029/2008JA013464.
 - Lamy, L, B Cecconi, P Zarka, P Canu, P Schippers, W S Kurth, R L Mutel, D A Gurnett, D Menietti, and P Louarn. 2011. “Emission and Propagation of Saturn Kilometric Radiation: Magnetoionic Modes, Beaming Pattern, and Polarization State.” J. Geophys. Res. 116 (A04212). [doi:10.1029/2010JA016195](https://dx.doi.org/10.1029/2010JA016195)
+- Lamy, L, R Prangé, W Pryor, J Gustin, S V Badman, H Melin, T Stallard, D G Mitchell, and P C Brandt. 2013. “Multispectral Simultaneous Diagnosis of Saturn's Aurorae Throughout a Planetary Rotation.” Journal of Geophysical Research (Space Physics) 118 (8): 4817–43. [doi:10.1002/jgra.50404](https://dx.doi.org/10.1002/jgra.50404).
 
 ## Version 0.4.1  (Oct 2007)
 In this version, the code is called SERPE (Simulation d'Emission Radio Planétaires et Exoplanétaires)
