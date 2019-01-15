@@ -9,6 +9,9 @@ Main addtions in this version:
 - open source licence and distribution on github
 - better documentation
 
+Related Publications:
+- 
+
 ## Version 0.6.1  (2018)
 In this version, the code is called SERPE (Simulation d'Emission Radio Planétaires et Exoplanétaires)
 
@@ -21,9 +24,10 @@ Main additions in this version:
 - input in JSON or SRP (original input file format) 
 
 Related publications:
-- Louis, C K, L Lamy, P Zarka, B Cecconi, and S L G Hess. 2017. “Detection of Jupiter Decametric Emissions Controlled by Europa and Ganymede with Voyager/PRA
+- Louis, CK, L Lamy, P Zarka, B Cecconi, and SLG Hess. 2017. “Detection of Jupiter Decametric Emissions Controlled by Europa and Ganymede with Voyager/PRA and Cassini/RPWS.” J. Geophys. Res. Space Physics 122 (September): 1–20. [doi:10.1002/2016JA023779](https://dx.doi.org/10.1002/2016JA023779).
+- Louis, CK, L Lamy, P Zarka, B Cecconi, SLG Hess, X Bonnin. 2018. Simulating Jupiter-satellite decametric emissions with ExPRES: a parametric study", PRE8 proceedings, [arXiv:1804.10499](https://arxiv.org/abs/1804.10499)
 and Cassini/RPWS.” J. Geophys. Res. Space Physics 122 (September): 1–20. [doi:10.1002/2016JA023779](https://dx.doi.org/10.1002/2016JA023779).
-- Louis, C K, L Lamy, P Zarka, B Cecconi, M Imai, W S Kurth, G Hospodarsky, et al. 2017. “Io-Jupiter Decametric Arcs Observed by Juno/Waves Compared to ExPRES Simulations.” Geophys. Res. Lett., 1–17. [doi:10.1002/2017GL073036](https://dx.doi.org/10.1002/2017GL073036).
+- Louis, CK, L Lamy, P Zarka, B Cecconi, M Imai, WS Kurth, G Hospodarsky, et al. 2017. “Io-Jupiter Decametric Arcs Observed by Juno/Waves Compared to ExPRES Simulations.” Geophys. Res. Lett., 1–17. [doi:10.1002/2017GL073036](https://dx.doi.org/10.1002/2017GL073036).
 
 ## Version 0.6.0  (2011)
 In this version, the code is called SERPE (Simulation d'Emission Radio Planétaires et Exoplanétaires)
