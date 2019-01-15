@@ -5,15 +5,15 @@
 Data should be downloaded from http://maser.obspm.fr/support/expres/mfl/ 
 
 The following precomputed datasets are available for Jupiter:
-- [ISaAC_lsh](http://maser.obspm.fr/support/expres/mfl/ISaAC_lsh) (bundled [tar.gz](http://maser.obspm.fr/support/expres/mfl/ISaAC_lsh.tgz), 6.9 GB): ISaAC magnetic field model ([Hess et al. 2017](#isaac))
-- [JRM09_lsh](http://maser.obspm.fr/support/expres/mfl/JRM09_lsh) (bundled [tar.gz](http://maser.obspm.fr/support/expres/mfl/JRM09_lsh.tgz), 4.0 GB): JRM09 magnetic field model ([Connerney et al. 2018](#jrm09))
-- [O6_lsh](http://maser.obspm.fr/support/expres/mfl/O6_lsh) (bundled [tar.gz](http://maser.obspm.fr/support/expres/mfl/O6_lsh.tgz)): O6 magnetic field model ([Connerney et al. 1992](#o6))
-- [VIP4_lsh](http://maser.obspm.fr/support/expres/mfl/VIP4_lsh) (bundled [tar.gz](http://maser.obspm.fr/support/expres/mfl/VIP4_lsh.tgz)): VIP4 magnetic field model ([Connerney et al. 1998](#vip4))
-- [VIPAL_lsh](http://maser.obspm.fr/support/expres/mfl/VIPAL_lsh) (bundled [tar.gz](http://maser.obspm.fr/support/expres/mfl/VIPAL_lsh.tgz), 1.4 GB): VIPAL magnetic field model ([Hess et al. 2011](#vipal))
-- [VIT4_lsh](http://maser.obspm.fr/support/expres/mfl/VIT4_lsh) (bundled [tar.gz](http://maser.obspm.fr/support/expres/mfl/VIT4_lsh.tgz)): VIT4 magnetic field model (ref?)
+- [ISaAC_lsh](http://maser.obspm.fr/support/expres/mfl/ISaAC_lsh) (bundled [tar.gz](http://maser.obspm.fr/support/expres/mfl/ISaAC_lsh.tar.gz), 6.9 GB): ISaAC magnetic field model ([Hess et al. 2017](#isaac))
+- [JRM09_lsh](http://maser.obspm.fr/support/expres/mfl/JRM09_lsh) (bundled [tar.gz](http://maser.obspm.fr/support/expres/mfl/JRM09_lsh.tar.gz), 4.0 GB): JRM09 magnetic field model ([Connerney et al. 2018](#jrm09))
+- [O6_lsh](http://maser.obspm.fr/support/expres/mfl/O6_lsh) (bundled [tar.gz](http://maser.obspm.fr/support/expres/mfl/O6_lsh.tar.gz), 1.8 GB): O6 magnetic field model ([Connerney et al. 1992](#o6))
+- [VIP4_lsh](http://maser.obspm.fr/support/expres/mfl/VIP4_lsh) (bundled [tar.gz](http://maser.obspm.fr/support/expres/mfl/VIP4_lsh.tar.gz)): VIP4 magnetic field model ([Connerney et al. 1998](#vip4))
+- [VIPAL_lsh](http://maser.obspm.fr/support/expres/mfl/VIPAL_lsh) (bundled [tar.gz](http://maser.obspm.fr/support/expres/mfl/VIPAL_lsh.tar.gz), 1.4 GB): VIPAL magnetic field model ([Hess et al. 2011](#vipal))
+- [VIT4_lsh](http://maser.obspm.fr/support/expres/mfl/VIT4_lsh) (bundled [tar.gz](http://maser.obspm.fr/support/expres/mfl/VIT4_lsh.tar.gz)): VIT4 magnetic field model (ref?)
 
 for Saturn:
-- [Z3.lsh]() (bundled [tar.gz]()): Z3 magnetic field model ([Connerney et al. 1984](#z3))
+- [Z3.lsh](http://maser.obspm.fr/support/expres/mfl/Z3_lsh) (bundled [tar.gz](http://maser.obspm.fr/support/expres/mfl/Z3_lsh.tar.gz)): Z3 magnetic field model ([Connerney et al. 1984](#z3))
 
 ## Directory setup
 
