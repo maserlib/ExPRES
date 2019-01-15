@@ -5,9 +5,9 @@
 Data should be downloaded from http://maser.obspm.fr/support/expres/mfl/ 
 
 The following precomputed datasets are available:
-- [ISaAC_lsh](http://maser.obspm.fr/support/expres/mfl/ISaAC_lsh) (bundled [tgz](http://maser.obspm.fr/support/expres/mfl/ISaAC_lsh.tgz)): Jupiter ISaAC magnetic field model (ref?)
-- [JRM09_lsh](http://maser.obspm.fr/support/expres/mfl/JRM09_lsh) (bundled [tgz](http://maser.obspm.fr/support/expres/mfl/JRM09_lsh.tgz)): Jupiter JRM09 magnetic field model ([Connerney et al. 2018](#jrm09))
-- [VIPAL_lsh](http://maser.obspm.fr/support/expres/mfl/VIPAL_lsh) (bundled [tgz](http://maser.obspm.fr/support/expres/mfl/VIPAL_lsh.tgz)): Jupiter VIPAL magnetic field model ([Hess et al. 2011](#vipal))`
+- [ISaAC_lsh](http://maser.obspm.fr/support/expres/mfl/ISaAC_lsh) (bundled [tgz](http://maser.obspm.fr/support/expres/mfl/ISaAC_lsh.tgz), 6.9 GB): Jupiter ISaAC magnetic field model (ref?)
+- [JRM09_lsh](http://maser.obspm.fr/support/expres/mfl/JRM09_lsh) (bundled [tgz](http://maser.obspm.fr/support/expres/mfl/JRM09_lsh.tgz), 4.0 GB): Jupiter JRM09 magnetic field model ([Connerney et al. 2018](#jrm09))
+- [VIPAL_lsh](http://maser.obspm.fr/support/expres/mfl/VIPAL_lsh) (bundled [tgz](http://maser.obspm.fr/support/expres/mfl/VIPAL_lsh.tgz)): Jupiter VIPAL magnetic field model ([Hess et al. 2011](#vipal))
 - [VIT4_lsh](http://maser.obspm.fr/support/expres/mfl/VIT4_lsh) (bundled [tgz](http://maser.obspm.fr/support/expres/mfl/VIT4_lsh.tgz)): Jupiter VIT4 magnetic field model (ref?)
 - [VIP4_lsh](http://maser.obspm.fr/support/expres/mfl/VIP4_lsh) (bundled [tgz](http://maser.obspm.fr/support/expres/mfl/VIP4_lsh.tgz)): Jupiter VIP4 magnetic field model (ref?)
 
