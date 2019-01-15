@@ -49,5 +49,6 @@ Variables:
 
 ## References
 
-- <a name='vipal'></a>Hess, Sébastien L. G., Bertrand Bonfond, Philippe Zarka, and Denis Grodent. 2011. “Model of the Jovian Magnetic Field Topology Constrained by the Io Auroral Emissions.” J. Geophys. Res. 116 (A5): 177. [doi:10.1029/2010JA016262](https://dx.doi.org/10.1029/2010JA016262)
 - <a name='jrm09'></a>Connerney, J E P, S Kotsiaros, R J Oliversen, J R Espley, J L Joergensen, P S Joergensen, J M G Merayo, et al. 2018. “A New Model of Jupiter‘S Magnetic Field From Juno’S First Nine Orbits.” Geophys. Res. Lett. 45 (6): 2590–96. [doi:10.1007/s11214-009-9621-7](https:/dx.doi.org/10.1007/s11214-009-9621-7).
+- <a name='isaac'></a>Hess, Sébastien L. G.,  Bertrand Bonfond, Fran Bagenal, and Laurent Lamy. 2017. "A Model of the Jovian Internal Field Derived from in-situ and Auroral Constraints", PRE8 Proceedings, Austrian Academy of Science. [doi:10.1553/PRE8s157](https://dx.doi.org/10.1553/PRE8s157).
+- <a name='vipal'></a>Hess, Sébastien L. G., Bertrand Bonfond, Philippe Zarka, and Denis Grodent. 2011. “Model of the Jovian Magnetic Field Topology Constrained by the Io Auroral Emissions.” J. Geophys. Res. 116 (A5): 177. [doi:10.1029/2010JA016262](https://dx.doi.org/10.1029/2010JA016262)
