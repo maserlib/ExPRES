@@ -37,7 +37,7 @@ def load_test_mfl(mfl_name):
     if (mfl_dir / mfl_name).exists():
         pass
     else:
-        ; downloading corresponding mfl_name data
+        # downloading corresponding mfl_name data
         mfl_url_name = '{}{}.tar.gz'.format(mfl_url,mfl_name)
         mfl_tmp_tgz = pathlib.Path('/tmp') / '{}.tar.gz'.format(mfl_name)
         urllib.request.urlretrieve(mfl_url_name, str(mfl_tmp_tgz))
