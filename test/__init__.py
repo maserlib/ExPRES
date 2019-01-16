@@ -41,4 +41,4 @@ def load_test_mfl(mfl_name):
         mfl_url_name = '{}{}.tar.gz'.format(mfl_url,mfl_name)
         mfl_tmp_tgz = pathlib.Path('/tmp') / '{}.tar.gz'.format(mfl_name)
         urllib.request.urlretrieve(mfl_url_name, str(mfl_tmp_tgz))
-        os.system('cd {} & tar -xzf {}'.format(str(mfl_dir), str(mfl_tmp_tgz)))
+        os.system('cd {} ; tar -xzf {}'.format(str(mfl_dir), str(mfl_tmp_tgz)))
