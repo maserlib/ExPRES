@@ -11,8 +11,8 @@ class field(unittest.TestCase):
     def setUp(self):
         self.idl = init_serpe_idl()
         self.mfl_dir = get_test_mfl_dir()
-        load_mfl_name('Z3_lsh')
-        load_mfl_name('VIPAL_lat')
+        load_test_mfl('Z3_lsh')
+        load_test_mfl('VIP4_lat')
 
     def tearDown(self):
         self.idl.run('.reset_session')
@@ -24,7 +24,7 @@ class field(unittest.TestCase):
         self.assertEqual(a, 1)
 
     def test_field__interrogate_field_1(self):
-        self.idl.run("a = interrogate_field({}VIPAL_lat/,'10','-')".format(self.mfl_dir))
+        self.idl.run("a = interrogate_field({}VIP4_lat/,'10','-')".format(self.mfl_dir))
         a = self.idl.a
         self.assertIsInstance(p, int8)
         self.assertEqual(a, 0)
