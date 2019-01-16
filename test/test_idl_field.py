@@ -21,6 +21,7 @@ class field(unittest.TestCase):
     def test_field__interogate_field_0(self):
         self.idl.run("a = interogate_field('{}/Z3_lsh/','10','-')".format(self.mfl_dir))
         a = self.idl.a
+        print(type(a))
         self.assertIsInstance(a, int)
         self.assertEqual(a, 1)
 
