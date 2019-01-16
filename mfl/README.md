@@ -15,7 +15,7 @@ The following precomputed datasets are available:
 | VIP4       | Jupiter | [VIP4_lsh](http://maser.obspm.fr/support/expres/mfl/VIP4_lsh)<br/>[VIP4_lat](http://maser.obspm.fr/support/expres/mfl/VIP4_lat) | [tar.gz](http://maser.obspm.fr/support/expres/mfl/VIP4_lsh.tar.gz) (2.0 GB)<br/>[tar.gz](http://maser.obspm.fr/support/expres/mfl/VIP4_lat.tar.gz) (0.8 GB) | [Connerney et al. 1998](#vip4)|
 | VIPAL      | Jupiter | [VIPAL_lsh](http://maser.obspm.fr/support/expres/mfl/VIPAL_lsh) | [tar.gz](http://maser.obspm.fr/support/expres/mfl/VIPAL_lsh.tar.gz) (1.4 GB) | [Hess et al. 2011](#vipal)|
 | VIT4       | Jupiter | [VIT4_lsh](http://maser.obspm.fr/support/expres/mfl/VIT4_lsh) | [tar.gz](http://maser.obspm.fr/support/expres/mfl/VIT4_lsh.tar.gz) (1.9 GB) | [Connerney 2007](#vit4) |
-| Z3         | Saturn  | [Z3.lsh](http://maser.obspm.fr/support/expres/mfl/Z3_lsh)<br/>[Z3.lat](http://maser.obspm.fr/support/expres/mfl/Z3_lat) | [tar.gz](http://maser.obspm.fr/support/expres/mfl/Z3_lsh.tar.gz) (0.2 MB)<br/[tar.gz](http://maser.obspm.fr/support/expres/mfl/Z3_lat.tar.gz) (3.4 MB) | [Connerney et al. 1984](#z3)|
+| Z3         | Saturn  | [Z3.lsh](http://maser.obspm.fr/support/expres/mfl/Z3_lsh)<br/>[Z3.lat](http://maser.obspm.fr/support/expres/mfl/Z3_lat) | [tar.gz](http://maser.obspm.fr/support/expres/mfl/Z3_lsh.tar.gz) (0.2 MB)<br/>[tar.gz](http://maser.obspm.fr/support/expres/mfl/Z3_lat.tar.gz) (3.4 MB) | [Connerney et al. 1984](#z3)|
 
 ## Directory setup
 
