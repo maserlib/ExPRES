@@ -10,6 +10,7 @@ class field(unittest.TestCase):
 
     def setUp(self):
         self.idl = init_serpe_idl()
+        self.idl.run('.r field')
         self.mfl_dir = get_test_mfl_dir()
         load_test_mfl('Z3_lsh')
         load_test_mfl('VIP4_lat')
