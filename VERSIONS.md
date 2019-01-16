@@ -9,6 +9,9 @@ Main addtions in this version:
 - open source licence and distribution on github
 - better documentation
 
+Related Publications:
+- 
+
 ## Version 0.6.1  (2018)
 In this version, the code is called SERPE (Simulation d'Emission Radio Planétaires et Exoplanétaires)
 
@@ -21,9 +24,10 @@ Main additions in this version:
 - input in JSON or SRP (original input file format) 
 
 Related publications:
-- Louis, C K, L Lamy, P Zarka, B Cecconi, and S L G Hess. 2017. “Detection of Jupiter Decametric Emissions Controlled by Europa and Ganymede with Voyager/PRA
+- Louis, CK, L Lamy, P Zarka, B Cecconi, and SLG Hess. 2017. “Detection of Jupiter Decametric Emissions Controlled by Europa and Ganymede with Voyager/PRA and Cassini/RPWS.” J. Geophys. Res. Space Physics 122 (September): 1–20. [doi:10.1002/2016JA023779](https://dx.doi.org/10.1002/2016JA023779).
+- Louis, CK, L Lamy, P Zarka, B Cecconi, SLG Hess, X Bonnin. 2018. Simulating Jupiter-satellite decametric emissions with ExPRES: a parametric study", PRE8 proceedings, [arXiv:1804.10499](https://arxiv.org/abs/1804.10499)
 and Cassini/RPWS.” J. Geophys. Res. Space Physics 122 (September): 1–20. [doi:10.1002/2016JA023779](https://dx.doi.org/10.1002/2016JA023779).
-- Louis, C K, L Lamy, P Zarka, B Cecconi, M Imai, W S Kurth, G Hospodarsky, et al. 2017. “Io-Jupiter Decametric Arcs Observed by Juno/Waves Compared to ExPRES Simulations.” Geophys. Res. Lett., 1–17. [doi:10.1002/2017GL073036](https://dx.doi.org/10.1002/2017GL073036).
+- Louis, CK, L Lamy, P Zarka, B Cecconi, M Imai, WS Kurth, G Hospodarsky, et al. 2017. “Io-Jupiter Decametric Arcs Observed by Juno/Waves Compared to ExPRES Simulations.” Geophys. Res. Lett., 1–17. [doi:10.1002/2017GL073036](https://dx.doi.org/10.1002/2017GL073036).
 
 ## Version 0.6.0  (2011)
 In this version, the code is called SERPE (Simulation d'Emission Radio Planétaires et Exoplanétaires)
@@ -59,6 +63,7 @@ Main additions in this version:
 Related Publication:
 - Lamy, L, Philippe Zarka, B Cecconi, SLG Hess, and Renée Prangé. 2008. “Modeling of Saturn Kilometric Radiation Arcs and Equatorial Shadow Zone.” J. Geophys. Res. 113 (A10213). doi:10.1029/2008JA013464.
 - Lamy, L, B Cecconi, P Zarka, P Canu, P Schippers, W S Kurth, R L Mutel, D A Gurnett, D Menietti, and P Louarn. 2011. “Emission and Propagation of Saturn Kilometric Radiation: Magnetoionic Modes, Beaming Pattern, and Polarization State.” J. Geophys. Res. 116 (A04212). [doi:10.1029/2010JA016195](https://dx.doi.org/10.1029/2010JA016195)
+- Lamy, L, R Prangé, W Pryor, J Gustin, S V Badman, H Melin, T Stallard, D G Mitchell, and P C Brandt. 2013. “Multispectral Simultaneous Diagnosis of Saturn's Aurorae Throughout a Planetary Rotation.” Journal of Geophysical Research (Space Physics) 118 (8): 4817–43. [doi:10.1002/jgra.50404](https://dx.doi.org/10.1002/jgra.50404).
 
 ## Version 0.4.1  (Oct 2007)
 In this version, the code is called SERPE (Simulation d'Emission Radio Planétaires et Exoplanétaires)
