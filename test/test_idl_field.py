@@ -10,9 +10,9 @@ class field(unittest.TestCase):
 
     def setUp(self):
         self.idl = init_serpe_idl()
-        self.mfl_dir = get_mfl_dir()
-        check_mfl_name('Z3_lsh')
-        check_mfl_name('VIPAL_lat')
+        self.mfl_dir = get_test_mfl_dir()
+        load_mfl_name('Z3_lsh')
+        load_mfl_name('VIPAL_lat')
 
     def tearDown(self):
         self.idl.run('.reset_session')
