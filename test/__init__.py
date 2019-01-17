@@ -14,7 +14,7 @@ mfl_url = 'http://maser.obspm.fr/support/expres/mfl/'
 
 def get_config():
     config = configparser.ConfigParser()
-    config.read(str(src_dir / 'config.ini'))
+    config.read(str(cur_dir / 'config.ini'))
     return config
 
 
