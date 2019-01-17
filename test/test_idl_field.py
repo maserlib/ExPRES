@@ -45,5 +45,4 @@ class field(unittest.TestCase):
         self.idl.run("nobj=n_elements(parameters.objects)")
         self.idl.run("it=strarr(nobj)")
         self.idl.run("for i=0,nobj-1 do it[i]=(*(parameters.objects[i])).it")
-        print(self.idl.it)
-        self.assertTrue(True)
+        self.assertEqual(self.idl.it[5], 'init_field')
