@@ -36,3 +36,12 @@ class field(unittest.TestCase):
         a = self.idl.a
         self.assertIsInstance(a, str)
         self.assertEqual(a, '')
+
+    def test_field__init_field(self):
+        self.idl.run(".r read_save")
+        self.idl.run(".r loadpath")    
+        self.idl.run("adresse_mfl = loadpath('adresse_mfl',parameters)")
+        self.idl.run("read_save_json, adresse_mfl, '{}', paramerters".format(str(get_test_json_file())))
+        self.idl.run("nobj=n_elements(parameters.objects)")
+        self.idl.run("for i=0,nobj-1 do print,i,(*(parameters.objects[i])).it")
+        self.assertTrue(True)
