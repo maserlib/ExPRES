@@ -15,6 +15,7 @@ class field(unittest.TestCase):
         self.mfl_dir = get_test_mfl_dir()
         load_test_mfl('Z3_lsh')
         load_test_mfl('VIP4_lat')
+        load_test_mfl('VIPAL_lsh')
 
     def tearDown(self):
         self.idl.run('.reset_session')
@@ -26,13 +27,13 @@ class field(unittest.TestCase):
         self.assertEqual(a, 1)
 
     def test_field__interogate_field_1(self):
-        self.idl.run("a = interogate_field('{}/VIP4_lat/','10','-')".format(self.mfl_dir))
+        self.idl.run("a = interogate_field('{}/VIPAL_lat/','10','-')".format(self.mfl_dir))
         a = self.idl.a
         self.assertIsInstance(a, numpy.uint8)
         self.assertEqual(a, 0)
     
     def test_field__interogate_field_stop(self):
-        self.idl.run("a = interogate_field('{}/VIPAL_lsh/','10','-')".format(self.mfl_dir))
+        self.idl.run("a = interogate_field('{}/O6_lsh/','10','-')".format(self.mfl_dir))
         a = self.idl.a
         self.assertIsInstance(a, str)
         self.assertEqual(a, '')
