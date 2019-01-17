@@ -1,1 +1,199 @@
-{"SIMU": {"NAME": "Io2015-04-30", "OUT": "/Groups/SERPE/SERPE_6.1/Corentin/save/Earth/JRM09/2015/3kev/Io/Io2015-04-30.json"}, "NUMBER": {"BODY": 2, "DENSITY": 2, "SOURCE": 2}, "TIME": {"MIN": 0, "MAX": 1440, "NBR": 1440}, "FREQUENCY": {"TYPE": "Linear", "MIN": 0.009999999776482582, "MAX": 44.0, "NBR": 781, "SC": ""}, "OBSERVER": {"TYPE": "Fixed", "EPHEM": "", "FIXE_DIST": "auto", "FIXE_SUBL": "auto", "FIXE_DECL": "auto", "PARENT": "Jupiter", "SC": "Earth", "SCTIME": "201504300000", "SEMI_MAJ": 0.0, "SEMI_MIN": 0.0, "SUBL": 0.0, "DECL": 0.0, "PHASE": 0.0, "INCL": 0.0}, "SPDYN": {"INTENSITY": true, "POLAR": true, "FREQ": [true, false, false, false, false], "LONG": [false, false, false, false, false], "LAT": [false, false, false, false, false], "DRANGE": [0, 0], "LGRANGE": [0, 0], "LARANGE": [0, 0], "LTRANGE": [0, 0], "KHZ": false, "LOG": false, "PDF": false, "CDF": {"THETA": true, "FP": true, "FC": true, "AZIMUTH": false, "OBSLATITUDE": true, "SRCLONGITUDE": false, "SRCFREQMAX": true, "OBSDISTANCE": true, "OBSLOCALTIME": false, "CML": true, "SRCPOS": false}, "INFOS": false}, "MOVIE2D": {"ON": false, "SUBCYCLE": 1, "RANGE": 30}, "MOVIE3D": {"ON": false, "SUBCYCLE": 5, "XRANGE": [-18, 18], "YRANGE": [-18, 18], "ZRANGE": [-18, 18], "OBS": true, "TRAJ": true}, "BODY": [{"ON": true, "NAME": "Jupiter", "RADIUS": 1, "PERIOD": 595.5, "FLAT": 0.064935, "ORB_PER": 177.83, "INIT_AX": 0, "MAG": "JRM09+Connerney CS", "MOTION": false, "PARENT": "", "SEMI_MAJ": 0, "SEMI_MIN": 0, "DECLINATION": 0, "APO_LONG": 0, "INCLINATION": 0, "PHASE": 0, "DENS": [{"ON": true, "NAME": "Body1_density1", "TYPE": "Ionospheric", "RHO0": 350000.0, "SCALE": 0.0223801, "PERP": 0.012465}, {"ON": true, "NAME": "Body1_density2", "TYPE": "Torus", "RHO0": 2000.0, "SCALE": 1, "PERP": 5.91}]}, {"ON": true, "NAME": "Io", "RADIUS": 0.0260000005364418, "PERIOD": 2547.360107421875, "FLAT": 0.0, "ORB_PER": 105.3000030517578, "INIT_AX": 0, "MAG": "", "MOTION": true, "PARENT": "Jupiter", "SEMI_MAJ": 5.909999847412109, "SEMI_MIN": 5.909999847412109, "DECLINATION": 0, "APO_LONG": 0, "INCLINATION": 0, "PHASE": "auto", "DENS": [{"ON": false, "NAME": "Body2_density1", "TYPE": "Ionospheric", "RHO0": 0, "SCALE": 0, "PERP": 0}, {"ON": false, "NAME": "Body2_density2", "TYPE": "Ionospheric", "RHO0": 0, "SCALE": 0, "PERP": 0}]}], "SOURCE": [{"ON": true, "NAME": "Source1", "PARENT": "Jupiter", "TYPE": "attached to a satellite", "LG_MIN": "auto", "LG_MAX": "auto", "LG_NBR": 1, "LAT": 0, "SUB": 0, "AURORA_ALT": 0.009091926738619804, "SAT": "Io", "NORTH": true, "SOUTH": false, "WIDTH": 1, "CURRENT": "Transient (Alfvenic)", "CONSTANT": 0.0, "ACCEL": 3, "TEMP": 0, "TEMPH": 0, "REFRACTION": false}, {"ON": true, "NAME": "Source2", "PARENT": "Jupiter", "TYPE": "attached to a satellite", "LG_MIN": "auto", "LG_MAX": "auto", "LG_NBR": 1, "LAT": 0, "SUB": 0, "AURORA_ALT": 0.009091926738619804, "SAT": "Io", "NORTH": false, "SOUTH": true, "WIDTH": 1, "CURRENT": "Transient (Alfvenic)", "CONSTANT": 0.0, "ACCEL": 3, "TEMP": 0, "TEMPH": 0, "REFRACTION": false}]}
+{
+  "SIMU": {
+    "NAME": "Io2015-04-30", 
+    "OUT": "/Groups/SERPE/SERPE_6.1/Corentin/save/Earth/VIPAL/2015/3kev/Io/Io2015-04-30.json"
+  }, 
+  "NUMBER": {
+    "BODY": 2, 
+    "DENSITY": 2, 
+    "SOURCE": 2
+  }, 
+  "TIME": {
+    "MIN": 0, 
+    "MAX": 1440, 
+    "NBR": 1440
+  }, 
+  "FREQUENCY": {
+    "TYPE": "Linear", 
+    "MIN": 0.009999999776482582, 
+    "MAX": 44.0, 
+    "NBR": 781, 
+    "SC": ""
+  }, 
+  "OBSERVER": {
+    "TYPE": "Fixed", 
+    "EPHEM": "", 
+    "FIXE_DIST": "auto", 
+    "FIXE_SUBL": "auto", 
+    "FIXE_DECL": "auto", 
+    "PARENT": "Jupiter", 
+    "SC": "Earth", 
+    "SCTIME": "201504300000", 
+    "SEMI_MAJ": 0.0, 
+    "SEMI_MIN": 0.0, 
+    "SUBL": 0.0, 
+    "DECL": 0.0, 
+    "PHASE": 0.0, 
+    "INCL": 0.0
+  }, 
+  "SPDYN": {
+    "INTENSITY": true, 
+    "POLAR": true, 
+    "FREQ": [true, false, false, false, false], 
+    "LONG": [false, false, false, false, false], 
+    "LAT": [false, false, false, false, false], 
+    "DRANGE": [0, 0], 
+    "LGRANGE": [0, 0], 
+    "LARANGE": [0, 0], 
+    "LTRANGE": [0, 0], 
+    "KHZ": false, 
+    "LOG": false, 
+    "PDF": false, 
+    "CDF": {
+      "THETA": true, 
+      "FP": true, 
+      "FC": true, 
+      "AZIMUTH": false, 
+      "OBSLATITUDE": true, 
+      "SRCLONGITUDE": false, 
+      "SRCFREQMAX": true, 
+      "OBSDISTANCE": true, 
+      "OBSLOCALTIME": false, 
+      "CML": true, 
+      "SRCPOS": false
+    }, 
+    "INFOS": false
+  }, 
+  "MOVIE2D": {
+    "ON": false, 
+    "SUBCYCLE": 1, 
+    "RANGE": 30
+  }, 
+  "MOVIE3D": {
+    "ON": false, 
+    "SUBCYCLE": 5, 
+    "XRANGE": [-18, 18], 
+    "YRANGE": [-18, 18], 
+    "ZRANGE": [-18, 18], 
+    "OBS": true, 
+    "TRAJ": true
+  }, 
+  "BODY": [
+    {
+      "ON": true, 
+      "NAME": 
+      "Jupiter", 
+      "RADIUS": 1, 
+      "PERIOD": 595.5, 
+      "FLAT": 0.064935, 
+      "ORB_PER": 177.83, 
+      "INIT_AX": 0, 
+      "MAG": "JRM09+Connerney CS", 
+      "MOTION": false, 
+      "PARENT": "", 
+      "SEMI_MAJ": 0, 
+      "SEMI_MIN": 0, 
+      "DECLINATION": 0, 
+      "APO_LONG": 0, 
+      "INCLINATION": 0, 
+      "PHASE": 0, 
+      "DENS": [
+        {
+          "ON": true, 
+          "NAME": "Body1_density1", 
+          "TYPE": "Ionospheric", 
+          "RHO0": 350000.0, 
+          "SCALE": 0.0223801, 
+          "PERP": 0.012465
+        }, {
+          "ON": true, 
+          "NAME": 
+          "Body1_density2", 
+          "TYPE": "Torus", 
+          "RHO0": 2000.0, 
+          "SCALE": 1, 
+          "PERP": 5.91
+        }
+      ]
+    }, {
+      "ON": true, 
+      "NAME": "Io", 
+      "RADIUS": 0.0260000005364418, 
+      "PERIOD": 2547.360107421875, 
+      "FLAT": 0.0, 
+      "ORB_PER": 105.3000030517578, 
+      "INIT_AX": 0, 
+      "MAG": "", 
+      "MOTION": true, 
+      "PARENT": "Jupiter", 
+      "SEMI_MAJ": 5.909999847412109, 
+      "SEMI_MIN": 5.909999847412109, 
+      "DECLINATION": 0, 
+      "APO_LONG": 0, 
+      "INCLINATION": 0, 
+      "PHASE": "auto", 
+      "DENS": [
+        {
+          "ON": false, 
+          "NAME": "Body2_density1", 
+          "TYPE": "Ionospheric", 
+          "RHO0": 0, 
+          "SCALE": 0, 
+          "PERP": 0
+        }, {
+          "ON": false, 
+          "NAME": "Body2_density2", 
+          "TYPE": "Ionospheric", 
+          "RHO0": 0, 
+          "SCALE": 0, 
+          "PERP": 0
+        }
+      ]
+    }
+  ], 
+  "SOURCE": [
+    {
+      "ON": true, 
+      "NAME": "Source1", 
+      "PARENT": "Jupiter", 
+      "TYPE": "attached to a satellite", 
+      "LG_MIN": "auto", 
+      "LG_MAX": "auto", 
+      "LG_NBR": 1, 
+      "LAT": 0, 
+      "SUB": 0, 
+      "AURORA_ALT": 0.009091926738619804, 
+      "SAT": "Io", 
+      "NORTH": true, 
+      "SOUTH": false, 
+      "WIDTH": 1, 
+      "CURRENT": "Transient (Alfvenic)", 
+      "CONSTANT": 0.0, 
+      "ACCEL": 3, 
+      "TEMP": 0, 
+      "TEMPH": 0, 
+      "REFRACTION": false
+    }, {
+      "ON": true, 
+      "NAME": "Source2", 
+      "PARENT": "Jupiter", 
+      "TYPE": "attached to a satellite", 
+      "LG_MIN": "auto", 
+      "LG_MAX": "auto", 
+      "LG_NBR": 1, 
+      "LAT": 0, 
+      "SUB": 0, 
+      "AURORA_ALT": 0.009091926738619804, 
+      "SAT": "Io", 
+      "NORTH": false, 
+      "SOUTH": true, 
+      "WIDTH": 1, 
+      "CURRENT": "Transient (Alfvenic)", 
+      "CONSTANT": 0.0, 
+      "ACCEL": 3, 
+      "TEMP": 0, 
+      "TEMPH": 0, 
+      "REFRACTION": false
+    }
+  ]
+}
