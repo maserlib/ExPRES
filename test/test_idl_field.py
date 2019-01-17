@@ -43,5 +43,7 @@ class field(unittest.TestCase):
         self.idl.run("adresse_mfl = loadpath('adresse_mfl',parameters)")
         self.idl.run("read_save_json, adresse_mfl, '{}', parameters".format(str(get_test_json_file())))
         self.idl.run("nobj=n_elements(parameters.objects)")
-        self.idl.run("for i=0,nobj-1 do print,i,(*(parameters.objects[i])).it")
+        self.idl.run("it=strarr(nobj)")
+        self.idl.run("for i=0,nobj-1 do it[i]=(*(parameters.objects[i])).it")
+        print(self.it)
         self.assertTrue(True)
