@@ -89,8 +89,8 @@ class read_save(unittest.TestCase):
 
     def test_READ_SAVE_JSON(self):
         self.idl.run(".r loadpath")
-        self.idl.run("adresse_mfl = loadpath('adresse_mfl',parameters)")
-        self.idl.run("read_save_json, adresse_mfl, '{}', param".format(str(get_test_json_file())))
+        self.idl.run("adresse_mfl = loadpath('adresse_mfl',parameters, config='../test/config.ini')")
+        self.idl.run("read_save_json, adresse_mfl, '{}', param, config='../test/config.ini'".format(str(get_test_json_file())))
         self.idl.run("test = param.ticket")
         self.assertTrue(self.idl.test.startswith("Io2015-04-30_"))
         self.idl.run("test = param.time")
