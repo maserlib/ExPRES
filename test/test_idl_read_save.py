@@ -99,7 +99,7 @@ class read_save(unittest.TestCase):
         self.idl.run("test = *param.freq.freq_tab")
         self.assertIsNone(self.idl.test)
         self.idl.run("test = param.name")
-        self.assertEqual(self.idl.test, 'expres_earth_jupiter_io_jrm09_lossc-wid1deg_3kev_20150430_v01')
+        self.assertEqual(self.idl.test, 'expres_earth_jupiter_io_vipal_lossc-wid1deg_3kev_20150430_v01')
         self.idl.run("test = n_elements(param.objects)")
         self.assertEqual(self.idl.test, 12)
         self.idl.run("test = *param.objects[0]")
