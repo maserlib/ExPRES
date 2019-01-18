@@ -20,19 +20,25 @@ class field(unittest.TestCase):
     def tearDown(self):
         self.idl.run('.reset_session')
 
-    def test_field__interogate_field_0(self):
+    def test_field__interogate_field_axisym(self):
         self.idl.run("a = interogate_field('{}/Z3_lsh/','10','-')".format(self.mfl_dir))
         a = self.idl.a
         self.assertIsInstance(a, numpy.uint8)
         self.assertEqual(a, 1)
 
-    def test_field__interogate_field_1(self):
-        self.idl.run("a = interogate_field('{}/VIPAL_lat/','10','-')".format(self.mfl_dir))
+    def test_field__interogate_field_naxisym_lsh(self):
+        self.idl.run("a = interogate_field('{}/VIPAL_lsh/','10','-')".format(self.mfl_dir))
         a = self.idl.a
         self.assertIsInstance(a, numpy.uint8)
         self.assertEqual(a, 0)
     
-    def test_field__interogate_field_stop(self):
+    def test_field__interogate_field_naxisym_lat(self):
+        self.idl.run("a = interogate_field('{}/VIP4_lat/','10','-')".format(self.mfl_dir))
+        a = self.idl.a
+        self.assertIsInstance(a, numpy.uint8)
+        self.assertEqual(a, 0)
+
+        def test_field__interogate_field_stop(self):
         self.idl.run("a = interogate_field('{}/O6_lsh/','10','-')".format(self.mfl_dir))
         a = self.idl.a
         self.assertIsInstance(a, str)
