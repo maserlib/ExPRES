@@ -25,7 +25,7 @@ def init_serpe_idl():
 
 
 def get_test_json_file():
-    return sup_dir / 'expres_earth_jupiter_io_jrm09_lossc-wid1deg_3kev_20150430_v01.json'
+    return sup_dir / 'expres_earth_jupiter_io_vipal_lossc-wid1deg_3kev_20150430_v01.json'
 
 
 def get_test_mfl_dir():
