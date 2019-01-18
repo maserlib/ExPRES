@@ -38,7 +38,7 @@ class loadpath(unittest.TestCase):
         self.idl.run(".r read_save")
         self.idl.run("name_r = '{}'".format(str(get_test_json_file())))
         self.idl.run("adresse_mfl = loadpath('adresse_mfl',parameters, config='../test/config.ini')")
-        self.idl.run("read_save_json,adresse_mfl,name_r,parameters")
+        self.idl.run("read_save_json,adresse_mfl,name_r,parameters, config='../test/config.ini'")
 
         self.idl.run("p = loadpath('adresse_save',parameters, config='../test/config.ini')")
         p = self.idl.p
