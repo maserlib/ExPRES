@@ -16,19 +16,19 @@ class loadpath(unittest.TestCase):
         self.idl.run('.reset_session')
 
     def test_loadpath__mfl(self):
-        self.idl.run("p = loadpath('adresse_mfl',parameters)")
+        self.idl.run("p = loadpath('adresse_mfl',parameters, config='../test/config.ini')")
         p = self.idl.p
         self.assertIsInstance(p, str)
         self.assertEqual(p, self.cfg['Paths']['mfl_path'])
 
     def test_loadpath__cdf(self):
-        self.idl.run("p = loadpath('adresse_cdf',parameters)")
+        self.idl.run("p = loadpath('adresse_cdf',parameters, config='../test/config.ini')")
         p = self.idl.p
         self.assertIsInstance(p, str)
         self.assertEqual(p, self.cfg['Paths']['cdf_dist_path'])
 
     def test_loadpath__ephem(self):
-        self.idl.run("p = loadpath('adresse_ephem',parameters)")
+        self.idl.run("p = loadpath('adresse_ephem',parameters, config='../test/config.ini')")
         p = self.idl.p
         self.assertIsInstance(p, str)
         self.assertEqual(p, self.cfg['Paths']['ephem_path'])
@@ -37,22 +37,22 @@ class loadpath(unittest.TestCase):
         self.idl.run(".r serpe_lesia")
         self.idl.run(".r read_save")
         self.idl.run("name_r = '{}'".format(str(get_test_json_file())))
-        self.idl.run("adresse_mfl = loadpath('adresse_mfl',parameters)")
+        self.idl.run("adresse_mfl = loadpath('adresse_mfl',parameters, config='../test/config.ini')")
         self.idl.run("read_save_json,adresse_mfl,name_r,parameters")
 
-        self.idl.run("p = loadpath('adresse_save',parameters)")
+        self.idl.run("p = loadpath('adresse_save',parameters, config='../test/config.ini')")
         p = self.idl.p
         self.assertIsInstance(p, str)
         self.assertEqual(Path(p), Path(self.cfg['Paths']['save_path']) / 'earth' / '2015' / '04')
 
     def test_loadpath__ffmpeg(self):
-        self.idl.run("p = loadpath('ffmpeg',parameters)")
+        self.idl.run("p = loadpath('ffmpeg',parameters, config='../test/config.ini')")
         p = self.idl.p
         self.assertIsInstance(p, str)
         self.assertEqual(p, self.cfg['Paths']['ffmpeg_path'])
 
     def test_loadpath__ps2pdf(self):
-        self.idl.run("p = loadpath('ps2pdf',parameters)")
+        self.idl.run("p = loadpath('ps2pdf',parameters, config='../test/config.ini')")
         p = self.idl.p
         self.assertIsInstance(p, str)
         self.assertEqual(p, self.cfg['Paths']['ps2pdf_path'])
