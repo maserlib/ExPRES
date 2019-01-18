@@ -38,7 +38,7 @@ class field(unittest.TestCase):
         self.assertIsInstance(a, numpy.uint8)
         self.assertEqual(a, 0)
 
-        def test_field__interogate_field_stop(self):
+    def test_field__interogate_field_stop(self):
         self.idl.run("a = interogate_field('{}/O6_lsh/','10','-')".format(self.mfl_dir))
         a = self.idl.a
         self.assertIsInstance(a, str)
