@@ -176,7 +176,7 @@ endfor
 
   	;w_p^2/w_c^2
 	(*((*obj).dens_n))[*,*,*]=((0.009*sqrt((*((*obj).dens_n))[*,*,*]))/rebin(*parameters.freq.freq_tab,parameters.freq.n_freq,360,(*obj).nlat))^2
-	for ilat=0,nd-1 do begin
+	for ilat=0,(*obj).nlat-1 do begin
 		for ilong=0,359 do begin 
 			wwpwc=where((*((*obj).dens_n))[*,ilong,ilat] lt 0.01)
 			if (wwpwc[-1]-wwpwc[0])/n_elements(wwpwc) ne 0 then begin
@@ -301,7 +301,7 @@ if (*obj).south then begin
 	endfor
 	; wp^2/wc^2 :
 	(*((*obj).dens_s))[*,*,*]=((0.009*sqrt((*((*obj).dens_s))[*,*,*]))/rebin(*parameters.freq.freq_tab,parameters.freq.n_freq,360,(*obj).nlat))^2 
-	for ilat=0,nd-1 do begin
+	for ilat=0,(*obj).nlat-1 do begin
 		for ilong=0,359 do begin 
 			wwpwc=where((*((*obj).dens_s))[*,ilong,ilat] lt 0.01)
 			if (wwpwc[-1]-wwpwc[0])/n_elements(wwpwc) ne 0 then begin
