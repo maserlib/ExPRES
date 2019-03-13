@@ -65,13 +65,15 @@ if adresse eq 'adresse_save' then begin
 		if TAG_NAMES(*(parameters.objects[i]),/str) eq 'OBSERVER' then $
 			observer=strlowcase((*parameters.objects[i]).name)
 	endfor
-	cmd='mkdir '+adresse_out+observer
-	spawn,cmd,resu
-	cmd='mkdir '+adresse_out+observer+'/'+year
-	spawn,cmd,resu
-	cmd='mkdir '+adresse_out+observer+'/'+year+'/'+month
-	spawn,cmd,resu
-	adresse_out=adresse_out+observer+'/'+year+'/'+month+'/'
+	if adresse_out ne './' then begin 
+		cmd='mkdir '+adresse_out+observer
+		spawn,cmd,resu
+		cmd='mkdir '+adresse_out+observer+'/'+year
+		spawn,cmd,resu
+		cmd='mkdir '+adresse_out+observer+'/'+year+'/'+month
+		spawn,cmd,resu
+		adresse_out=adresse_out+observer+'/'+year+'/'+month+'/'
+	endif
 endif
 
 return,adresse_out
