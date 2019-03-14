@@ -1,7 +1,7 @@
 
 ;***********************************************************
 ;***                                                     ***
-;***         SERPE V6.2                                  ***
+;***         ExPRES V1.0                                 ***
 ;***                                                     ***
 ;***********************************************************
 ;***                                                     ***
@@ -12,17 +12,24 @@
 ;***     Version history                                 ***
 ;***     [CL] V6.1: First release		         ***
 ;***     [BC] V6.2: reading paths from config.ini        ***
+;***     [BC] V1.0: added keyword for config file path   ***
 ;***                                                     ***
 ;***********************************************************
 
 
 ; =============================================================================
-function loadpath,adresse,parameters
+function loadpath,adresse,parameters,config=config
 
-if file_test('config.ini') then begin 
-    config_data = read_ascii_file('config.ini')
+if keyword_set(config) then begin
+    config_file = config
 endif else begin 
-    stop,"Please configure your config.ini file (check config.ini.template file) in SERPE distribution directory"
+    config_file = 'config.ini'
+endelse
+
+if file_test(config_file) then begin 
+    config_data = read_ascii_file(config_file)
+endif else begin 
+    stop,"Please configure your config.ini file (check config.ini.template file) in ExPRES distribution directory"
 endelse
 
 for i=0,n_elements(config_data)-1 do begin 

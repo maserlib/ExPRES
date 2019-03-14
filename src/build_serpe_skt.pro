@@ -1,32 +1,87 @@
-;***********************************************************
-;***                                                     ***
-;***         SERPE V6.1		                             ***
-;***                                                     ***
-;***********************************************************
-;***                                                     ***
-;***       MODULE: BUILD_SERPE_SKT                       ***
-;***                                                     ***
-;***.....................................................***
-;***     function: BUILD_SERPE_SKT;                      ***
-;***          Builds the CDF files skeleton		         ***
-;***     Version history                                 ***
-;***     [CL] V6.1: First release                        ***
-;***                                                     ***
-;***********************************************************
+;+
+; ***********************************************************
+; ***                                                     ***
+; ***         ExPRES V1.0		                 ***
+; ***                                                     ***
+; ***********************************************************
+; ***                                                     ***
+; ***       MODULE: BUILD_SERPE_SKT                       ***
+; ***                                                     ***
+; ***.....................................................***
+; ***     function: BUILD_SERPE_SKT;                      ***
+; ***          Builds the CDF files skeleton		  ***
+; ***                                                     ***
+; ***********************************************************
+;
+; :Author:
+;    Corentin Louis, Baptiste Cecconi
+;
+; :History:
+;    V0.6.1: First Release
+;-
 
+;+
+; PRO BUILD_SERPE_SKT
+;
+; :Param:
+;    Frequency: in, required, type=fltarr
+;        List of frequency values of the spectral axis
+;    Freq_Label: in, required, type=string
+;        
+;    FLog: in, required, type=int
+;        Flag for logscale frequency axis
+;    Src_Id_Lable: in, required, type=strarr
+;        List of labels for each source
+;    OriginSrc: in, required, type=strarr
+;        Flag providing the origin of the source (planet or satellite)
+;    HemisphereE: in, required, type=strarr
+;        
+;    B_Model: in, required, type=strarr
+;        Name of the magnetic field model in use
+;    SourceType: in, required, type=strarr
+;        
+;    Observer: in, required, type=strarr
+;        Name of the observer
+;    Planet: in, required, type=strarr
+;        Name of the planet
+;    Wid: in, requirted, type=fltarr
+;        Width of the emission layer in degree
+;    Ener: in, required, type=fltarr
+;        Energy of the instable electron population
+;    Refr: in, required, type=intarr
+;        Flag for refraction
+;    SourceDescr: in,required, type=strarr
+;        Source description 
+;    Dt: in, required, type=float
+;        Time interval between spectra
+;    DateD: in, required, type=float
+;        Date at begining of interval
+;    DateF: in, required, type=float
+;        Date at end of interval
+;    File: in, required, type=string
+;        File name
+;    Option: in, required, type=structure
+;        Contains output options (i.e., which parameters will be put in the CDF file) 
+;
+;-
 
-PRO BUILD_SERPE_SKT,frequency,Freq_Label,Flog,Src_ID_Label,originsrc,hemisphere,b_model,sourcetype,observer,planet,wid,ener,refr,sourcedescr,dt,dated,datef,file,option
+PRO BUILD_SERPE_SKT,frequency,Freq_Label,Flog,Src_ID_Label,originsrc,hemisphere,b_model,sourcetype,$
+    observer,planet,wid,ener,refr,sourcedescr,dt,dated,datef,file,option
+
+; Check if input parameters 'file' is set. Create new file name, if not set; remove previous one (if it exist) if set. 
 if ~keyword_set(file) then begin
 	file=string(format='(I12.12)',long(systime(1)))+'.skt'
 endif else begin 
 	if file_test(file) then spawn,'rm -rf '+file
 endelse
 
+; Siez of arrays and strings
 nf = n_elements(frequency)
 nfs = max(strlen(Freq_Label))
 ns = n_elements(Src_ID_Label)
 nss = max(strlen(Src_ID_Label))
 
+; Open file in write mode and output ASCII lines
 openw,lun,file,/get_lun
 
 printf,lun,"! Skeleton table for the ""expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_v01"" CDF."

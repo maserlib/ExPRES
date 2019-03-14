@@ -40,6 +40,7 @@
 ;***          Reads Save file (in JSON format)           ***
 ;***     Version history                                 ***
 ;***     [BC] V6.1: First release            	         ***
+;***     [BC] V1.0: Added config keyword                 ***
 ;***                                                     ***
 ;***.....................................................***
 ;***     pro: READ_SAVE                                  ***
@@ -1132,7 +1133,7 @@ end
 ;************************************************************** 
 ;READ_SAVE_JSON
 ;************************************************************** 
-pro read_save_json,adresse_mfl,file_name,parameters
+pro read_save_json,adresse_mfl,file_name,parameters,config=config
 ;************************************************************** 
 
 
@@ -1212,7 +1213,7 @@ endif
 
 if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   date=STRMID(observer.start,0,10)+':'+STRMID(observer.start,10,2)
-  adresse_ephem=loadpath('adresse_ephem',parameters)
+  adresse_ephem=loadpath('adresse_ephem',parameters,config=config)
   if ((observer.motion+observer.predef) eq 0b) then begin
   	if size(((serpe_save['OBSERVER'])['FIXE_DIST']),/type) eq 7 then begin			; if fixe_dist="auto"
   		if ((serpe_save['OBSERVER'])['SC'] eq 'Cassini' and (long64(observer.start) ge 201603281700) and (long64(observer.start) lt 201701010000)) then begin
