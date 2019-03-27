@@ -24,7 +24,7 @@ distance=dblarr(n)
 for i=0l,n-1 do begin
 	readf,u,buf
 	date[i]=strmid(buf,0,4)+strmid(buf,5,2)+strmid(buf,8,2)+strmid(buf,11,2)+strmid(buf,14,2)
-	longitude[i]=double(strmid(buf,35,48-35))
+	longitude[i]=(double(strmid(buf,35,48-35))+360d) mod 360d
 	lat[i]=double(strmid(buf,51,63-51))
 	distance[i]=double(strmid(buf,65,80-65))/71492d
 endfor
