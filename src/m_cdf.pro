@@ -21,8 +21,9 @@
 pro INIT_cdf,obj,parameters
 
 nsrc = 0
-for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SOURCE' then $
-	nsrc=nsrc+1
+for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SOURCE' then begin
+	nsrc=nsrc+(*parameters.objects[i]).lgnbr
+endif
 nbrlg=strarr(nsrc)
 k=0
 ndat = parameters.time.n_step
@@ -51,43 +52,46 @@ obsdistance=fltarr(ndat)
 obslocaltime=fltarr(ndat)
 h=0
 for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SOURCE' then begin
-	if (*(parameters.objects[i])).north then hemisphere(h)='NORTH' $
-		else hemisphere(h)='SOUTH'
-	if (*(*parameters.objects[i]).parent).north then var=0 else var=1 
+	for ilg=0,(*parameters.objects[i]).lgnbr-1 do begin
+		if (*(parameters.objects[i])).north then hemisphere(h)='NORTH' $
+			else hemisphere(h)='SOUTH'
+		if (*(*parameters.objects[i]).parent).north then var=0 else var=1 
+		
+		if (*(*parameters.objects(i)).parent).sat then sourcedescr(h)=(*(*(*parameters.objects(i)).parent).parent).name $
+			else begin
+				lon=long((*(*parameters.objects[i]).lg)[ilg])
+				lat=long((*(*parameters.objects[i]).lat)[ilg])
+	; *********************************
+	; probleme de longueur de phrase !!!!! ?????
+	; *********************************
+		print,'There may be a sentence length problem for the description of the sources - see m_cdf.pro file - line 53 if error'
+				sourcedescr(h)='main oval at longitude='+strtrim(lon,2)+' degrees (with L_equateur='+strtrim(lat,2)+' R_'+(*(*(*parameters.objects(i)).parent).parent).name+')'
+	; *********************************
+	;			sourcedescr(h)=''
+	; *********************************
+			endelse
+	;# here we do a string(long(string(ener))) to avoid rounding problems
+		ener(h)=strtrim(long(string(((*(parameters.objects[i])).vmin)^2*255.5)),2)+'keV'
+		wid(h) ='wid'+strtrim(long((*parameters.objects[i]).width),2)+'deg'
+		
+		
+		if (*(parameters.objects[i])).refract then refr(h)='_refr' $
+		else refr(h)=''
+		
 	
-	if (*(*parameters.objects(i)).parent).sat then sourcedescr(h)=(*(*(*parameters.objects(i)).parent).parent).name $
-		else begin
-			lon=long((*parameters.objects(i)).LGMIN)
-			lat=long((*parameters.objects(i)).LATMIN)
-; *********************************
-; probleme de longueur de phrase !!!!! ?????
-; *********************************
-	print,'There may be a sentence length problem for the description of the sources - see m_cdf.pro file - line 53 if error'
-			sourcedescr(h)='main oval at longitude='+strtrim(lon,2)+' degrees (with L_equateur='+strtrim(lat,2)+' R_'+(*(*(*parameters.objects(i)).parent).parent).name+')'
-; *********************************
-;			sourcedescr(h)=''
-; *********************************
-		endelse
-;# here we do a string(long(string(ener))) to avoid rounding problems
-	ener(h)=strtrim(long(string(((*(parameters.objects[i])).vmin)^2*255.5)),2)+'keV'
-	wid(h) ='wid'+strtrim(long((*parameters.objects[i]).width),2)+'deg'
-	
-	
-	if (*(parameters.objects[i])).refract then refr(h)='_refr' $
-	else refr(h)=''
-	
-
-	
-	if (*(*parameters.objects(i)).parent).sat then originsrc(h)=(*(*(*parameters.objects(i)).parent).parent).name $
-		else originsrc(h)=strtrim(lon,2)+'d-'+strtrim(lat,2)+'R'
-	
-	if (*(parameters.objects[i])).loss then sourcetype(h)='lossc' else $
-	if (*(parameters.objects[i])).constant then sourcetype(h)='cst'+strmid(strtrim((*(parameters.objects[i])).constant,1),0,6) else $
-	if (*(parameters.objects[i])).cavity then sourcetype(h)='cavity'
-	if (*(parameters.objects[i])).ring then sourcetype(h)='shell'
-	h=h+1
+		
+		if (*(*parameters.objects(i)).parent).sat then originsrc(h)=(*(*(*parameters.objects(i)).parent).parent).name $
+			else originsrc(h)=strtrim(lon,2)+'d-'+strtrim(lat,2)+'R'
+		
+		if (*(parameters.objects[i])).loss then sourcetype(h)='lossc' else $
+		if (*(parameters.objects[i])).constant then sourcetype(h)='cst'+strmid(strtrim((*(parameters.objects[i])).constant,1),0,6) else $
+		if (*(parameters.objects[i])).cavity then sourcetype(h)='cavity'
+		if (*(parameters.objects[i])).ring then sourcetype(h)='shell'
+		
+		h=h+1
+	endfor
 endif
-
+stop
 test=0
 for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'FEATURE' then begin
 	if test eq 0 then $
@@ -97,7 +101,6 @@ for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i
 endif
 
 Src_ID_Label = originsrc+' '+hemisphere
-
 
 
 for i=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'OBSERVER' then begin
@@ -187,7 +190,9 @@ i=parameters.time.istep
 ndat=parameters.time.n_step
 nfreq = parameters.freq.n_freq
 nsrc=0
-for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]),/str) eq 'SOURCE' then nsrc=nsrc+1
+for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]),/str) eq 'SOURCE' then begin
+	nsrc=nsrc+(*parameters.objects[j]).lgnbr
+endif
 
 theta = fltarr(nsrc,ndat,nfreq)
 polarization = intarr(ndat,nfreq)
@@ -205,26 +210,28 @@ srcpos(*,*,*,*)=-1.0e+31
 var=0
 
 for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]),/str) eq 'SOURCE' then begin
-	if (*(*parameters.objects[j]).parent).north then var=0 else var=1 
-	theta(h,i,*)=(*(*parameters.objects[j]).th)(*,*,var)	
-	wthet=where(theta(h,i,*) ne -1.0e+31)
-	if wthet(0) ne -1 then begin
-		azimuth(h,i,wthet)=(*(*parameters.objects[j]).azimuth)(wthet,*,var)*!radeg
-		fp2(h,i,wthet)=(*(*parameters.objects[j]).fp)(wthet,*,var)
-		fx(h,i,wthet)=(*(*parameters.objects[j]).f)(wthet,*,var)
-	endif
-	longitude(h,i)=(*(*parameters.objects[j]).parent).lg+(*(*parameters.objects[j]).lg)
-
-	fmax(h,i)=(*(*parameters.objects[j]).fmax)(*,var)
-	fmaxCMI(h,i)=(*(*parameters.objects[j]).fmaxCMI)(*,var)
-	wn0=where(theta(h,i,*) gt 0.)
-	if wn0(0) ne -1 then $
-		if (*parameters.objects[j]).north eq 1 then polarization(i,wn0)=-1 $
-			else polarization(i,wn0)=+1
-	for ipos=0,2 do begin
-		if wthet[0] ne -1 then srcpos(h,i,ipos,wthet)=((*(*parameters.objects(j)).x)(ipos,wthet,0,var))
+	if (*(*parameters.objects[j]).parent).north then var=0 else var=1
+	for ilg=0,(*parameters.objects[j]).lgnbr-1 do begin
+		theta(h,i,*)=(*(*parameters.objects[j]).th)(*,ilg,var)	
+		wthet=where(theta(h,i,*) ne -1.0e+31)
+		if wthet(0) ne -1 then begin
+			azimuth(h,i,wthet)=(*(*parameters.objects[j]).azimuth)(wthet,ilg,var)*!radeg
+			fp2(h,i,wthet)=(*(*parameters.objects[j]).fp)(wthet,ilg,var)
+			fx(h,i,wthet)=(*(*parameters.objects[j]).f)(wthet,ilg,var)
+		endif
+		longitude(h,i)=(*(*parameters.objects[j]).parent).lg+(*(*parameters.objects[j]).lg)[*,ilg,*]
+	
+		fmax(h,i)=(*(*parameters.objects[j]).fmax)(ilg,var)
+		fmaxCMI(h,i)=(*(*parameters.objects[j]).fmaxCMI)(ilg,var)
+		wn0=where(theta(h,i,*) gt 0.)
+		if wn0(0) ne -1 then $
+			if (*parameters.objects[j]).north eq 1 then polarization(i,wn0)=-1 $
+				else polarization(i,wn0)=+1
+		for ipos=0,2 do begin
+			if wthet[0] ne -1 then srcpos(h,i,ipos,wthet)=((*(*parameters.objects(j)).x)(ipos,wthet,0,var))
+		endfor
+		h=h+1
 	endfor
-	h=h+1
 endif
 
 w0=where(polarization(i,*) eq 0)
