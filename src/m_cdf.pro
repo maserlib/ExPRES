@@ -91,7 +91,6 @@ for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i
 		h=h+1
 	endfor
 endif
-stop
 test=0
 for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'FEATURE' then begin
 	if test eq 0 then $
