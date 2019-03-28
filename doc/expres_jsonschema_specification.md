@@ -98,28 +98,25 @@
 
 #### Properties Detail:
 
-+ 
-
-	+ <a id=".body"></a> **BODY**
-		+ _Type:_ array
-		+ _Required:_ True
-		+ _Description:_ Configuration of the Natural Bodies of the Simulation Run
++ <a id=".body"></a> **BODY**
+	+ _Type:_ array
+	+ _Required:_ True
+	+ _Description:_ Configuration of the Natural Bodies of the Simulation Run
+	+ _Allowed values:_ Any
+	+ _Unique Items:_ False
+	+ _Minimum Items:_ NA
+	+ _Maximum Items:_ NA
+	+ <a id=".items"></a> **items**
+		+ _Type:_ object
+		+ _Required:_ False
+		+ _Description:_ None
 		+ _Allowed values:_ Any
-		+ _Unique Items:_ False
-		+ _Minimum Items:_ NA
-		+ _Maximum Items:_ NA
-		+ <a id=".items"></a> **items**
-			+ _Type:_ object
-			+ _Required:_ False
-			+ _Description:_ None
-			+ _Allowed values:_ Any
-			+ _Children_:
-
+		+ _Children_:
 			+ <a id="items.orb_per"></a> **ORB\_PER**
-				+ _Type:_ number
-				+ _Required:_ True
-				+ _Description:_ ???
-				+ _Allowed values:_ Any
+			+ _Type:_ number
+			+ _Required:_ True
+			+ _Description:_ ???
+			+ _Allowed values:_ Any
 
 
 			+ <a id="items.on"></a> **ON**
