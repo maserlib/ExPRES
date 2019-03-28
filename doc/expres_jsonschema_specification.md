@@ -33,7 +33,7 @@
 
 ## Property Details:
 
-### <a id="body"></a> BODY
+### <a id="body"></a> BODY Property
 + _Type:_ array
 + _Required:_ True
 + _Description:_ Configuration of the Natural Bodies of the Simulation Run
@@ -41,38 +41,38 @@
 + _Unique Items:_ False
 + _Minimum Items:_ NA
 + _Maximum Items:_ NA
-+ <a id="body.items"></a> **items**
++ <a id="body.items"></a> **array items**
 	+ _Type:_ object
 	+ _Required:_ False
 	+ _Description:_ None
 	+ _Allowed values:_ Any
 	+ _Children_:
-		+ <a id="body.items.orb_per"></a> **ORB\_PER**
+		+ <a id="body.items.orb_per"></a> **ORB\_PER property**
 			+ _Type:_ number
 			+ _Required:_ True
 			+ _Description:_ ???
 			+ _Allowed values:_ Any
-		+ <a id="body.items.on"></a> **ON**
+		+ <a id="body.items.on"></a> **ON property**
 			+ _Type:_ boolean
 			+ _Required:_ True
 			+ _Description:_ Flag to activate the current natural body
 			+ _Allowed values:_ Any
-		+ <a id="body.items.name"></a> **NAME**
+		+ <a id="body.items.name"></a> **NAME property**
 			+ _Type:_ string
 			+ _Required:_ True
 			+ _Description:_ Name of the current natural body
 			+ _Allowed values:_ Any
-		+ <a id="body.items.parent"></a> **PARENT**
+		+ <a id="body.items.parent"></a> **PARENT property**
 			+ _Type:_ string
 			+ _Required:_ True
 			+ _Description:_ Named natural body around which the current body is orbiting (must be one of the defined bodies)
 			+ _Allowed values:_ Any
-		+ <a id="body.items.flat"></a> **FLAT**
+		+ <a id="body.items.flat"></a> **FLAT property**
 			+ _Type:_ number
 			+ _Required:_ True
 			+ _Description:_ Flatening ratio of the current natural body
 			+ _Allowed values:_ Any
-		+ <a id="body.items.dens"></a> **DENS**
+		+ <a id="body.items.dens"></a> **DENS property**
 			+ _Type:_ array
 			+ _Required:_ True
 			+ _Description:_ Configuration of the plasma density model aroud the current body
@@ -80,98 +80,98 @@
 			+ _Unique Items:_ False
 			+ _Minimum Items:_ NA
 			+ _Maximum Items:_ NA
-			+ <a id="body.items.dens.items"></a> **items**
+			+ <a id="body.items.dens.items"></a> **array items**
 				+ _Type:_ object
 				+ _Required:_ False
 				+ _Description:_ None
 				+ _Allowed values:_ Any
 				+ _Children_:
-					+ <a id="body.items.dens.items.on"></a> **ON**
+					+ <a id="body.items.dens.items.on"></a> **ON property**
 						+ _Type:_ boolean
 						+ _Required:_ True
 						+ _Description:_ Flag to activate the plasma density model
 						+ _Allowed values:_ Any
-					+ <a id="body.items.dens.items.scale"></a> **SCALE**
+					+ <a id="body.items.dens.items.scale"></a> **SCALE property**
 						+ _Type:_ number
 						+ _Required:_ True
 						+ _Description:_ Scale-height parameter for the current plasma denisty model
 						+ _Allowed values:_ Any
-					+ <a id="body.items.dens.items.name"></a> **NAME**
+					+ <a id="body.items.dens.items.name"></a> **NAME property**
 						+ _Type:_ string
 						+ _Required:_ True
 						+ _Description:_ Name of the current plasma density model
 						+ _Allowed values:_ Any
-					+ <a id="body.items.dens.items.rho0"></a> **RHO0**
+					+ <a id="body.items.dens.items.rho0"></a> **RHO0 property**
 						+ _Type:_ number
 						+ _Required:_ True
 						+ _Description:_ Rho0 parameter for the current plasma density model
 						+ _Allowed values:_ Any
-					+ <a id="body.items.dens.items.perp"></a> **PERP**
+					+ <a id="body.items.dens.items.perp"></a> **PERP property**
 						+ _Type:_ number
 						+ _Required:_ True
 						+ _Description:_ Perp ??? parameter for the current plasma denisty model
 						+ _Allowed values:_ Any
-					+ <a id="body.items.dens.items.type"></a> **TYPE**
+					+ <a id="body.items.dens.items.type"></a> **TYPE property**
 						+ _Type:_ string
 						+ _Required:_ True
 						+ _Description:_ Type of density model
 						+ _Allowed values:_ ```Ionospheric```,```Torus```
-		+ <a id="body.items.period"></a> **PERIOD**
+		+ <a id="body.items.period"></a> **PERIOD property**
 			+ _Type:_ number
 			+ _Required:_ True
 			+ _Description:_ Sidereal rotation period of the current natural body (in minutes)
 			+ _Allowed values:_ Any
-		+ <a id="body.items.motion"></a> **MOTION**
+		+ <a id="body.items.motion"></a> **MOTION property**
 			+ _Type:_ boolean
 			+ _Required:_ True
 			+ _Description:_ Flag to indicate if the natural body is moving in the simulation frame
 			+ _Allowed values:_ Any
-		+ <a id="body.items.declination"></a> **DECLINATION**
+		+ <a id="body.items.declination"></a> **DECLINATION property**
 			+ _Type:_ number
 			+ _Required:_ True
 			+ _Description:_ Declination orbital parameter of the current body
 			+ _Allowed values:_ Any
-		+ <a id="body.items.radius"></a> **RADIUS**
+		+ <a id="body.items.radius"></a> **RADIUS property**
 			+ _Type:_ number
 			+ _Required:_ True
 			+ _Description:_ Radius of the current natural body
 			+ _Allowed values:_ Any
-		+ <a id="body.items.mag"></a> **MAG**
+		+ <a id="body.items.mag"></a> **MAG property**
 			+ _Type:_ string
 			+ _Required:_ True
 			+ _Description:_ Internal body magnetic field model
 			+ _Allowed values:_ None,```JRM09+Connerney CS```
-		+ <a id="body.items.semi_min"></a> **SEMI\_MIN**
+		+ <a id="body.items.semi_min"></a> **SEMI\_MIN property**
 			+ _Type:_ number
 			+ _Required:_ True
 			+ _Description:_ Semi minor axis orbital parameter of the current body
 			+ _Allowed values:_ Any
-		+ <a id="body.items.phase"></a> **PHASE**
+		+ <a id="body.items.phase"></a> **PHASE property**
 			+ _Required:_ True
 			+ _Description:_ Phase orbital parameter of the current body
 			+ _Allowed values:_ Any
-		+ <a id="body.items.semi_maj"></a> **SEMI\_MAJ**
+		+ <a id="body.items.semi_maj"></a> **SEMI\_MAJ property**
 			+ _Type:_ number
 			+ _Required:_ True
 			+ _Description:_ Semi major axis orbital parameter of the current body
 			+ _Allowed values:_ Any
-		+ <a id="body.items.apo_long"></a> **APO\_LONG**
+		+ <a id="body.items.apo_long"></a> **APO\_LONG property**
 			+ _Type:_ number
 			+ _Required:_ True
 			+ _Description:_ Apoapsis Longitude parameter of the current body
 			+ _Allowed values:_ Any
-		+ <a id="body.items.init_ax"></a> **INIT\_AX**
+		+ <a id="body.items.init_ax"></a> **INIT\_AX property**
 			+ _Type:_ number
 			+ _Required:_ True
 			+ _Description:_ ???
 			+ _Allowed values:_ Any
-		+ <a id="body.items.inclination"></a> **INCLINATION**
+		+ <a id="body.items.inclination"></a> **INCLINATION property**
 			+ _Type:_ number
 			+ _Required:_ True
 			+ _Description:_ Inclination orbital parameter of the current body
 			+ _Allowed values:_ Any
 
-##### <a id="movie2d"></a> MOVIE2D
+##### <a id="movie2d"></a> MOVIE2D property
 + _Type:_ object
 + _Required:_ True
 + _Description:_ 2D Movie output setup
