@@ -14,6 +14,8 @@
 
 #### Description: _None_
 
+#### Schema Name: https://voparis-ns.obspm.fr/maser/expres/v1.0/schema#
+
 #### Schema: http://json-schema.org/draft-07/schema#
 
 #### ID: _None_
@@ -113,32 +115,25 @@
 		+ _Allowed values:_ Any
 		+ _Children_:
 			+ <a id="items.orb_per"></a> **ORB\_PER**
-			+ _Type:_ number
-			+ _Required:_ True
-			+ _Description:_ ???
-			+ _Allowed values:_ Any
-
-
+				+ _Type:_ number
+				+ _Required:_ True
+				+ _Description:_ ???
+				+ _Allowed values:_ Any
 			+ <a id="items.on"></a> **ON**
 				+ _Type:_ boolean
 				+ _Required:_ True
 				+ _Description:_ Flag to activate the current natural body
 				+ _Allowed values:_ Any
-
-
 			+ <a id="items.name"></a> **NAME**
 				+ _Type:_ string
 				+ _Required:_ True
 				+ _Description:_ Name of the current natural body
 				+ _Allowed values:_ Any
-
-
 			+ <a id="items.parent"></a> **PARENT**
 				+ _Type:_ string
 				+ _Required:_ True
 				+ _Description:_ Named natural body around which the current body is orbiting (must be one of the defined bodies)
 				+ _Allowed values:_ Any
-
 
 			+ <a id="items.flat"></a> **FLAT**
 				+ _Type:_ number
