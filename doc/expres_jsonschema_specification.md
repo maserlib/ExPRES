@@ -20,7 +20,7 @@
 
 #### ID: _None_
 
-#### Properties Index:
+#### Property Index:
 
 * [BODY](#body)
 * [MOVIE2D](#movie2d)
@@ -95,393 +95,299 @@
 * [TIME.NBR](#time.nbr)
 * [TIME.MIN](#time.min)
 
+---
+
 #### References Index:
 
+---
 
-#### Properties Detail:
+#### Property Details:
 
-+ <a id=".body"></a> **BODY**
-	+ _Type:_ array
-	+ _Required:_ True
-	+ _Description:_ Configuration of the Natural Bodies of the Simulation Run
+##### <a id="body"></a> BODY
++ _Type:_ array
++ _Required:_ True
++ _Description:_ Configuration of the Natural Bodies of the Simulation Run
++ _Allowed values:_ Any
++ _Unique Items:_ False
++ _Minimum Items:_ NA
++ _Maximum Items:_ NA
++ <a id="body.items"></a> **items**
+	+ _Type:_ object
+	+ _Required:_ False
+	+ _Description:_ None
 	+ _Allowed values:_ Any
-	+ _Unique Items:_ False
-	+ _Minimum Items:_ NA
-	+ _Maximum Items:_ NA
-	+ <a id=".items"></a> **items**
-		+ _Type:_ object
-		+ _Required:_ False
-		+ _Description:_ None
-		+ _Allowed values:_ Any
-		+ _Children_:
-			+ <a id="items.orb_per"></a> **ORB\_PER**
-				+ _Type:_ number
-				+ _Required:_ True
-				+ _Description:_ ???
+	+ _Children_:
+		+ <a id="body.items.orb_per"></a> **ORB\_PER**
+			+ _Type:_ number
+			+ _Required:_ True
+			+ _Description:_ ???
+			+ _Allowed values:_ Any
+		+ <a id="body.items.on"></a> **ON**
+			+ _Type:_ boolean
+			+ _Required:_ True
+			+ _Description:_ Flag to activate the current natural body
+			+ _Allowed values:_ Any
+		+ <a id="body.items.name"></a> **NAME**
+			+ _Type:_ string
+			+ _Required:_ True
+			+ _Description:_ Name of the current natural body
+			+ _Allowed values:_ Any
+		+ <a id="body.items.parent"></a> **PARENT**
+			+ _Type:_ string
+			+ _Required:_ True
+			+ _Description:_ Named natural body around which the current body is orbiting (must be one of the defined bodies)
+			+ _Allowed values:_ Any
+		+ <a id="body.items.flat"></a> **FLAT**
+			+ _Type:_ number
+			+ _Required:_ True
+			+ _Description:_ Flatening ratio of the current natural body
+			+ _Allowed values:_ Any
+		+ <a id="body.items.dens"></a> **DENS**
+			+ _Type:_ array
+			+ _Required:_ True
+			+ _Description:_ Configuration of the plasma density model aroud the current body
+			+ _Allowed values:_ Any
+			+ _Unique Items:_ False
+			+ _Minimum Items:_ NA
+			+ _Maximum Items:_ NA
+			+ <a id="body.items.dens.items"></a> **items**
+				+ _Type:_ object
+				+ _Required:_ False
+				+ _Description:_ None
 				+ _Allowed values:_ Any
-			+ <a id="items.on"></a> **ON**
-				+ _Type:_ boolean
-				+ _Required:_ True
-				+ _Description:_ Flag to activate the current natural body
-				+ _Allowed values:_ Any
-			+ <a id="items.name"></a> **NAME**
-				+ _Type:_ string
-				+ _Required:_ True
-				+ _Description:_ Name of the current natural body
-				+ _Allowed values:_ Any
-			+ <a id="items.parent"></a> **PARENT**
-				+ _Type:_ string
-				+ _Required:_ True
-				+ _Description:_ Named natural body around which the current body is orbiting (must be one of the defined bodies)
-				+ _Allowed values:_ Any
-
-			+ <a id="items.flat"></a> **FLAT**
-				+ _Type:_ number
-				+ _Required:_ True
-				+ _Description:_ Flatening ratio of the current natural body
-				+ _Allowed values:_ Any
-
-
-			+ <a id="items.dens"></a> **DENS**
-				+ _Type:_ array
-				+ _Required:_ True
-				+ _Description:_ Configuration of the plasma density model aroud the current body
-				+ _Allowed values:_ Any
-				+ _Unique Items:_ False
-				+ _Minimum Items:_ NA
-				+ _Maximum Items:_ NA
-				+ <a id="items.items"></a> **items**
-					+ _Type:_ object
-					+ _Required:_ False
-					+ _Description:_ None
-					+ _Allowed values:_ Any
-					+ _Children_:
-
-					+ <a id="items.items.on"></a> **ON**
+				+ _Children_:
+					+ <a id="body.items.dens.items.on"></a> **ON**
 						+ _Type:_ boolean
 						+ _Required:_ True
 						+ _Description:_ Flag to activate the plasma density model
 						+ _Allowed values:_ Any
-
-
-					+ <a id="items.items.scale"></a> **SCALE**
+					+ <a id="body.items.dens.items.scale"></a> **SCALE**
 						+ _Type:_ number
 						+ _Required:_ True
 						+ _Description:_ Scale-height parameter for the current plasma denisty model
 						+ _Allowed values:_ Any
-
-
-					+ <a id="items.items.name"></a> **NAME**
+					+ <a id="body.items.dens.items.name"></a> **NAME**
 						+ _Type:_ string
 						+ _Required:_ True
 						+ _Description:_ Name of the current plasma density model
 						+ _Allowed values:_ Any
-
-
-					+ <a id="items.items.rho0"></a> **RHO0**
+					+ <a id="body.items.dens.items.rho0"></a> **RHO0**
 						+ _Type:_ number
 						+ _Required:_ True
 						+ _Description:_ Rho0 parameter for the current plasma density model
 						+ _Allowed values:_ Any
-
-
-					+ <a id="items.items.perp"></a> **PERP**
+					+ <a id="body.items.dens.items.perp"></a> **PERP**
 						+ _Type:_ number
 						+ _Required:_ True
 						+ _Description:_ Perp ??? parameter for the current plasma denisty model
 						+ _Allowed values:_ Any
-
-
-					+ <a id="items.items.type"></a> **TYPE**
+					+ <a id="body.items.dens.items.type"></a> **TYPE**
 						+ _Type:_ string
 						+ _Required:_ True
 						+ _Description:_ Type of density model
 						+ _Allowed values:_ ```Ionospheric```,```Torus```
-
-
-
-
-
-			+ <a id="items.period"></a> **PERIOD**
-				+ _Type:_ number
-				+ _Required:_ True
-				+ _Description:_ Sidereal rotation period of the current natural body (in minutes)
-				+ _Allowed values:_ Any
-
-
-			+ <a id="items.motion"></a> **MOTION**
-				+ _Type:_ boolean
-				+ _Required:_ True
-				+ _Description:_ Flag to indicate if the natural body is moving in the simulation frame
-				+ _Allowed values:_ Any
-
-
-			+ <a id="items.declination"></a> **DECLINATION**
-				+ _Type:_ number
-				+ _Required:_ True
-				+ _Description:_ Declination orbital parameter of the current body
-				+ _Allowed values:_ Any
-
-
-			+ <a id="items.radius"></a> **RADIUS**
-				+ _Type:_ number
-				+ _Required:_ True
-				+ _Description:_ Radius of the current natural body
-				+ _Allowed values:_ Any
-
-
-			+ <a id="items.mag"></a> **MAG**
-				+ _Type:_ string
-				+ _Required:_ True
-				+ _Description:_ Internal body magnetic field model
-				+ _Allowed values:_ ``````,```JRM09+Connerney CS```
-
-
-			+ <a id="items.semi_min"></a> **SEMI\_MIN**
-				+ _Type:_ number
-				+ _Required:_ True
-				+ _Description:_ Semi minor axis orbital parameter of the current body
-				+ _Allowed values:_ Any
-
-
-			+ <a id="items.phase"></a> **PHASE**
-				+ _Required:_ True
-				+ _Description:_ Phase orbital parameter of the current body
-				+ _Allowed values:_ Any
-
-
-			+ <a id="items.semi_maj"></a> **SEMI\_MAJ**
-				+ _Type:_ number
-				+ _Required:_ True
-				+ _Description:_ Semi major axis orbital parameter of the current body
-				+ _Allowed values:_ Any
-
-
-			+ <a id="items.apo_long"></a> **APO\_LONG**
-				+ _Type:_ number
-				+ _Required:_ True
-				+ _Description:_ Apoapsis Longitude parameter of the current body
-				+ _Allowed values:_ Any
-
-
-			+ <a id="items.init_ax"></a> **INIT\_AX**
-				+ _Type:_ number
-				+ _Required:_ True
-				+ _Description:_ ???
-				+ _Allowed values:_ Any
-
-
-			+ <a id="items.inclination"></a> **INCLINATION**
-				+ _Type:_ number
-				+ _Required:_ True
-				+ _Description:_ Inclination orbital parameter of the current body
-				+ _Allowed values:_ Any
-
-
-
-
-
-	+ <a id=".movie2d"></a> **MOVIE2D**
-		+ _Type:_ object
-		+ _Required:_ True
-		+ _Description:_ 2D Movie output setup
-		+ _Allowed values:_ Any
-		+ _Children_:
-
-		+ <a id="movie2d.on"></a> **ON**
+		+ <a id="body.items.period"></a> **PERIOD**
+			+ _Type:_ number
+			+ _Required:_ True
+			+ _Description:_ Sidereal rotation period of the current natural body (in minutes)
+			+ _Allowed values:_ Any
+		+ <a id="body.items.motion"></a> **MOTION**
 			+ _Type:_ boolean
 			+ _Required:_ True
-			+ _Description:_ Flag to activate Movie2D generation
+			+ _Description:_ Flag to indicate if the natural body is moving in the simulation frame
 			+ _Allowed values:_ Any
-
-
-		+ <a id="movie2d.range"></a> **RANGE**
-			+ _Type:_ integer
+		+ <a id="body.items.declination"></a> **DECLINATION**
+			+ _Type:_ number
+			+ _Required:_ True
+			+ _Description:_ Declination orbital parameter of the current body
+			+ _Allowed values:_ Any
+		+ <a id="body.items.radius"></a> **RADIUS**
+			+ _Type:_ number
+			+ _Required:_ True
+			+ _Description:_ Radius of the current natural body
+			+ _Allowed values:_ Any
+		+ <a id="body.items.mag"></a> **MAG**
+			+ _Type:_ string
+			+ _Required:_ True
+			+ _Description:_ Internal body magnetic field model
+			+ _Allowed values:_ None,```JRM09+Connerney CS```
+		+ <a id="body.items.semi_min"></a> **SEMI\_MIN**
+			+ _Type:_ number
+			+ _Required:_ True
+			+ _Description:_ Semi minor axis orbital parameter of the current body
+			+ _Allowed values:_ Any
+		+ <a id="body.items.phase"></a> **PHASE**
+			+ _Required:_ True
+			+ _Description:_ Phase orbital parameter of the current body
+			+ _Allowed values:_ Any
+		+ <a id="body.items.semi_maj"></a> **SEMI\_MAJ**
+			+ _Type:_ number
+			+ _Required:_ True
+			+ _Description:_ Semi major axis orbital parameter of the current body
+			+ _Allowed values:_ Any
+		+ <a id="body.items.apo_long"></a> **APO\_LONG**
+			+ _Type:_ number
+			+ _Required:_ True
+			+ _Description:_ Apoapsis Longitude parameter of the current body
+			+ _Allowed values:_ Any
+		+ <a id="body.items.init_ax"></a> **INIT\_AX**
+			+ _Type:_ number
 			+ _Required:_ True
 			+ _Description:_ ???
 			+ _Allowed values:_ Any
-
-
-		+ <a id="movie2d.subcycle"></a> **SUBCYCLE**
-			+ _Type:_ integer
+		+ <a id="body.items.inclination"></a> **INCLINATION**
+			+ _Type:_ number
 			+ _Required:_ True
-			+ _Description:_ ???
+			+ _Description:_ Inclination orbital parameter of the current body
 			+ _Allowed values:_ Any
 
-
-
-
-	+ <a id=".simu"></a> **SIMU**
-		+ _Type:_ object
+##### <a id="movie2d"></a> MOVIE2D
++ _Type:_ object
++ _Required:_ True
++ _Description:_ 2D Movie output setup
++ _Allowed values:_ Any
++ _Children_:
+	+ <a id="movie2d.on"></a> **ON**
+		+ _Type:_ boolean
 		+ _Required:_ True
-		+ _Description:_ Simulation run description
+		+ _Description:_ Flag to activate Movie2D generation
 		+ _Allowed values:_ Any
-		+ _Children_:
-
-		+ <a id="simu.name"></a> **NAME**
-			+ _Type:_ string
-			+ _Required:_ True
-			+ _Description:_ Name of the simulation
-			+ _Allowed values:_ Any
-
-
-		+ <a id="simu.out"></a> **OUT**
-			+ _Type:_ string
-			+ _Required:_ True
-			+ _Description:_ Output file location (full path)
-			+ _Allowed values:_ Any
-
-
-
-
-	+ <a id=".observer"></a> **OBSERVER**
-		+ _Type:_ object
+	+ <a id="movie2d.range"></a> **RANGE**
+		+ _Type:_ integer
 		+ _Required:_ True
-		+ _Description:_ Simulation run observer setup
+		+ _Description:_ ???
 		+ _Allowed values:_ Any
-		+ _Children_:
-
-		+ <a id="observer.decl"></a> **DECL**
-			+ _Type:_ number
-			+ _Required:_ True
-			+ _Description:_ Declination of ??? (in case of 'Orbiter' type)
-			+ _Allowed values:_ Any
-
-
-		+ <a id="observer.fixe_subl"></a> **FIXE\_SUBL**
-			+ _Required:_ True
-			+ _Description:_ 
-			+ _Allowed values:_ Any
-
-
-		+ <a id="observer.parent"></a> **PARENT**
-			+ _Type:_ string
-			+ _Required:_ True
-			+ _Description:_ 
-			+ _Allowed values:_ ```Jupiter```
-
-
-		+ <a id="observer.fixe_decl"></a> **FIXE\_DECL**
-			+ _Required:_ True
-			+ _Description:_ 
-			+ _Allowed values:_ Any
-
-
-		+ <a id="observer.type"></a> **TYPE**
-			+ _Type:_ string
-			+ _Required:_ True
-			+ _Description:_ Type of observer (Pre-Defined, Orbiter or Fixed)
-			+ _Allowed values:_ ```Pre-Defined```,```Orbiter```,```Fixed```
-
-
-		+ <a id="observer.sctime"></a> **SCTIME**
-			+ _Type:_ string
-			+ _Required:_ True
-			+ _Description:_ Start time of the simulation run in SCET (YYYYMMDDHHMM format)
-			+ _Allowed values:_ Any
-
-
-		+ <a id="observer.ephem"></a> **EPHEM**
-			+ _Type:_ string
-			+ _Required:_ True
-			+ _Description:_ 
-			+ _Allowed values:_ Any
-
-
-		+ <a id="observer.phase"></a> **PHASE**
-			+ _Type:_ number
-			+ _Required:_ True
-			+ _Description:_ Phase of ??? (in case of 'Orbiter' type)
-			+ _Allowed values:_ Any
-
-
-		+ <a id="observer.incl"></a> **INCL**
-			+ _Type:_ number
-			+ _Required:_ True
-			+ _Description:_ Inclination of ??? (in case of 'Orbiter' type)
-			+ _Allowed values:_ Any
-
-
-		+ <a id="observer.semi_min"></a> **SEMI\_MIN**
-			+ _Type:_ number
-			+ _Required:_ True
-			+ _Description:_ Semi minor axis (in case of 'Orbiter' type)
-			+ _Allowed values:_ Any
-
-
-		+ <a id="observer.sc"></a> **SC**
-			+ _Type:_ string
-			+ _Required:_ True
-			+ _Description:_ 
-			+ _Allowed values:_ ```Juno```,```Earth```
-
-
-		+ <a id="observer.subl"></a> **SUBL**
-			+ _Type:_ number
-			+ _Required:_ True
-			+ _Description:_ Sublongitude of ??? (in case of 'Orbiter' type)
-			+ _Allowed values:_ Any
-
-
-		+ <a id="observer.semi_maj"></a> **SEMI\_MAJ**
-			+ _Type:_ number
-			+ _Required:_ True
-			+ _Description:_ Semi major axis (in case of 'Orbiter' type)
-			+ _Allowed values:_ Any
-
-
-		+ <a id="observer.fixe_dist"></a> **FIXE\_DIST**
-			+ _Required:_ True
-			+ _Description:_ 
-			+ _Allowed values:_ Any
-
-
-
-
-	+ <a id=".spdyn"></a> **SPDYN**
-		+ _Type:_ object
+	+ <a id="movie2d.subcycle"></a> **SUBCYCLE**
+		+ _Type:_ integer
 		+ _Required:_ True
-		+ _Description:_ Dynamic Spectra ouput setup
+		+ _Description:_ ???
 		+ _Allowed values:_ Any
-		+ _Children_:
 
-		+ <a id="spdyn.ltrange"></a> **LTRANGE**
-			+ _Type:_ array
-			+ _Required:_ True
-			+ _Description:_ Local-Time range for plot setup
+##### <a id="simu"></a> SIMU
++ _Type:_ object
++ _Required:_ True
++ _Description:_ Simulation run description
++ _Allowed values:_ Any
++ _Children_:
+	+ <a id="simu.name"></a> **NAME**
+		+ _Type:_ string
+		+ _Required:_ True
+		+ _Description:_ Name of the simulation
+		+ _Allowed values:_ Any
+	+ <a id="simu.out"></a> **OUT**
+		+ _Type:_ string
+		+ _Required:_ True
+		+ _Description:_ Output file location (full path)
+		+ _Allowed values:_ Any
+
+##### <a id="observer"></a> OBSERVER
++ _Type:_ object
++ _Required:_ True
++ _Description:_ Simulation run observer setup
++ _Allowed values:_ Any
++ _Children_:
+	+ <a id="observer.decl"></a> **DECL**
+		+ _Type:_ number
+		+ _Required:_ True
+		+ _Description:_ Declination of ??? (in case of 'Orbiter' type)
+		+ _Allowed values:_ Any
+	+ <a id="observer.fixe_subl"></a> **FIXE\_SUBL**
+		+ _Required:_ True
+		+ _Description:_ 
+		+ _Allowed values:_ Any
+	+ <a id="observer.parent"></a> **PARENT**
+		+ _Type:_ string
+		+ _Required:_ True
+		+ _Description:_ 
+		+ _Allowed values:_ ```Jupiter```
+	+ <a id="observer.fixe_decl"></a> **FIXE\_DECL**
+		+ _Required:_ True
+		+ _Description:_ 
+		+ _Allowed values:_ Any
+	+ <a id="observer.type"></a> **TYPE**
+		+ _Type:_ string
+		+ _Required:_ True
+		+ _Description:_ Type of observer (Pre-Defined, Orbiter or Fixed)
+		+ _Allowed values:_ ```Pre-Defined```,```Orbiter```,```Fixed```
+	+ <a id="observer.sctime"></a> **SCTIME**
+		+ _Type:_ string
+		+ _Required:_ True
+		+ _Description:_ Start time of the simulation run in SCET (YYYYMMDDHHMM format)
+		+ _Allowed values:_ Any
+	+ <a id="observer.ephem"></a> **EPHEM**
+		+ _Type:_ string
+		+ _Required:_ True
+		+ _Description:_ 
+		+ _Allowed values:_ Any
+	+ <a id="observer.phase"></a> **PHASE**
+		+ _Type:_ number
+		+ _Required:_ True
+		+ _Description:_ Phase of ??? (in case of 'Orbiter' type)
+		+ _Allowed values:_ Any
+	+ <a id="observer.incl"></a> **INCL**
+		+ _Type:_ number
+		+ _Required:_ True
+		+ _Description:_ Inclination of ??? (in case of 'Orbiter' type)
+		+ _Allowed values:_ Any
+	+ <a id="observer.semi_min"></a> **SEMI\_MIN**
+		+ _Type:_ number
+		+ _Required:_ True
+		+ _Description:_ Semi minor axis (in case of 'Orbiter' type)
+		+ _Allowed values:_ Any
+	+ <a id="observer.sc"></a> **SC**
+		+ _Type:_ string
+		+ _Required:_ True
+		+ _Description:_ 
+		+ _Allowed values:_ ```Juno```,```Earth```
+	+ <a id="observer.subl"></a> **SUBL**
+		+ _Type:_ number
+		+ _Required:_ True
+		+ _Description:_ Sublongitude of ??? (in case of 'Orbiter' type)
+		+ _Allowed values:_ Any
+	+ <a id="observer.semi_maj"></a> **SEMI\_MAJ**
+		+ _Type:_ number
+		+ _Required:_ True
+		+ _Description:_ Semi major axis (in case of 'Orbiter' type)
+		+ _Allowed values:_ Any
+	+ <a id="observer.fixe_dist"></a> **FIXE\_DIST**
+		+ _Required:_ True
+		+ _Description:_ 
+		+ _Allowed values:_ Any
+
+##### <a id="spdyn"></a> SPDYN
++ _Type:_ object
++ _Required:_ True
++ _Description:_ Dynamic Spectra ouput setup
++ _Allowed values:_ Any
++ _Children_:
+	+ <a id="spdyn.ltrange"></a> **LTRANGE**
+		+ _Type:_ array
+		+ _Required:_ True
+		+ _Description:_ Local-Time range for plot setup
+		+ _Allowed values:_ Any
+		+ _Unique Items:_ False
+		+ _Minimum Items:_ 2
+		+ _Maximum Items:_ 2
+		+ <a id="spdyn.items"></a> **items**
+			+ _Type:_ number
+			+ _Required:_ False
+			+ _Description:_ None
 			+ _Allowed values:_ Any
-			+ _Unique Items:_ False
-			+ _Minimum Items:_ 2
-			+ _Maximum Items:_ 2
-			+ <a id="spdyn.items"></a> **items**
-				+ _Type:_ number
-				+ _Required:_ False
-				+ _Description:_ None
-				+ _Allowed values:_ Any
-
-
-
 		+ <a id="spdyn.polar"></a> **POLAR**
 			+ _Type:_ boolean
 			+ _Required:_ True
 			+ _Description:_ Flag to ouput 'Polar' plots
 			+ _Allowed values:_ Any
-
-
 		+ <a id="spdyn.khz"></a> **KHZ**
 			+ _Type:_ boolean
 			+ _Required:_ True
 			+ _Description:_ Flag for spectral axis output in kHz (default is MHz)
 			+ _Allowed values:_ Any
-
-
 		+ <a id="spdyn.log"></a> **LOG**
 			+ _Type:_ boolean
 			+ _Required:_ True
 			+ _Description:_ Flag for spectral axis output in log scale
 			+ _Allowed values:_ Any
-
-
 		+ <a id="spdyn.larange"></a> **LARANGE**
 			+ _Type:_ array
 			+ _Required:_ True
