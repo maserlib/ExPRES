@@ -1539,7 +1539,8 @@ for i=0,nbody-1 do begin
 ; si c est le cas, on calcul à partir de la longitude au t=0 de la closest approach la longitude au t=0 de la simulation
 ; si c est pas le cas, alors on fait appelle à MIRIADE pour les éphémérides au t=0 de la simulation
 		if size((((serpe_save['BODY'])[i])['PHASE']),/type) eq 7 then begin									; if phase = "auto"
-			if observer.predef eq 0 then begin
+			date=STRMID(observer.start,0,10)+':'+STRMID(observer.start,10,2)
+      if observer.predef eq 0 then begin
 				if ((observer.name eq 'Cassini') and (long64(observer.start) ge 201603281700) and (long64(observer.start) lt 201701010000)) then begin
 					
 					date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
@@ -1671,11 +1672,24 @@ for i=0,nbody-1 do begin
 					if bd[n].name eq 'Ganymede' then bd[n].phs=360.-ephem(w).galong
 
 					
-				endif else begin												; Si on est un spacecraft, mais pas à la closest approach (ou pas Voyager)
+				endif else if bd[n].name eq 'Io' or bd[n].name eq 'Europa' or bd[n].name eq 'Ganymede' then begin
+          adresse_ephem=loadpath('adresse_ephem',parameters,config=config)
+          restore,adresse_ephem+bd[n].name+'/'+bd[n].name+'_ephemeris_'+strmid(observer.start,0,4)+'.sav'
+          
+          date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
+          heured=strmid(date,8,2)
+          mind=strmid(date,11,2)
+          w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
+          bd[n].phs=360.-ephem(w).oblon
+
+        endif else begin												; Si on est un spacecraft, mais pas à la closest approach (ou pas Voyager)
 					; pour contrer les eventuels soucis de discussions avec l OV MIRIADE
 					error=1
 					error2=0
+          adresse_ephem=loadpath('adresse_ephem',parameters,config=config)
 					name=adresse_ephem+'ephembody'+strtrim(ticket,1)+'.txt'
+
+          date=STRMID(observer.start,0,10)+':'+STRMID(observer.start,10,2)
 					while (error eq 1) do begin
 						call_ephemph,((serpe_save['BODY'])[i])['NAME'],spacecraft=(serpe_save['OBSERVER'])['SC'],date,name		; search ephem (OV Miriade)
 						read_ephemph,name,longitude=longitude,error=error														; read Miriade ephem
