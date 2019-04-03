@@ -1202,6 +1202,7 @@ observer.name=(serpe_save['OBSERVER'])['SC']
 observer.start=(serpe_save['OBSERVER'])['SCTIME']
 
 ;************* epehemeris given by the users ************
+date=STRMID(observer.start,0,10)+':'+STRMID(observer.start,10,2)
 adresse_ephem=loadpath('adresse_ephem',parameters,config=config)
 if (serpe_save['OBSERVER'])['EPHEM'] ne '' then begin
   read_ephem_obs,(serpe_save['OBSERVER'])['EPHEM'],time,observer,longitude,distance,lat,error
@@ -1213,7 +1214,6 @@ if (serpe_save['OBSERVER'])['EPHEM'] ne '' then begin
 endif
 
 if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
-  date=STRMID(observer.start,0,10)+':'+STRMID(observer.start,10,2)
   if ((observer.motion+observer.predef) eq 0b) then begin
   	if size(((serpe_save['OBSERVER'])['FIXE_DIST']),/type) eq 7 then begin			; if fixe_dist="auto"
   		if ((serpe_save['OBSERVER'])['SC'] eq 'Cassini' and (long64(observer.start) ge 201603281700) and (long64(observer.start) lt 201701010000)) then begin
