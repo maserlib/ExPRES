@@ -102,6 +102,12 @@ if wi[0] ne -1 then di[wi]=2.*di[wi]
 ;th=(gb*cos(thz)+asin(((n*sin(i))<1))+di)*!radeg
 ; With the effects of reflection :
 th=(gb*cos(thz)+asin(((n*sin(i))<1)))*!radeg
+;di=fltarr(n_elements(i))
+;wi1=where(i gt !pi/2.)
+;di[wi1]=!pi
+;i[wi1]=-i[wi1]
+;th[w2]=(gb[w2]*cos(thz[w2])+asin(((n[w2]*sin(i+di)))))*!radeg
+
 ;*********************************
 
 w=where(~FINITE(n))
