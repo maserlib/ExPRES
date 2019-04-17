@@ -72,20 +72,32 @@ case name of
 endcase
 
 ; Web service URL
-url='http://vo.imcce.fr/webservices/miriade/ephemph_query.php?'
+;#perious url : url='http://vo.imcce.fr/webservices/miriade/ephemph_query.php?'
+
+url='https://ssp.imcce.fr/webservices/miriade/api/ephemph.php?'
+
+
+;#Example : 'https://ssp.imcce.fr/webservices/miriade/api/ephemph.php?-name=p:Jupiter&-observer=@io&-type=&-ep=2030-01-01T0:0:0&-nbd=5&-step=1d&-so=3&-mime=text&-output=&-from=MiriadeDoc'
+
+
 
 ; Target
 target='-name='+type_new+':'+name+'&'
 
 ;type (planet, satellit, asteroid, comet)
-type_fin='-type='+type+'&'
+;type_fin='-type='+type+'&'
 
 ; Epoch -- allowed formats : 
 ;2015-10-26T12:00
-;2015-10-2612:00
-;2015102612:00
 ;2015-10-26T12:00:00 
-epoch='-ep='+date+'&'
+;2015-10-2612:00
+
+if strlen(date) eq 12 then date2=strmid(date,0,4)+'-'+strmid(date,4,2)+'-'+strmid(date,6,2)+'T'$
+	+strmid(date,8,2)+':'+strmid(date,10,2)
+
+epoch='-ep='+date2+'&'
+
+
 
 ; Number of date
 if keyword_set(nbdate) then nbdate='-nbd='+strtrim(nbdate,1)+'&' $
@@ -103,26 +115,25 @@ if keyword_set(spacecraft) then begin
 	else if spacecraft eq 'Ganymede' then observer_fin='-observer=@-503&' $
 	else if spacecraft eq 'Juno' then observer_fin='-observer=@-61&' $
 	else if spacecraft eq 'Earth' then observer_fin='-observer=@500&' $; Terre
-	else if spacecraft eq '' then observer_fin='-observer=@500&' $; Terre
 	else begin 
 		observer_fin='-observer=@500&'
 		print,observer_fin
-		cont=''
-		read,cont,prompt='Are you sure of your observer ? yes/no'
-		cont=strlowcase(cont)
-		if cont ne 'yes' then stop,'Check the name of the observer'
+		stop,'Are you sure of your observer ? Please check the name'
 	endelse
-endif else if keyword_set(observer) then observer_fin='observer='+observer+'&' $
+endif else if keyword_set(observer) then observer_fin='-observer='+observer+'&' $
 else observer_fin='-observer=@500&'
 
 ; Mime type of the output (e.g. votable, html, text)
 mime='-mime=text&'
 
 ; Number of decimals of results
-output='--jd'
+;output='--jd&'
+output=''
+; Magnetic System
+if name eq 'Jupiter' then so='-so=3&'
 
 ; Miriade arguments
-url=url+target+type_fin+epoch+nbdate+stepp+observer_fin+mime+output
+url=url+target+epoch+nbdate+stepp+observer_fin+mime+output+so+'-from=MiriadeDoc'
 print, url
 
 ; Call Miriade.ephemcc method
