@@ -5,12 +5,12 @@ In this version, the code is called ExPRES (Exoplanetary and Planetary Radio Emi
 
 Contributors: C. Louis, S. L. G. Hess, P. Zarka, B. Cecconi, L. Lamy 
 
-Main addtions in this version:
+Main additions in this version:
 - open source licence and distribution on github
 - better documentation
 
 Related Publications:
-- 
+- Louis CK, SLG Hess, B Cecconi, P Zarka, L Lamy, S Aicardi and A Loh. 2019, "ExPRES: an Exoplanetary and Planetary Radio Emissions Simulator." Astron. Astrophys. _Accepted_
 
 ## Version 0.6.1  (2018)
 In this version, the code is called SERPE (Simulation d'Emission Radio Planétaires et Exoplanétaires)
