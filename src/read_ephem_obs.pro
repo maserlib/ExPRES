@@ -1,18 +1,38 @@
+FUNCTION decode_header, header_raw
+
+header_tags = ["calculation_type", "target", "observer", "reference_frame", "light_propagation", "time_system", "time_format", "time_range", "step", "state_representation"]
+header_values = strarr(n_elements(header_tags))
+
+header_data = make_struct(header_tags, header_values)
+
+for i=0,n_elements(header_raw)-1 do begin
+   if strpos(header_raw[i], " = ") ne -1 then begin
+       header_tmp = strsplit(header_raw[i],' = ') 
+       header_tmp_tag = strlowcase(repstr(strtrim(header_tmp[0],2), ' ', '_')) 
+       header_tmp_tag_pos = (where(header_tags eq header_tmp_tag))[0]
+       if header_tmp_tag_pos ne -1 then begin 
+           header_data.(header_tmp_tag_pos) = strtrim(header_tmp[1],2)
+       endif
+   endif
+enfor
+
+return, header_data
+end
+
 PRO read_ephem_obs,ephem,time,observer,longitude,distance,lat,error
 
-
-
-
-nbr_lines_suppr=19l
-nbr_lines_end=5l
+n_skip_lines_head = 19l
+n_skip_lines_foot = 5l
 if (file_lines(ephem) lt 20) then goto, erreur
 
 openr,u,ephem,/get_lun
 buf=''
 
-
-for i=0,nbr_lines_suppr-1 do readf,u,buf
-
+header_raw = strarr(n_skip_lines_head)
+for i=0,n_skip_lines_head-1 do begin
+    readf,u,buf
+    header_raw[i] = buf
+endfor
 
 n = file_lines(ephem)-nbr_lines_suppr-nbr_lines_end
 year=''
