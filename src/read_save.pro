@@ -1575,7 +1575,14 @@ for i=0,nbody-1 do begin
 						if (error2 gt 30) then stop,'Veuillez relancer la simulation'
 						error2=error2+1	
 					endwhile
-			
+			; # phase eq auto is for a moon. MIRIADE gives the real phase of the moon.
+      ; # longitude_moon=CML+180°-phase_moon
+      ; # But in ExPRES the phase is 360-longitude.
+      ; # Thus CML=360.-observer.phs
+      ; # and phase_real=longitude[0] given by MIRIADE
+      ; # Thus here phase_moon_expres = 360-longitude_moon      
+      ; #      Thus phase_moon_expres = 360.-(longitude_observer + 180-phase_real)
+      ; #      Thus phase_moon_expres = 360.-(360.-observe.phs + 180-longitude[0])
 					bd[n].phs=360.-((360-observer.phs+180.-longitude[0]) mod 360.)	
 				endelse						
 			endif else begin
