@@ -20,7 +20,7 @@ class amj_aj(unittest.TestCase):
 
     def test_read_ephem_obs_wgc(self):
         for cur_file in test_read_ephem_obs_files['wgc']:
-            self.idl.run('read_ephem_obs, '{}', time, observer, longitude, distance, lat, error'.format(cur_file))
+            self.idl.run('read_ephem_obs, "{}", time, observer, longitude, distance, lat, error'.format(cur_file))
             time = self.idl.time
             observer = self.idl.observer
             longitude = self.idl.longitude
