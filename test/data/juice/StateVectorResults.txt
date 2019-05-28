@@ -1,0 +1,26 @@
+State Vector Results
+
+
+Calculation Inputs
+
+Calculation type     = State Vector
+Target               = JUICE_SPACECRAFT
+Observer             = JUPITER
+Reference frame      = IAU_JUPITER
+Light propagation    = No correction
+Time system          = UTC
+Time format          = Calendar date and time
+Time range           = 2030-09-17 00:00:00 to 2030-09-18 00:01:00, step 1 minutes
+State representation = Planetocentric
+
+
+State Vector Results
+
+UTC  calendar date              Longitude (deg)  Latitude (deg)  Radius (km)      d Longitude/dt (deg/s)  d Latitude/dt (deg/s)  d Radius/dt (km/s)  Speed (km/s)  Time at Target                  Light Time (s)
+2030-09-17 00:00:00.000000 UTC      24.79028646     -0.37774752  782604.69208334             -0.00897620        -8.63299405E-06         -5.05068198  122.70750384  2030-09-17 00:00:00.000000 UTC      2.61048826
+2030-09-17 00:01:00.000000 UTC      24.25174023     -0.37826545  782301.79719229             -0.00897534        -8.63131408E-06         -5.04581265  122.64826014  2030-09-17 00:01:00.000000 UTC      2.60947791
+
+
+Kernels Used
+
+data/SPICE/JUICE/kernels/mk/juice_crema_4_0_ops.tm
