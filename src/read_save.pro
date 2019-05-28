@@ -1107,9 +1107,8 @@ if mov3d.on then begin
 endif
 
 ; ***** preparing SACRED parameters *****
-
 CALDAT,SYSTIME(/JULIAN), Mo, D, Y, H, Mi, S
-if (STRLEN(observer.start) ge 8) then begin
+if (STRLEN(observer.start) ge 12) then begin
 	Y=fix(strmid(observer.start,0,4))
 	Mo=fix(strmid(observer.start,4,2))
 	D=fix(strmid(observer.start,6,2))
@@ -1199,19 +1198,24 @@ case (serpe_save['OBSERVER'])['TYPE'] of
 endcase
 observer.parent=(serpe_save['OBSERVER'])['PARENT']
 observer.name=(serpe_save['OBSERVER'])['SC']
-observer.start=(serpe_save['OBSERVER'])['SCTIME']
+
+observer.start=(serpe_save['OBSERVER'])['SCTIME'] 
+
 
 ;************* epehemeris given by the users ************
-date=STRMID(observer.start,0,10)+':'+STRMID(observer.start,10,2)
-adresse_ephem=loadpath('adresse_ephem',parameters,config=config)
+
 if (serpe_save['OBSERVER'])['EPHEM'] ne '' then begin
-  read_ephem_obs,(serpe_save['OBSERVER'])['EPHEM'],time,observer,longitude,distance,lat,error
+  read_ephem_obs,(serpe_save['OBSERVER'])['EPHEM'],time0,time,observer,longitude,distance,lat,error
   if error eq 1 then stop,'Check your ephemeris'
   struct_replace_field,observer,'SMAJ',distance
   struct_replace_field,observer,'SMIN',distance
   struct_replace_field,observer,'PHS',-longitude
   struct_replace_field,observer,'DECL',lat
+  observer.start=time0
 endif
+
+date=STRMID(observer.start,0,10)+':'+STRMID(observer.start,10,2)
+adresse_ephem=loadpath('adresse_ephem',parameters,config=config)
 
 if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   if ((observer.motion+observer.predef) eq 0b) then begin

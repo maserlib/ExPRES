@@ -7,8 +7,8 @@
 ;***       MODULE: read_ephem	                         ***
 ;*** 		Version history  							 ***
 ;***        [CL] : First release                         ***
-;***     function: read_ephem_obs						 ***
-;***         lecture des ephemerides de l observateur	 ***
+;***     routine: read_ephemph							 ***
+;***         lecture des ephemerides de l objet			 ***
 ;***         venant de l OV Miriade				   		 ***
 ;***         /!\ attention au changement MIRIADE /!\	 ***
 ;***         /!\ verifier régulièrement MIRIADE	 /!\	 ***
