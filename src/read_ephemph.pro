@@ -152,8 +152,6 @@ endfor
 close, u
 free_lun, u
 
-stop
-
 
 error=0
 return
