@@ -1570,7 +1570,7 @@ for i=0,nbody-1 do begin
 					error2=0
 					name=adresse_ephem+'ephembody'+strtrim(ticket,1)+'.txt'
 					while (error eq 1) do begin
-						call_ephemph,((serpe_save['BODY'])[i])['NAME'],spacecraft=(serpe_save['OBSERVER'])['SC'],date,name		; search ephem (OV Miriade)
+						call_ephemph,((serpe_save['BODY'])[i])['PARENT'],observer=((serpe_save['BODY'])[i])['NAME'],date,name		; search ephem (OV Miriade)
 						read_ephemph,name,longitude=longitude,error=error														; read Miriade ephem
 						if (error2 gt 30) then stop,'Veuillez relancer la simulation'
 						error2=error2+1	
@@ -1583,7 +1583,7 @@ for i=0,nbody-1 do begin
       ; # Thus here phase_moon_expres = 360-longitude_moon      
       ; #      Thus phase_moon_expres = 360.-(longitude_observer + 180-phase_real)
       ; #      Thus phase_moon_expres = 360.-(360.-observe.phs + 180-longitude[0])
-					bd[n].phs=360.-((360-observer.phs+180.-longitude[0]) mod 360.)	
+					bd[n].phs=360.-(longitude[0] mod 360.)	
 				endelse						
 			endif else begin
 				if (observer.name eq 'Juno') then begin
@@ -1702,12 +1702,12 @@ for i=0,nbody-1 do begin
 
           date=STRMID(observer.start,0,10)+':'+STRMID(observer.start,10,2)
 					while (error eq 1) do begin
-						call_ephemph,((serpe_save['BODY'])[i])['NAME'],spacecraft=(serpe_save['OBSERVER'])['SC'],date,name		; search ephem (OV Miriade)
+						call_ephemph,((serpe_save['BODY'])[i])['PARENT'],observer=(serpe_save['OBSERVER'])['SC'],date,name	; search ephem (OV Miriade)
 						read_ephemph,name,longitude=longitude,error=error														; read Miriade ephem
 						if (error2 gt 30) then stop,'Veuillez relancer la simulation'
 						error2=error2+1	
 					endwhile
-					bd[n].phs=360.-((360-observer.phs[0]+180.-longitude[0]) mod 360.)	
+					bd[n].phs=360.-(longitude[0] mod 360.)	
 				endelse
 			endelse
 

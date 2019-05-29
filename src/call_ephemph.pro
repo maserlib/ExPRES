@@ -20,6 +20,8 @@
 
 pro call_ephemph, name,spacecraft=spacecraft, date, filename, nbdate=nbdate, step=step, observer=observer
 
+
+
 case name of
 	'Mercury': BEGIN
 		type_new='p'
@@ -128,8 +130,10 @@ mime='-mime=text&'
 ; Number of decimals of results
 ;output='--jd&'
 output=''
+
 ; Magnetic System
-if name eq 'Jupiter' then so='-so=3&'
+if name eq 'Jupiter' then so='-so=3&' else so=''
+
 
 ; Miriade arguments
 url=url+target+epoch+nbdate+stepp+observer_fin+mime+output+so+'-from=MiriadeDoc'
