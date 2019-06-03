@@ -1240,12 +1240,13 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   			while (error eq 1) do begin
   				call_ephemph,(serpe_save['OBSERVER'])['PARENT'],spacecraft=(serpe_save['OBSERVER'])['SC'],date,name		; call ephemeride of Miriade VO
   				read_ephemph,name,distance=distance,longitude=longitude,lat=lat,error=error								; writing ephem of Miriade VO
-  				if (error2 gt 30) then stop,'Please restart the simulation'
+          if (error2 gt 30) then stop,'Please restart the simulation'
   				error2=error2+1
   			endwhile
   		
   				
   		endelse
+      stop
   		; enregistrement des donnees lues
   		observer.smaj=distance[0]
   	  observer.smin=distance[0]
@@ -1583,7 +1584,10 @@ for i=0,nbody-1 do begin
       ; # Thus here phase_moon_expres = 360-longitude_moon      
       ; #      Thus phase_moon_expres = 360.-(longitude_observer + 180-phase_real)
       ; #      Thus phase_moon_expres = 360.-(360.-observe.phs + 180-longitude[0])
-					bd[n].phs=360.-(longitude[0] mod 360.)	
+			; # bd[n].phs=360.-((360-observer.phs[0]+180.-longitude[0]) mod 360.) 		
+      ; # new MIRIADE allows to direclty obtain moon's longitude 
+      ; # thus phase=(360.-longitude) mod 360
+          bd[n].phs=360.-(longitude[0] mod 360.)	
 				endelse						
 			endif else begin
 				if (observer.name eq 'Juno') then begin
@@ -1592,7 +1596,7 @@ for i=0,nbody-1 do begin
 					heured=strmid(date,8,2)
 					mind=strmid(date,11,2)
 
-					w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
+					
 					if bd[n].name eq 'Io' then begin
 						if long64(observer.start) ge 201601010000 and long64(observer.start) lt 201701010000 then $
 						restore,adresse_ephem+'Juno/2016_001-366.sav'
@@ -1601,29 +1605,28 @@ for i=0,nbody-1 do begin
             if long64(observer.start) ge 201801010000 and long64(observer.start) lt 201901010000 then $
             restore,adresse_ephem+'Juno/2018_001-365.sav'
 						if long64(observer.start) ge 201901010000 then stop,'you have to define ephem for this date'
+            w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
             bd[n].phs=360.-(ephem(w).oblon+180.-ephem(w).iophase)
 					endif else if bd[n].name eq 'Europa' then begin
-						if long64(observer.start) ge 201601010000 and long64(observer.start) lt 201701010000 then begin
-							restore,adresse_ephem+'Europa/Europa_ephemeris_2016.sav'
-							bd[n].phs=360.-ephem(w).oblon
-						endif else if long64(observer.start) ge 201701010000 and long64(observer.start) lt 201801010000 then begin
-							restore,adresse_ephem+'Europa/Europa_ephemeris_2017.sav'
-							bd[n].phs=360.-ephem(w).oblon
-            endif else if long64(observer.start) ge 201801010000 and long64(observer.start) lt 201901010000 then begin
-              restore,adresse_ephem+'Europa/Europa_ephemeris_2018.sav'
-              bd[n].phs=360.-ephem(w).oblon
-						endif else stop,'you have to define ephem for this date'
+						if long64(observer.start) ge 201601010000 and long64(observer.start) lt 201701010000 then $
+							restore,adresse_ephem+'Europa/Europa_ephemeris_2016.sav' $
+						  else if long64(observer.start) ge 201701010000 and long64(observer.start) lt 201801010000 then $
+							restore,adresse_ephem+'Europa/Europa_ephemeris_2017.sav' $
+              else if long64(observer.start) ge 201801010000 and long64(observer.start) lt 201901010000 then $
+              restore,adresse_ephem+'Europa/Europa_ephemeris_2018.sav' $
+						  else stop,'you have to define ephem for this date'
+            w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
+            bd[n].phs=360.-ephem(w).oblon
 					endif else if bd[n].name eq 'Ganymede' then begin
-						if long64(observer.start) ge 201601010000 and long64(observer.start) lt 201701010000 then begin
-							restore,adresse_ephem+'Ganymede/Ganymede_ephemeris_2016.sav'
-							bd[n].phs=360.-ephem(w).oblon
-						endif else if long64(observer.start) ge 201701010000 and long64(observer.start) lt 201801010000 then begin
-							restore,adresse_ephem+'Ganymede/Ganymede_ephemeris_2017.sav'
-							bd[n].phs=360.-ephem(w).oblon
-            endif else if long64(observer.start) ge 201801010000 and long64(observer.start) lt 201901010000 then begin
-              restore,adresse_ephem+'Ganymede/Ganymede_ephemeris_2018.sav'
-              bd[n].phs=360.-ephem(w).oblon
-						endif else stop,'you have to define ephem for this date'
+						if long64(observer.start) ge 201601010000 and long64(observer.start) lt 201701010000 then $
+							restore,adresse_ephem+'Ganymede/Ganymede_ephemeris_2016.sav' $
+						  else if long64(observer.start) ge 201701010000 and long64(observer.start) lt 201801010000 then $
+							restore,adresse_ephem+'Ganymede/Ganymede_ephemeris_2017.sav' $
+              else if long64(observer.start) ge 201801010000 and long64(observer.start) lt 201901010000 then $
+              restore,adresse_ephem+'Ganymede/Ganymede_ephemeris_2018.sav' $
+						  else stop,'you have to define ephem for this date'
+            w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
+            bd[n].phs=360.-ephem(w).oblon
 					endif
 				
         endif else if (observer.name eq 'Voyager1') then begin
@@ -1671,27 +1674,26 @@ for i=0,nbody-1 do begin
 					endif else stop,"Cette lune n'est pas prévu pour cette date"
 				
 				
-				endif else if (observer.name eq 'Galileo' or observer.name eq 'galileo' or observer.name eq 'GALILEO') then begin
-					restore,adresse_ephem+'Galileo/1996_240-260.sav'
-					date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
-					heured=strmid(date,8,2)
-					mind=strmid(date,11,2)
-
-					w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
-					if bd[n].name eq 'Io' then bd[n].phs=360.-ephem(w).iolong
-					if bd[n].name eq 'Europa' then bd[n].phs=360.-ephem(w).eulong
-					if bd[n].name eq 'Ganymede' then bd[n].phs=360.-ephem(w).galong
+			;	endif else if (observer.name eq 'Galileo' or observer.name eq 'galileo' or observer.name eq 'GALILEO') then begin
+			;		restore,adresse_ephem+'Galileo/1996_240-260.sav'
+			;		date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
+			;		heured=strmid(date,8,2)
+			;		mind=strmid(date,11,2)
+			;		w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
+			;		if bd[n].name eq 'Io' then bd[n].phs=360.-ephem(w).iolong
+			;		if bd[n].name eq 'Europa' then bd[n].phs=360.-ephem(w).eulong
+			;		if bd[n].name eq 'Ganymede' then bd[n].phs=360.-ephem(w).galong
 
 					
-				endif else if bd[n].name eq 'Io' or bd[n].name eq 'Europa' or bd[n].name eq 'Ganymede' then begin
-          adresse_ephem=loadpath('adresse_ephem',parameters,config=config)
-          restore,adresse_ephem+bd[n].name+'/'+bd[n].name+'_ephemeris_'+strmid(observer.start,0,4)+'.sav'
-          
-          date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
-          heured=strmid(date,8,2)
-          mind=strmid(date,11,2)
-          w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
-          bd[n].phs=360.-ephem(w).oblon
+			;	endif else if bd[n].name eq 'Io' or bd[n].name eq 'Europa' or bd[n].name eq 'Ganymede' then begin
+     ;     adresse_ephem=loadpath('adresse_ephem',parameters,config=config)
+     ;     restore,adresse_ephem+bd[n].name+'/'+bd[n].name+'_ephemeris_'+strmid(observer.start,0,4)+'.sav'
+     ;     
+     ;     date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
+     ;     heured=strmid(date,8,2)
+     ;     mind=strmid(date,11,2)
+     ;     w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
+     ;     bd[n].phs=360.-ephem(w).oblon
 
         endif else begin												; Si on est un spacecraft, mais pas à la closest approach (ou pas Voyager)
 					; pour contrer les eventuels soucis de discussions avec l OV MIRIADE
@@ -1702,11 +1704,13 @@ for i=0,nbody-1 do begin
 
           date=STRMID(observer.start,0,10)+':'+STRMID(observer.start,10,2)
 					while (error eq 1) do begin
-						call_ephemph,((serpe_save['BODY'])[i])['PARENT'],observer=(serpe_save['OBSERVER'])['SC'],date,name	; search ephem (OV Miriade)
+						call_ephemph,((serpe_save['BODY'])[i])['PARENT'],observer=((serpe_save['BODY'])[i])['NAME'],date,name   ; search ephem (OV Miriade)
+            ;call_ephemph,((serpe_save['BODY'])[i])['PARENT'],observer=(serpe_save['OBSERVER'])['SC'],date,name	; search ephem (OV Miriade)
 						read_ephemph,name,longitude=longitude,error=error														; read Miriade ephem
 						if (error2 gt 30) then stop,'Veuillez relancer la simulation'
 						error2=error2+1	
 					endwhile
+
 					bd[n].phs=360.-(longitude[0] mod 360.)	
 				endelse
 			endelse
