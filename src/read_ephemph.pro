@@ -70,7 +70,6 @@ while strmid(buf,0,1) eq '#' do begin
 
 		nbr_lines_suppr=nbr_lines_suppr+1
 endwhile
-
 if planet eq 'Io' then Rayon=71492.00
 if planet eq 'Europa' then Rayon=71492.00
 if planet eq 'Ganymede' then Rayon=71492.00
@@ -113,11 +112,10 @@ LONGSSP=0. & LATSSP=0.
 NP= 0. & dPole=0. & Mv=0. & Phase=0. & RApp=0. & Dg=0. & Dh=0. & PAQ=0. & Q=0. & RV=0.
 
 
-
 for i=0l,n-1l do begin
-	
 	if i ne 0 then readf,u,buf
-	Date=strmid(buf,0,26)
+	
+	Date=strtrim(strmid(buf,0,26),2)
 	LONGSEP=strmid(buf,27,12) & if LONGSEP ne '******' then LONGSEP=float(LONGSEP) else begin goto, erreur & print,'error on the sub-observer longitude (CML)' & endelse
 	LATSEP=strmid(buf,40,11) & if LATSEP ne '******' then LATSEP=float(LATSEP) else begin & goto, erreur & print,'error on the sub-observer latitude' & endelse
 	LONGSSP=strmid(buf,52,12) & if LONGSSP ne '******' then LONGSSP=float(LONGSSP) else LONGSSP = -1.0e+31
@@ -127,13 +125,13 @@ for i=0l,n-1l do begin
 	Mv=strmid(buf,98,8) & if Mv ne '******' then Mv=float(Mv) else Mv = -1.0e+31
 	Phase=strmid(buf,107,9) & if Phase ne '*******' then Phase=float(Phase) else Phase = -1.0e+31
 	RApp=strmid(buf,117,15) & if RApp ne '*********' then RApp=float(RApp) else RApp = -1.0e+31
-	Dg=strmid(buf,133,16) & if Dg ne '************' then Dg=float(Dg) else begin & goto, erreur & print,'error on the sub-observer distance' & endelse
-	Dh=strmid(buf,150,16) & if Dh ne '************' then Dh=float(Dh) else Dh = -1.0e+31
-	PAQ=strmid(buf,167,8) & if PAQ ne '******' then PAQ=float(PAQ) else PAQ = -1.0e+31
-	Q=strmid(buf,176,10) & if Q ne '*******' then Q=float(Q) else Q = -1.0e+31
-	Rv=strmid(buf,187,11) & if Rv ne '*******' then Rv=float(Rv) else Rv = -1.0e+31
+	Dg=strmid(buf,133,20) & if Dg ne '************' then Dg=float(Dg) else begin & goto, erreur & print,'error on the sub-observer distance' & endelse
+	Dh=strmid(buf,154,20) & if Dh ne '************' then Dh=float(Dh) else Dh = -1.0e+31
+	PAQ=strmid(buf,175,8) & if PAQ ne '******' then PAQ=float(PAQ) else PAQ = -1.0e+31
+	Q=strmid(buf,184,10) & if Q ne '*******' then Q=float(Q) else Q = -1.0e+31
+	Rv=strmid(buf,196,11) & if Rv ne '*******' then Rv=float(Rv) else Rv = -1.0e+31
 	
-	data_new(i).Date=Date & datefin(i)=Date
+	data_new(i).Date=strtrim(Date,2) & datefin(i)=Date
 	data_new(i).LONGSEP=LONGSEP & if planet eq 'Uranus' then longitude(i)=LONGSEP else longitude(i)=360.-LONGSEP ; longitude comptée WEST (360.-EAST)
 	data_new(i).LATSEP=LATSEP & lat(i)=LATSEP
 	data_new(i).LONGSSP=LONGSSP
@@ -151,7 +149,6 @@ for i=0l,n-1l do begin
 endfor
 close, u
 free_lun, u
-
 
 error=0
 return
