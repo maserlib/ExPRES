@@ -194,7 +194,8 @@ for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]
 endif
 
 theta = fltarr(nsrc,ndat,nfreq)
-polarization = intarr(ndat,nfreq)
+polarization = intarr(2,ndat,nfreq)
+polarization(*,*,*)=32767
 azimuth = fltarr(nsrc,ndat,nfreq)
 azimuth(*,*,*)=-1.0e+31
 longitude = fltarr(nsrc,ndat)
@@ -217,15 +218,23 @@ for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]
 			azimuth(h,i,wthet)=(*(*parameters.objects[j]).azimuth)(wthet,ilg,var)*!radeg
 			fp2(h,i,wthet)=(*(*parameters.objects[j]).fp)(wthet,ilg,var)
 			fx(h,i,wthet)=(*(*parameters.objects[j]).f)(wthet,ilg,var)
+			
+			for ipolar=0,n_elements(wthet)-1 do begin
+				if var eq 0 then begin
+					if polarization[0,i,wthet[ipolar]] eq 32767 then polarization[0,i,wthet[ipolar]]=polarization[0,i,wthet[ipolar]]-32767-1 $
+						else polarization[0,i,wthet[ipolar]]=polarization[0,i,wthet[ipolar]]-1 
+				endif else begin
+					if polarization[1,i,wthet[ipolar]] eq 32767 then polarization[1,i,wthet[ipolar]]=polarization[1,i,wthet[ipolar]]-32767+1 $
+						else polarization[1,i,wthet[ipolar]]=polarization[1,i,wthet[ipolar]]+1 
+				endelse
+			endfor
+
 		endif
 		longitude(h,i)=(*(*parameters.objects[j]).parent).lg+(*(*parameters.objects[j]).lg)[*,ilg,*]
 	
 		fmax(h,i)=(*(*parameters.objects[j]).fmax)(ilg,var)
 		fmaxCMI(h,i)=(*(*parameters.objects[j]).fmaxCMI)(ilg,var)
-		wn0=where(theta(h,i,*) gt 0.)
-		if wn0(0) ne -1 then $
-			if (*parameters.objects[j]).north eq 1 then polarization(i,wn0)=-1 $
-				else polarization(i,wn0)=+1
+
 		for ipos=0,2 do begin
 			if wthet[0] ne -1 then srcpos(h,i,ipos,wthet)=((*(*parameters.objects(j)).x)(ipos,wthet,0,var))
 		endfor
@@ -233,13 +242,14 @@ for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]
 	endfor
 endif
 
-w0=where(polarization(i,*) eq 0)
-polarization(i,w0)=32767
+
+
+
 
 id=(*obj).id
 for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]),/str) eq 'CDF' then opt=*parameters.objects[j]
 
-	cdf_varput,id,'Polarization',reform(polarization[i,*],nfreq),REC_START=i
+	cdf_varput,id,'Polarization',reform(polarization[*,i,*],2,nfreq),REC_START=i
 	if opt.theta then	cdf_varput,id,'Theta',reform(theta[*,i,*],nsrc,nfreq),REC_START=i
 	if opt.azimuth then	cdf_varput,id,'Azimuth',reform(azimuth[*,i,*],nsrc,nfreq),REC_START=i
 
@@ -250,7 +260,7 @@ for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]
 	if opt.SrcPos then	cdf_varput,id,'SrcPosition',transpose(reform(srcpos(*,i,*,*),nsrc,3,nfreq),[1,0,2]),REC_START=i
 	;if opt.SrcPos then cdf_varput,id,'SrcPosition',reform(srcpos[*,i,*,*],nsrc,3,nfreq),REC_START=i
 	if opt.fp then	cdf_varput,id,'FP',reform(fp2[*,i,*],nsrc,nfreq),REC_START=i
-; ici f=fx=fce*sqrt(1-v_r^2/c^2)
+;# here if loss cone f=fx=fce*sqrt(1-v_r^2/c^2); if Shell f=fx=fce*(1-v_r^2/c^2)^(-1/2)
 	if opt.fc then	cdf_varput,id,'FC',reform(fx[*,i,*],nsrc,nfreq),REC_START=i	
 
 end

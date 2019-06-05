@@ -67,7 +67,6 @@
 
 PRO BUILD_SERPE_SKT,frequency,Freq_Label,Flog,Src_ID_Label,originsrc,hemisphere,b_model,sourcetype,$
     observer,planet,wid,ener,refr,sourcedescr,dt,dated,datef,file,option
-
 ; Check if input parameters 'file' is set. Create new file name, if not set; remove previous one (if it exist) if set. 
 if ~keyword_set(file) then begin
 	file=string(format='(I12.12)',long(systime(1)))+'.skt'
@@ -80,6 +79,8 @@ nf = n_elements(frequency)
 nfs = max(strlen(Freq_Label))
 ns = n_elements(Src_ID_Label)
 nss = max(strlen(Src_ID_Label))
+nhemi=n_elements(hemisphere)
+nhemis=max(strlen(hemisphere))
 
 ; Open file in write mode and output ASCII lines
 openw,lun,file,/get_lun
@@ -496,6 +497,35 @@ printf,lun,"! Variable          Data      Number                 Record   Dimens
 printf,lun,"! Name              Type     Elements  Dims  Sizes  Variance  Variances"
 printf,lun,"! --------          ----     --------  ----  -----  --------  ---------"
 printf,lun,""
+printf,lun,"  ""Hemisphere_ID_Label"""
+printf,lun,"                  CDF_CHAR      5       1    2       F         T"
+printf,lun,""
+printf,lun,"  ! VAR_COMPRESSION: None"
+printf,lun,"  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)"
+printf,lun,"  ! VAR_SPARSERECORDS: None"
+printf,lun,"  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)"
+printf,lun,"  ! VAR_PADVALUE: "" """
+printf,lun,""
+printf,lun,"  ! Attribute       Data"
+printf,lun,"  ! Name            Type       Value"
+printf,lun,"  ! --------        ----       -----"
+printf,lun,""
+;printf,lun,"    ""UCD""     	CDF_CHAR     { ""meta.id;hemisphere"" }"
+printf,lun,"    ""CATDESC""     CDF_CHAR     { ""Hemisphere ID label"" }"
+printf,lun,"    ""FIELDNAM""    CDF_CHAR     { ""Hemisphere_ID_Label"" }"
+printf,lun,"    ""FORMAT""      CDF_CHAR     { ""A5"" }"
+printf,lun,"    ""VAR_TYPE""    CDF_CHAR     { ""metadata"" } ."
+printf,lun,""
+printf,lun,"  ! NRV values follow..."
+printf,lun,""
+printf,lun,"    [1] = { ""North"" }"
+printf,lun,"    [2] = { ""South"" }"
+printf,lun,""
+printf,lun,""
+printf,lun,"! Variable          Data      Number                 Record   Dimension"
+printf,lun,"! Name              Type     Elements  Dims  Sizes  Variance  Variances"
+printf,lun,"! --------          ----     --------  ----  -----  --------  ---------"
+printf,lun,""
 printf,lun,"  ""Src_Pos_Coord"""
 printf,lun,"                  CDF_CHAR      1       1    3       F         T"
 printf,lun,""
@@ -525,7 +555,7 @@ printf,lun,"! Variable          Data      Number                 Record   Dimens
 printf,lun,"! Name              Type     Elements  Dims  Sizes  Variance  Variances"
 printf,lun,"! --------          ----     --------  ----  -----  --------  ---------"
 printf,lun,""
-printf,lun,"  ""Polarization""     CDF_INT2      1       1   "+strtrim(string(nf),2)+"        T         T"
+printf,lun,"  ""Polarization""     CDF_INT2      1       2   "+strtrim(string(nf),2)+" "+strtrim(string(2),2)+"      T        T T"
 printf,lun,""
 printf,lun,"  ! VAR_COMPRESSION: None"
 printf,lun,"  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)"
@@ -538,20 +568,21 @@ printf,lun,"  ! Name            Type       Value"
 printf,lun,"  ! --------        ----       -----"
 printf,lun,""
 printf,lun,"    ""UCD""     	CDF_CHAR     { ""phys.count"" }"
-printf,lun,"    ""SCALEMIN""    CDF_INT2     { -1 }"
-printf,lun,"    ""SCALEMAX""    CDF_INT2     { +1 }"
-printf,lun,"    ""CATDESC""     CDF_CHAR     { ""Polarization of observed sources: North: -1; South: +1"" }"
+printf,lun,"    ""SCALEMIN""    CDF_INT2     { -32766 }"
+printf,lun,"    ""SCALEMAX""    CDF_INT2     { +32766 }"
+printf,lun,"    ""CATDESC""     CDF_CHAR     { ""Polarization and number of visible sources: North: <0; South: >0"" }"
 printf,lun,"    ""DEPEND_0""    CDF_CHAR     { ""Epoch"" }"
 printf,lun,"    ""DEPEND_1""    CDF_CHAR     { ""Frequency"" }"
+printf,lun,"    ""DEPEND_2""    CDF_CHAR     { ""Hemisphere_ID_Label"" }"
 printf,lun,"    ""DISPLAY_TYPE"""
 printf,lun,"                  CDF_CHAR     { ""spectrogram"" }"
 printf,lun,"    ""FIELDNAM""    CDF_CHAR     { ""Polarization"" }"
 printf,lun,"    ""FILLVAL""     CDF_INT2    { 32767 }"
-printf,lun,"    ""FORMAT""      CDF_CHAR     { ""I5"" }"
+printf,lun,"    ""FORMAT""      CDF_CHAR     { ""I6"" }"
 printf,lun,"    ""LABLAXIS""    CDF_CHAR     { ""Polarization"" }"
-printf,lun,"    ""UNITS""      CDF_CHAR     { ""Degree of polarization"" }"
-printf,lun,"    ""VALIDMIN""    CDF_INT2    { -1 }"
-printf,lun,"    ""VALIDMAX""    CDF_INT2    { +1 }"
+printf,lun,"    ""UNITS""      CDF_CHAR     { ""Number of visible sources"" }"
+printf,lun,"    ""VALIDMIN""    CDF_INT2    { -32766 }"
+printf,lun,"    ""VALIDMAX""    CDF_INT2    { +32766 }"
 printf,lun,"    ""VAR_TYPE""    CDF_CHAR     { ""data"" }"
 printf,lun,"    ""SCALETYP""    CDF_CHAR     { ""linear"" } ."
 printf,lun,""
