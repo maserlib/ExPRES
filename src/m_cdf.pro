@@ -236,7 +236,7 @@ for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]
 		fmaxCMI(h,i)=(*(*parameters.objects[j]).fmaxCMI)(ilg,var)
 
 		for ipos=0,2 do begin
-			if wthet[0] ne -1 then srcpos(h,i,ipos,wthet)=((*(*parameters.objects(j)).x)(ipos,wthet,0,var))
+			if wthet[0] ne -1 then srcpos(h,i,ipos,wthet)=((*(*parameters.objects(j)).x)(ipos,wthet,ilg,var))
 		endfor
 		h=h+1
 	endfor
