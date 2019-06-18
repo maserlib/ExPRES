@@ -1262,13 +1262,18 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   endif else if (observer.predef eq 1b) then begin
   	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'juno' then begin
   		if long64(strmid(date,0,8)) le 20151231 then stop,'ephemeris before DoY 2015 365 are not defined. A file with the corresponding ephemeris needs to be loading, please contact the ExPRES team - contact.maser@obspm.fr'
-      if long64(strmid(date,0,8)) ge 20190101 then stop,'ephemeris after DoY 2018 365 are not defined. A file with the corresponding ephemeris needs to be loading, please contact the ExPRES team - contact.maser@obspm.fr'
+      if long64(strmid(date,0,8)) ge 20210101 then stop,'ephemeris after DoY 2018 365 are not defined. A file with the corresponding ephemeris needs to be loading, please contact the ExPRES team - contact.maser@obspm.fr'
   		if (long64(observer.start) ge 201601010000) and (long64(observer.start) lt 201701010000) then $
   		restore,adresse_ephem+'Juno/2016_001-366.sav'
   		if (long64(observer.start) ge 201701010000) and (long64(observer.start) lt 201801010000) then $
   		restore,adresse_ephem+'Juno/2017_001-365.sav'
   		if (long64(observer.start) ge 201801010000) and (long64(observer.start) lt 201901010000) then $
   		restore,adresse_ephem+'Juno/2018_001-365.sav'
+      if (strmid(strtrim(long64(observer.start),2),0,4) eq '2019') then $
+      restore,adresse_ephem+'Juno/2019.sav'
+      if (strmid(strtrim(long64(observer.start),2),0,4) eq '2020') then $
+      restore,adresse_ephem+'Juno/2020.sav'
+      
   		date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
   		heured=strmid(date,8,2)
   		mind=strmid(date,11,2)
@@ -1590,43 +1595,43 @@ for i=0,nbody-1 do begin
 				endelse						
 			endif else begin
 				if (observer.name eq 'Juno') then begin
-					
-					date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
-					heured=strmid(date,8,2)
-					mind=strmid(date,11,2)
+			;		
+			;		date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
+			;		heured=strmid(date,8,2)
+			;		mind=strmid(date,11,2)
 
-					
-					if bd[n].name eq 'Io' then begin
-						if long64(observer.start) ge 201601010000 and long64(observer.start) lt 201701010000 then $
-						restore,adresse_ephem+'Juno/2016_001-366.sav'
-						if long64(observer.start) ge 201701010000 and long64(observer.start) lt 201801010000 then $
-						restore,adresse_ephem+'Juno/2017_001-365.sav'
-            if long64(observer.start) ge 201801010000 and long64(observer.start) lt 201901010000 then $
-            restore,adresse_ephem+'Juno/2018_001-365.sav'
-						if long64(observer.start) ge 201901010000 then stop,'you have to define ephem for this date'
-            w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
-            bd[n].phs=360.-(ephem(w).oblon+180.-ephem(w).iophase)
-					endif else if bd[n].name eq 'Europa' then begin
-						if long64(observer.start) ge 201601010000 and long64(observer.start) lt 201701010000 then $
-							restore,adresse_ephem+'Europa/Europa_ephemeris_2016.sav' $
-						  else if long64(observer.start) ge 201701010000 and long64(observer.start) lt 201801010000 then $
-							restore,adresse_ephem+'Europa/Europa_ephemeris_2017.sav' $
-              else if long64(observer.start) ge 201801010000 and long64(observer.start) lt 201901010000 then $
-              restore,adresse_ephem+'Europa/Europa_ephemeris_2018.sav' $
-						  else stop,'you have to define ephem for this date'
-            w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
-            bd[n].phs=360.-ephem(w).oblon
-					endif else if bd[n].name eq 'Ganymede' then begin
-						if long64(observer.start) ge 201601010000 and long64(observer.start) lt 201701010000 then $
-							restore,adresse_ephem+'Ganymede/Ganymede_ephemeris_2016.sav' $
-						  else if long64(observer.start) ge 201701010000 and long64(observer.start) lt 201801010000 then $
-							restore,adresse_ephem+'Ganymede/Ganymede_ephemeris_2017.sav' $
-              else if long64(observer.start) ge 201801010000 and long64(observer.start) lt 201901010000 then $
-              restore,adresse_ephem+'Ganymede/Ganymede_ephemeris_2018.sav' $
-						  else stop,'you have to define ephem for this date'
-            w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
-            bd[n].phs=360.-ephem(w).oblon
-					endif
+			;		
+			;		if bd[n].name eq 'Io' then begin
+			;			if long64(observer.start) ge 201601010000 and long64(observer.start) lt 201701010000 then $
+			;			restore,adresse_ephem+'Juno/2016_001-366.sav'
+			;			if long64(observer.start) ge 201701010000 and long64(observer.start) lt 201801010000 then $
+			;			restore,adresse_ephem+'Juno/2017_001-365.sav'
+       ;    if long64(observer.start) ge 201801010000 and long64(observer.start) lt 201901010000 then $
+       ;    restore,adresse_ephem+'Juno/2018_001-365.sav'
+			;			if long64(observer.start) ge 201901010000 then stop,'you have to define ephem for this date'
+       ;    w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
+       ;    bd[n].phs=360.-(ephem(w).oblon+180.-ephem(w).iophase)
+			;		endif else if bd[n].name eq 'Europa' then begin
+			;			if long64(observer.start) ge 201601010000 and long64(observer.start) lt 201701010000 then $
+			;				restore,adresse_ephem+'Europa/Europa_ephemeris_2016.sav' $
+			;			  else if long64(observer.start) ge 201701010000 and long64(observer.start) lt 201801010000 then $
+			;				restore,adresse_ephem+'Europa/Europa_ephemeris_2017.sav' $
+       ;      else if long64(observer.start) ge 201801010000 and long64(observer.start) lt 201901010000 then $
+       ;      restore,adresse_ephem+'Europa/Europa_ephemeris_2018.sav' $
+			;			  else stop,'you have to define ephem for this date'
+       ;    w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
+       ;    bd[n].phs=360.-ephem(w).oblon
+			;		endif else if bd[n].name eq 'Ganymede' then begin
+			;			if long64(observer.start) ge 201601010000 and long64(observer.start) lt 201701010000 then $
+			;				restore,adresse_ephem+'Ganymede/Ganymede_ephemeris_2016.sav' $
+			;			  else if long64(observer.start) ge 201701010000 and long64(observer.start) lt 201801010000 then $
+			;				restore,adresse_ephem+'Ganymede/Ganymede_ephemeris_2017.sav' $
+       ;      else if long64(observer.start) ge 201801010000 and long64(observer.start) lt 201901010000 then $
+       ;      restore,adresse_ephem+'Ganymede/Ganymede_ephemeris_2018.sav' $
+			;			  else stop,'you have to define ephem for this date'
+       ;    w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
+       ;    bd[n].phs=360.-ephem(w).oblon
+			;		endif
 				
         endif else if (observer.name eq 'Voyager1') then begin
         	if bd[n].name eq 'Io' then begin
