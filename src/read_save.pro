@@ -1246,7 +1246,6 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   		
   				
   		endelse
-      stop
   		; enregistrement des donnees lues
   		observer.smaj=distance[0]
   	  observer.smin=distance[0]
@@ -1585,8 +1584,8 @@ for i=0,nbody-1 do begin
       ; #      Thus phase_moon_expres = 360.-(longitude_observer + 180-phase_real)
       ; #      Thus phase_moon_expres = 360.-(360.-observe.phs + 180-longitude[0])
 			; # bd[n].phs=360.-((360-observer.phs[0]+180.-longitude[0]) mod 360.) 		
-      ; # new MIRIADE allows to direclty obtain moon's longitude 
-      ; # thus phase=(360.-longitude) mod 360
+      ; # new MIRIADE allows to direclty obtain moon's longitude, but count EAST
+      ; # thus phase=(longitude) mod 360
           bd[n].phs=360.-(longitude[0] mod 360.)	
 				endelse						
 			endif else begin
@@ -1710,7 +1709,6 @@ for i=0,nbody-1 do begin
 						if (error2 gt 30) then stop,'Veuillez relancer la simulation'
 						error2=error2+1	
 					endwhile
-
 					bd[n].phs=360.-(longitude[0] mod 360.)	
 				endelse
 			endelse
