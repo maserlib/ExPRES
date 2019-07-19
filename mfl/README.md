@@ -51,6 +51,10 @@ Variables:
   FLOAT  [n] gb = grad b direction (in b basis)
 ```
 
+## Data Computing
+
+The data has been computing using IDL code available at: https://gitlab.obspm.fr/maser/lesia-mag/lesia-mag_idl
+
 ## References
 
 - <a name='vit4'></a>Connerney, J E P. 2007. “Planetary Magnetism.” In Treatise on Geophysics: Planets and Moons, edited by Tilman Spohn, 10:243–80. Elsevier.
