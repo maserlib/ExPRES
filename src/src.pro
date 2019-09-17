@@ -423,7 +423,7 @@ endif
 ; shielding,x,obj,var,dist,(*(*obj).f)[*,*,var],parameters,w3 
  ;faux c est pas v ici!!
 ; a la place de v, il faut que ca soit la frequence (fce), afin de comparer cette frequence a la frequence plasma dans shielding
-if w3[0] ne -1 then th[w3]=0
+;if w3[0] ne -1 then th[w3]=0
 
 x=0b
 
