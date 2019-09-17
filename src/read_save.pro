@@ -909,7 +909,7 @@ dens={DE,on:0b,name:'',type:'',rho0:0.,height:0.,perp:0.}
 src={SO,on:0b,name:'',parent:'',sat:'',type:'',loss:0b,lossbornes:0b,ring:0b,cavity:0b,constant:0.,width:0.,temp:0d,cold:0d,v:0d,lgauto:'',lgmin:0.,lgmax:0.,lgnbr:1,lgstep:1.,latmin:0.,latmax:0.,latstep:1.,north:0b,south:0b,subcor:0.,aurora_alt:0d,refract:0b}
 spdyn={SP,intensity:0b,polar:0b,f_t:0b,lg_t:0b,lat_t:0b,f_r:0b,lg_r:0b,lat_r:0b,f_lg:0b,lg_lg:0b,lat_lg:0b,f_lat:0b,lg_lat:0b,lat_lat:0b,f_lt:0b,lg_lt:0b,lat_lt:0b,$
 khz:0b,pdf:0b,log:0b,xrange:[0.,0.],lgrange:[0.,0.],larange:[0.,0.],ltrange:[0.,0.],nr:0,dr:0.,nlg:0,dlg:0.,nlat:0,dlat:0.,nlt:0,dlt:0.,infos:0b}
-cdf={CD,theta:0b,fp:0b,fc:0b,azimuth:0b,obslatitude:0b,srclongitude:0b,srcfreqmax:0b,srcfreqmaxCMI:0b,obsdistance:0b,obslocaltime:0b,cml:0b,srcpos:0b}
+cdf={CD,polartot:0b,theta:0b,fp:0b,fc:0b,azimuth:0b,obslatitude:0b,srclongitude:0b,srcfreqmax:0b,srcfreqmaxCMI:0b,obsdistance:0b,obslocaltime:0b,cml:0b,srcpos:0b}
 mov2d={M2D,on:0b,sub:0,range:0.}
 mov3d={M3D,on:0b,sub:0,xrange:[0.,0.],yrange:[0.,0.],zrange:[0.,0.],obs:0b,traj:0b}
 
@@ -1065,10 +1065,10 @@ for i=0,n_elements(sc)-2 do begin
       print,'Is your MFL model correct ?'
 	   END
   endcase
-
 	if strmid(mfl,0,6) eq 'Dipole' then fld=mfl else fld=adresse_mfl+fld
-	if ((sc[i+1]).type eq 'fixed in latitude') then (*((parameters.objects[n]))).folder=fld+'_lat' else (*((parameters.objects[n]))).folder=fld+'_lsh'
-
+  if ((sc[i+1]).type eq 'fixed in latitude') then (*((parameters.objects[n]))).folder=fld+'_lat' else if ((sc[i+1]).type eq 'attached to a satellite') then (*((parameters.objects[n]))).folder=fld+'_lsh' else (*((parameters.objects[n]))).folder=fld+'_msh'
+  print, (*((parameters.objects[n]))).folder
+  
 
 	n=n+1
 	(parameters.objects[n])=PTR_NEW({SOURCE,name:(sc[i+1]).name,parent:PTR_NEW(/ALLOCATE_HEAP),loss:(sc[i+1]).loss,lossbornes:(sc[i+1]).lossbornes,ring:(sc[i+1]).ring,cavity:(sc[i+1]).cavity,rampe:0b,constant:(sc[i+1]).constant,asymp:0.,width:(sc[i+1]).width,$
@@ -1123,7 +1123,7 @@ n=n+1
 
 	(parameters.objects[n])=PTR_NEW({CDF,id:0l,$
 				it:['init_cdf'],cb:['cb_cdf'],fz:['fz_cdf'],$
-        theta:cdf.theta,fp:cdf.fp,fc:cdf.fc,azimuth:cdf.azimuth,obslatitude:cdf.obslatitude,srclongitude:cdf.srclongitude,srcfreqmax:cdf.srcfreqmax,srcfreqmaxCMI:cdf.srcfreqmaxCMI,obsdistance:cdf.obsdistance,obslocaltime:cdf.obslocaltime,cml:cdf.cml,srcpos:cdf.srcpos})
+        polartot:cdf.polartot,theta:cdf.theta,fp:cdf.fp,fc:cdf.fc,azimuth:cdf.azimuth,obslatitude:cdf.obslatitude,srclongitude:cdf.srclongitude,srcfreqmax:cdf.srcfreqmax,srcfreqmaxCMI:cdf.srcfreqmaxCMI,obsdistance:cdf.obsdistance,obslocaltime:cdf.obslocaltime,cml:cdf.cml,srcpos:cdf.srcpos})
 ; ***** returning parameters *****
 
 return,parameters
@@ -1216,7 +1216,6 @@ endif
 
 date=STRMID(observer.start,0,10)+':'+STRMID(observer.start,10,2)
 adresse_ephem=loadpath('adresse_ephem',parameters,config=config)
-
 if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   if ((observer.motion+observer.predef) eq 0b) then begin
   	if size(((serpe_save['OBSERVER'])['FIXE_DIST']),/type) eq 7 then begin			; if fixe_dist="auto"
@@ -1277,7 +1276,6 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   		date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
   		heured=strmid(date,8,2)
   		mind=strmid(date,11,2)
-  	
   		w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
   		
   		longitude=dblarr(time.nbr)
@@ -1483,6 +1481,7 @@ spdyn.khz=(serpe_save['SPDYN'])['KHZ']
 spdyn.log=(serpe_save['SPDYN'])['LOG']
 spdyn.pdf=(serpe_save['SPDYN'])['PDF']
 
+cdf.polartot=0b
 cdf.theta=((serpe_save['SPDYN'])['CDF'])['THETA']
 cdf.fp=((serpe_save['SPDYN'])['CDF'])['FP']
 cdf.fc=((serpe_save['SPDYN'])['CDF'])['FC']
@@ -1548,7 +1547,7 @@ for i=0,nbody-1 do begin
 ; si c est le cas, on calcul à partir de la longitude au t=0 de la closest approach la longitude au t=0 de la simulation
 ; si c est pas le cas, alors on fait appelle à MIRIADE pour les éphémérides au t=0 de la simulation
 		if size((((serpe_save['BODY'])[i])['PHASE']),/type) eq 7 then begin									; if phase = "auto"
-			date=STRMID(observer.start,0,10)+':'+STRMID(observer.start,10,2)
+    	date=STRMID(observer.start,0,10)+':'+STRMID(observer.start,10,2)
       if observer.predef eq 0 then begin
 				if ((observer.name eq 'Cassini') and (long64(observer.start) ge 201603281700) and (long64(observer.start) lt 201701010000)) then begin
 					
@@ -1594,23 +1593,27 @@ for i=0,nbody-1 do begin
           bd[n].phs=360.-(longitude[0] mod 360.)	
 				endelse						
 			endif else begin
-				if (observer.name eq 'Juno') then begin
+			;	if (observer.name eq 'Juno') then begin
 			;		
 			;		date2=strmid(strtrim(amj_aj(long64(strmid(date,0,8))),1),4,3)
 			;		heured=strmid(date,8,2)
 			;		mind=strmid(date,11,2)
-
-			;		
+;
+			;	
 			;		if bd[n].name eq 'Io' then begin
 			;			if long64(observer.start) ge 201601010000 and long64(observer.start) lt 201701010000 then $
 			;			restore,adresse_ephem+'Juno/2016_001-366.sav'
 			;			if long64(observer.start) ge 201701010000 and long64(observer.start) lt 201801010000 then $
 			;			restore,adresse_ephem+'Juno/2017_001-365.sav'
-       ;    if long64(observer.start) ge 201801010000 and long64(observer.start) lt 201901010000 then $
-       ;    restore,adresse_ephem+'Juno/2018_001-365.sav'
-			;			if long64(observer.start) ge 201901010000 then stop,'you have to define ephem for this date'
-       ;    w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
-       ;    bd[n].phs=360.-(ephem(w).oblon+180.-ephem(w).iophase)
+      ;      if long64(observer.start) ge 201801010000 and long64(observer.start) lt 201901010000 then $
+      ;      restore,adresse_ephem+'Juno/2018_001-365.sav'
+			; 			if long64(observer.start) ge 201901010000 and long64(observer.start) lt 202001010000 then $
+      ;      restore,adresse_ephem+'Juno/2019.sav'
+      ;      if long64(observer.start) ge 202001010000 and long64(observer.start) lt 202101010000 then $
+      ;      restore,adresse_ephem+'Juno/2020.sav'
+      ;      if long64(observer.start) ge 202101010000 then stop,'you have to define ephem for this date'
+      ;      w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
+      ;      bd[n].phs=360.-(ephem(w).oblon+180.-ephem(w).iophase)
 			;		endif else if bd[n].name eq 'Europa' then begin
 			;			if long64(observer.start) ge 201601010000 and long64(observer.start) lt 201701010000 then $
 			;				restore,adresse_ephem+'Europa/Europa_ephemeris_2016.sav' $
@@ -1631,9 +1634,10 @@ for i=0,nbody-1 do begin
 			;			  else stop,'you have to define ephem for this date'
        ;    w=where(ephem.day eq date2 and ephem.hr eq heured and ephem.min eq mind)
        ;    bd[n].phs=360.-ephem(w).oblon
-			;		endif
+				;	endif
 				
-        endif else if (observer.name eq 'Voyager1') then begin
+        ;endif else if (observer.name eq 'Voyager1') then begin
+        if (observer.name eq 'Voyager1') then begin
         	if bd[n].name eq 'Io' then begin
           restore,adresse_ephem+'Io/Io_ephemeris_1979.sav'
 
@@ -1700,7 +1704,7 @@ for i=0,nbody-1 do begin
      ;     bd[n].phs=360.-ephem(w).oblon
 
         endif else begin												; Si on est un spacecraft, mais pas à la closest approach (ou pas Voyager)
-					; pour contrer les eventuels soucis de discussions avec l OV MIRIADE
+          ; pour contrer les eventuels soucis de discussions avec l OV MIRIADE
 					error=1
 					error2=0
           adresse_ephem=loadpath('adresse_ephem',parameters,config=config)
@@ -1720,7 +1724,6 @@ for i=0,nbody-1 do begin
 
 		endif else bd[n].phs=((serpe_save['BODY'])[i])['PHASE']												; sinon enregistre phase donnee par utilisateur
 	endif
-
 
 
 ; ***** loading DENS section *****
