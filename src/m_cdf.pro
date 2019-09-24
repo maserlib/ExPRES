@@ -181,9 +181,7 @@ end
 pro cb_cdf,obj,parameters
 ; =============================================================================
 ; A faire a chaque pas de la boucle temporelle
-; =============================================================================
-; a chaque boucle il faudra calculer intensity comme suit :
-; intensity = total(theta gt 0.,1)      
+; =============================================================================  
 h=0
 i=parameters.time.istep
 ndat=parameters.time.n_step
@@ -193,51 +191,66 @@ for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]
 	nsrc=nsrc+(*parameters.objects[j]).lgnbr
 endif
 
-theta = fltarr(nsrc,ndat,nfreq)
-polarization = intarr(2,ndat,nfreq)
-polarization(*,*,*)=32767
-azimuth = fltarr(nsrc,ndat,nfreq)
-azimuth(*,*,*)=-1.0e+31
-longitude = fltarr(nsrc,ndat)
-fp2 = fltarr(nsrc,ndat,nfreq)
-fp2(*,*,*)=-1.0e+31
-fx = fltarr(nsrc,ndat,nfreq)
-fx(*,*,*)=-1.0e+31
-fmax=fltarr(nsrc,ndat)
-fmaxCMI=fltarr(nsrc,ndat)
-srcpos=fltarr(nsrc,ndat,3,nfreq)
-srcpos(*,*,*,*)=-1.0e+31
+for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]),/str) eq 'CDF' then opt=*parameters.objects[j]
+
+polarization = intarr(ndat,nfreq)
+polarization(*,*)=32767
+if opt.theta then theta = fltarr(nsrc,ndat,nfreq)
+if opt.srcvis then begin
+	polarizationSUM = intarr(2,ndat,nfreq)
+	polarizationSUM(*,*,*)=32767
+endif
+if opt.azimuth then begin
+	azimuth = fltarr(nsrc,ndat,nfreq)
+	azimuth(*,*,*)=-1.0e+31
+endif
+if opt.SrcLongitude then longitude = fltarr(nsrc,ndat)
+if opt.fp then begin
+	fp2 = fltarr(nsrc,ndat,nfreq)
+	fp2(*,*,*)=-1.0e+31
+endif
+if opt.fc then begin
+	fx = fltarr(nsrc,ndat,nfreq)
+	fx(*,*,*)=-1.0e+31
+endif
+if opt.SrcFreqMax then fmax=fltarr(nsrc,ndat)
+if opt.SrcFreqMaxCMI then fmaxCMI=fltarr(nsrc,ndat)
+if opt.SrcPos then begin
+	srcpos=fltarr(nsrc,ndat,3,nfreq)
+	srcpos(*,*,*,*)=-1.0e+31
+endif
 var=0
 
 for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]),/str) eq 'SOURCE' then begin
 	if (*(*parameters.objects[j]).parent).north then var=0 else var=1
 	for ilg=0,(*parameters.objects[j]).lgnbr-1 do begin
-		theta(h,i,*)=(*(*parameters.objects[j]).th)(*,ilg,var)	
-		wthet=where(theta(h,i,*) ne -1.0e+31)
-		if wthet(0) ne -1 then begin
-			azimuth(h,i,wthet)=(*(*parameters.objects[j]).azimuth)(wthet,ilg,var)*!radeg
-			fp2(h,i,wthet)=(*(*parameters.objects[j]).fp)(wthet,ilg,var)
-			fx(h,i,wthet)=(*(*parameters.objects[j]).f)(wthet,ilg,var)
+		if opt.theta then theta(h,i,*)=(*(*parameters.objects[j]).th)(*,ilg,var)	
+		wn0=where((*(*parameters.objects[j]).th)(*,ilg,var) ne -1.0e+31)
+		if wn0(0) ne -1 then begin
+			if (*parameters.objects[j]).north eq 1 then polarization(i,wn0)=-1 $
+				else polarization(i,wn0)=+1
+			if opt.azimuth then azimuth(h,i,wn0)=(*(*parameters.objects[j]).azimuth)(wn0,ilg,var)*!radeg
+			if opt.fp then fp2(h,i,wn0)=(*(*parameters.objects[j]).fp)(wn0,ilg,var)
+			if opt.fc then fx(h,i,wn0)=(*(*parameters.objects[j]).f)(wn0,ilg,var)
 			
-			for ipolar=0,n_elements(wthet)-1 do begin
+			if opt.srcvis then $
+			for ipolar=0,n_elements(wn0)-1 do begin
 				if var eq 0 then begin
-					if polarization[0,i,wthet[ipolar]] eq 32767 then polarization[0,i,wthet[ipolar]]=polarization[0,i,wthet[ipolar]]-32767-1 $
-						else polarization[0,i,wthet[ipolar]]=polarization[0,i,wthet[ipolar]]-1 
+					if polarizationSUM[0,i,wn0[ipolar]] eq 32767 then polarizationSUM[0,i,wn0[ipolar]]=polarizationSUM[0,i,wn0[ipolar]]-32767-1 $
+						else polarizationSUM[0,i,wn0[ipolar]]=polarizationSUM[0,i,wn0[ipolar]]-1 
 				endif else begin
-					if polarization[1,i,wthet[ipolar]] eq 32767 then polarization[1,i,wthet[ipolar]]=polarization[1,i,wthet[ipolar]]-32767+1 $
-						else polarization[1,i,wthet[ipolar]]=polarization[1,i,wthet[ipolar]]+1 
+					if polarizationSUM[1,i,wn0[ipolar]] eq 32767 then polarizationSUM[1,i,wn0[ipolar]]=polarizationSUM[1,i,wn0[ipolar]]-32767+1 $
+						else polarizationSUM[1,i,wn0[ipolar]]=polarizationSUM[1,i,wn0[ipolar]]+1 
 				endelse
 			endfor
-
+			if opt.SrcPos then $
+				for ipos=0,2 do srcpos(h,i,ipos,wn0)=((*(*parameters.objects(j)).x)(ipos,wn0,ilg,var))
 		endif
-		longitude(h,i)=(*(*parameters.objects[j]).parent).lg+(*(*parameters.objects[j]).lg)[*,ilg,*]
-	
-		fmax(h,i)=(*(*parameters.objects[j]).fmax)(ilg,var)
-		fmaxCMI(h,i)=(*(*parameters.objects[j]).fmaxCMI)(ilg,var)
 
-		for ipos=0,2 do begin
-			if wthet[0] ne -1 then srcpos(h,i,ipos,wthet)=((*(*parameters.objects(j)).x)(ipos,wthet,ilg,var))
-		endfor
+		if opt.SrcLongitude then longitude(h,i)=(*(*parameters.objects[j]).parent).lg+(*(*parameters.objects[j]).lg)[*,ilg,*]
+		if opt.SrcFreqMax then fmax(h,i)=(*(*parameters.objects[j]).fmax)(ilg,var)
+		if opt.SrcFreqMaxCMI then fmaxCMI(h,i)=(*(*parameters.objects[j]).fmaxCMI)(ilg,var)
+
 		h=h+1
 	endfor
 endif
@@ -246,22 +259,24 @@ endif
 
 
 
+
+
 id=(*obj).id
-for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]),/str) eq 'CDF' then opt=*parameters.objects[j]
 
-	cdf_varput,id,'Polarization',reform(polarization[*,i,*],2,nfreq),REC_START=i
-	if opt.theta then	cdf_varput,id,'Theta',reform(theta[*,i,*],nsrc,nfreq),REC_START=i
-	if opt.azimuth then	cdf_varput,id,'Azimuth',reform(azimuth[*,i,*],nsrc,nfreq),REC_START=i
+cdf_varput,id,'Polarization',reform(polarization[i,*],nfreq),REC_START=i
+if opt.srcvis then cdf_varput,id,'VisibleSources',reform(polarizationSUM[*,i,*],2,nfreq),REC_START=i
+if opt.theta then	cdf_varput,id,'Theta',reform(theta[*,i,*],nsrc,nfreq),REC_START=i
+if opt.azimuth then	cdf_varput,id,'Azimuth',reform(azimuth[*,i,*],nsrc,nfreq),REC_START=i
 
 
-	if opt.SrcLongitude then	cdf_varput,id,'SrcLongitude',reform(longitude[*,i],nsrc),REC_START=i
-	if opt.SrcFreqMax then	cdf_varput,id,'SrcFreqMax',reform(fmax[*,i],nsrc),REC_START=i
-	if opt.SrcFreqMaxCMI then	cdf_varput,id,'SrcFreqMaxCMI',reform(fmaxCMI[*,i],nsrc),REC_START=i
-	if opt.SrcPos then	cdf_varput,id,'SrcPosition',transpose(reform(srcpos(*,i,*,*),nsrc,3,nfreq),[1,0,2]),REC_START=i
-	;if opt.SrcPos then cdf_varput,id,'SrcPosition',reform(srcpos[*,i,*,*],nsrc,3,nfreq),REC_START=i
-	if opt.fp then	cdf_varput,id,'FP',reform(fp2[*,i,*],nsrc,nfreq),REC_START=i
+if opt.SrcLongitude then	cdf_varput,id,'SrcLongitude',reform(longitude[*,i],nsrc),REC_START=i
+if opt.SrcFreqMax then	cdf_varput,id,'SrcFreqMax',reform(fmax[*,i],nsrc),REC_START=i
+if opt.SrcFreqMaxCMI then	cdf_varput,id,'SrcFreqMaxCMI',reform(fmaxCMI[*,i],nsrc),REC_START=i
+if opt.SrcPos then	cdf_varput,id,'SrcPosition',transpose(reform(srcpos(*,i,*,*),nsrc,3,nfreq),[1,0,2]),REC_START=i
+;if opt.SrcPos then cdf_varput,id,'SrcPosition',reform(srcpos[*,i,*,*],nsrc,3,nfreq),REC_START=i
+if opt.fp then	cdf_varput,id,'FP',reform(fp2[*,i,*],nsrc,nfreq),REC_START=i
 ;# here if loss cone f=fx=fce*sqrt(1-v_r^2/c^2); if Shell f=fx=fce*(1-v_r^2/c^2)^(-1/2)
-	if opt.fc then	cdf_varput,id,'FC',reform(fx[*,i,*],nsrc,nfreq),REC_START=i	
+if opt.fc then	cdf_varput,id,'FC',reform(fx[*,i,*],nsrc,nfreq),REC_START=i	
 
 end
 

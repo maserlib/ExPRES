@@ -909,7 +909,7 @@ dens={DE,on:0b,name:'',type:'',rho0:0.,height:0.,perp:0.}
 src={SO,on:0b,name:'',parent:'',sat:'',type:'',loss:0b,lossbornes:0b,ring:0b,cavity:0b,constant:0.,width:0.,temp:0d,cold:0d,v:0d,lgauto:'',lgmin:0.,lgmax:0.,lgnbr:1,lgstep:1.,latmin:0.,latmax:0.,latstep:1.,north:0b,south:0b,subcor:0.,aurora_alt:0d,refract:0b}
 spdyn={SP,intensity:0b,polar:0b,f_t:0b,lg_t:0b,lat_t:0b,f_r:0b,lg_r:0b,lat_r:0b,f_lg:0b,lg_lg:0b,lat_lg:0b,f_lat:0b,lg_lat:0b,lat_lat:0b,f_lt:0b,lg_lt:0b,lat_lt:0b,$
 khz:0b,pdf:0b,log:0b,xrange:[0.,0.],lgrange:[0.,0.],larange:[0.,0.],ltrange:[0.,0.],nr:0,dr:0.,nlg:0,dlg:0.,nlat:0,dlat:0.,nlt:0,dlt:0.,infos:0b}
-cdf={CD,polartot:0b,theta:0b,fp:0b,fc:0b,azimuth:0b,obslatitude:0b,srclongitude:0b,srcfreqmax:0b,srcfreqmaxCMI:0b,obsdistance:0b,obslocaltime:0b,cml:0b,srcpos:0b}
+cdf={CD,srcvis:0b,theta:0b,fp:0b,fc:0b,azimuth:0b,obslatitude:0b,srclongitude:0b,srcfreqmax:0b,srcfreqmaxCMI:0b,obsdistance:0b,obslocaltime:0b,cml:0b,srcpos:0b}
 mov2d={M2D,on:0b,sub:0,range:0.}
 mov3d={M3D,on:0b,sub:0,xrange:[0.,0.],yrange:[0.,0.],zrange:[0.,0.],obs:0b,traj:0b}
 
@@ -1123,7 +1123,7 @@ n=n+1
 
 	(parameters.objects[n])=PTR_NEW({CDF,id:0l,$
 				it:['init_cdf'],cb:['cb_cdf'],fz:['fz_cdf'],$
-        polartot:cdf.polartot,theta:cdf.theta,fp:cdf.fp,fc:cdf.fc,azimuth:cdf.azimuth,obslatitude:cdf.obslatitude,srclongitude:cdf.srclongitude,srcfreqmax:cdf.srcfreqmax,srcfreqmaxCMI:cdf.srcfreqmaxCMI,obsdistance:cdf.obsdistance,obslocaltime:cdf.obslocaltime,cml:cdf.cml,srcpos:cdf.srcpos})
+        srcvis:cdf.srcvis,theta:cdf.theta,fp:cdf.fp,fc:cdf.fc,azimuth:cdf.azimuth,obslatitude:cdf.obslatitude,srclongitude:cdf.srclongitude,srcfreqmax:cdf.srcfreqmax,srcfreqmaxCMI:cdf.srcfreqmaxCMI,obsdistance:cdf.obsdistance,obslocaltime:cdf.obslocaltime,cml:cdf.cml,srcpos:cdf.srcpos})
 ; ***** returning parameters *****
 
 return,parameters
@@ -1481,7 +1481,8 @@ spdyn.khz=(serpe_save['SPDYN'])['KHZ']
 spdyn.log=(serpe_save['SPDYN'])['LOG']
 spdyn.pdf=(serpe_save['SPDYN'])['PDF']
 
-cdf.polartot=0b
+
+cdf.srcvis=((serpe_save['SPDYN'])['CDF'])['SRCVIS']
 cdf.theta=((serpe_save['SPDYN'])['CDF'])['THETA']
 cdf.fp=((serpe_save['SPDYN'])['CDF'])['FP']
 cdf.fc=((serpe_save['SPDYN'])['CDF'])['FC']
