@@ -398,10 +398,10 @@
 				+ _Required:_ True
 				+ _Description:_ Flag for SRCPOS parameter output in the CDF file.
 				+ _Allowed values:_ Any
-			+ <a id="spdyn.cdf.srcvisibility"></a> **SRCVISIBILITY property**
+			+ <a id="spdyn.cdf.srcvisibility"></a> **SRCVIS property**
 				+ _Type:_ boolean
 				+ _Required:_ True
-				+ _Description:_ Flag for SRCVISIBILITY parameter output in the CDF file.
+				+ _Description:_ Flag for SRCVIS parameter output in the CDF file.
 				+ _Allowed values:_ Any
 			+ <a id="spdyn.cdf.fc"></a> **FC property**
 				+ _Type:_ boolean
