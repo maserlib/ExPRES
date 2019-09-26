@@ -10,6 +10,7 @@ The following precomputed datasets are available:
 |------------|-------- |-------|---------|-----------|
 | ISaAC      | Jupiter | [ISaAC_lsh](http://maser.obspm.fr/support/expres/mfl/ISaAC_lsh) | [tar.gz](http://maser.obspm.fr/support/expres/mfl/ISaAC_lsh.tar.gz) (6.9 GB) | [Hess et al. 2017](#isaac)|
 | JRM09      | Jupiter | [JRM09_lsh](http://maser.obspm.fr/support/expres/mfl/JRM09_lsh) | [tar.gz](http://maser.obspm.fr/support/expres/mfl/JRM09_lsh.tar.gz) (4.0 GB) | [Connerney et al. 2018](#jrm09)|
+|            |         | [JRM09_lsh](http://maser.obspm.fr/support/expres/mfl/JRM09_msh) | [tar.gz](http://maser.obspm.fr/support/expres/mfl/JRM09_msh.tar.gz) (4.55 GB) |  
 | O6         | Jupiter | [O6_lsh](http://maser.obspm.fr/support/expres/mfl/O6_lsh) | [tar.gz](http://maser.obspm.fr/support/expres/mfl/O6_lsh.tar.gz) (1.8 GB) | [Connerney et al. 1992](#o6)|
 | SPV        | Saturn  | [SPV.lsh](http://maser.obspm.fr/support/expres/mfl/SPV_lsh)<br/>[SPV.lat](http://maser.obspm.fr/support/expres/mfl/SPV_lat) | [tar.gz](http://maser.obspm.fr/support/expres/mfl/SPV_lsh.tar.gz) (2.0 MB)<br/>[tar.gz](http://maser.obspm.fr/support/expres/mfl/SPV_lat.tar.gz) (3.3 MB) | [Davis and Smith. 1990](#spv) | 
 | VIP4       | Jupiter | [VIP4_lsh](http://maser.obspm.fr/support/expres/mfl/VIP4_lsh)<br/>[VIP4_lat](http://maser.obspm.fr/support/expres/mfl/VIP4_lat) | [tar.gz](http://maser.obspm.fr/support/expres/mfl/VIP4_lsh.tar.gz) (2.0 GB)<br/>[tar.gz](http://maser.obspm.fr/support/expres/mfl/VIP4_lat.tar.gz) (0.8 GB) | [Connerney et al. 1998](#vip4)|
