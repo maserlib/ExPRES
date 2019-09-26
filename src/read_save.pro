@@ -1153,7 +1153,11 @@ check = check_save_json(serpe_save,error=error_messages)
 if check ne 0 then begin
 	message,/info,'Something wrong happened with JSON file... Aborting.'
 	print, 'In JSON file: '+error_messages
-	stop
+	find=strpos(error_messages,'CDF.',/reverse_search) 
+  for ierror=0,n_elements(find)-1 do if find[ierror] eq -1 then stop $
+    else for ierrorcdf=0,n_elements(find)-1 do begin
+      print, error_messages[ierrorcdf]+': this element will not be in the CDF file'
+    endfor
 endif
 
 ;***** ticket number for the simulation *****
@@ -1487,7 +1491,6 @@ spdyn.log=(serpe_save['SPDYN'])['LOG']
 spdyn.pdf=(serpe_save['SPDYN'])['PDF']
 
 
-cdf.srcvis=((serpe_save['SPDYN'])['CDF'])['SRCVIS']
 cdf.theta=((serpe_save['SPDYN'])['CDF'])['THETA']
 cdf.fp=((serpe_save['SPDYN'])['CDF'])['FP']
 cdf.fc=((serpe_save['SPDYN'])['CDF'])['FC']
@@ -1499,7 +1502,10 @@ cdf.srcfreqmaxCMI=((serpe_save['SPDYN'])['CDF'])['SRCFREQMAX']
 cdf.obsdistance=((serpe_save['SPDYN'])['CDF'])['OBSDISTANCE']
 cdf.obslocaltime=((serpe_save['SPDYN'])['CDF'])['OBSLOCALTIME']
 cdf.cml=((serpe_save['SPDYN'])['CDF'])['CML']
-cdf.srcpos=((serpe_save['SPDYN'])['CDF'])['SRCPOS']
+find=strpos(error_messages,'CDF.SRCPOS',/reverse_search)
+if find[0] eq -1 then cdf.srcpos=((serpe_save['SPDYN'])['CDF'])['SRCPOS']
+find=strpos(error_messages,'CDF.SRCVIS',/reverse_search)
+if find[0] eq -1 then cdf.srcvis=((serpe_save['SPDYN'])['CDF'])['SRCVIS']
 
 spdyn.infos=(serpe_save['SPDYN'])['INFOS']
 ; ***** loading MOVIE2D section *****
