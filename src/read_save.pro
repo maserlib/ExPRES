@@ -1036,8 +1036,8 @@ for i=0,n_elements(sc)-2 do begin
 	endif
 
 
-	if sat then (*((parameters.objects[n]))).parent=satel else (*((parameters.objects[n]))).parent=parent
 	if sat then begin
+    (*((parameters.objects[n]))).parent=satel
 		a=(*satel).semi_major_axis
 		b=(*satel).semi_minor_axis
 		c=sqrt(a^2-b^2)
@@ -1046,7 +1046,7 @@ for i=0,n_elements(sc)-2 do begin
 		(*((parameters.objects[n]))).l_min=b
 		(*((parameters.objects[n]))).l_max=a
 		(*((parameters.objects[n]))).nlat=(a-b+1)
-	endif
+	endif else (*((parameters.objects[n]))).parent=parent
 
 	case mfl of 
 		'O6+Connerney CS':fld='O6'
@@ -1071,7 +1071,12 @@ for i=0,n_elements(sc)-2 do begin
 	   END
   endcase
 	if strmid(mfl,0,6) eq 'Dipole' then fld=mfl else fld=adresse_mfl+fld
-  if ((sc[i+1]).type eq 'fixed in latitude') then (*((parameters.objects[n]))).folder=fld+'_lat' else if ((sc[i+1]).type eq 'attached to a satellite') then (*((parameters.objects[n]))).folder=fld+'_lsh' else (*((parameters.objects[n]))).folder=fld+'_msh'
+  
+  if ((sc[i+1]).type eq 'fixed in latitude') then (*((parameters.objects[n]))).folder=fld+'_lat' else begin
+    if strlowcase((*parent).name) eq 'jupiter' then begin
+      if ((sc[i+1]).type eq 'attached to a satellite') then (*((parameters.objects[n]))).folder=fld+'_lsh' else (*((parameters.objects[n]))).folder=fld+'_msh'    
+    endif else (*((parameters.objects[n]))).folder=fld+'_lsh'
+  endelse
   print, (*((parameters.objects[n]))).folder
   
 
