@@ -185,12 +185,12 @@
 	+ <a id="movie2d.range"></a> **RANGE property**
 		+ _Type:_ integer
 		+ _Required:_ True
-		+ _Description:_ ???
+		+ _Description:_ Width of the movie window (in planet radius units).
 		+ _Allowed values:_ Any
 	+ <a id="movie2d.subcycle"></a> **SUBCYCLE property**
 		+ _Type:_ integer
 		+ _Required:_ True
-		+ _Description:_ ???
+		+ _Description:_ Number of time steps in a cycle
 		+ _Allowed values:_ Any
 
 ### <a id="simu"></a> SIMU property
@@ -222,18 +222,20 @@
 		+ _Description:_ Declination of ??? (in case of 'Orbiter' type)
 		+ _Allowed values:_ Any
 	+ <a id="observer.fixe_subl"></a> **FIXE\_SUBL property**
+		+ _Type:_ number or string
 		+ _Required:_ True
-		+ _Description:_ 
-		+ _Allowed values:_ Any
+		+ _Description:_ longitude of the observer
+		+ _Allowed values:_ Any or "auto" (if ephemeris defined by the user)
 	+ <a id="observer.parent"></a> **PARENT property**
 		+ _Type:_ string
 		+ _Required:_ True
-		+ _Description:_ 
+		+ _Description:_ Named natural body that the observer is looking at/orbiting (must be one of the defined bodies).
 		+ _Allowed values:_ ```Jupiter```
 	+ <a id="observer.fixe_decl"></a> **FIXE\_DECL property**
+		+ _Type:_ number or string
 		+ _Required:_ True
-		+ _Description:_ 
-		+ _Allowed values:_ Any
+		+ _Description:_ latitude of the observer
+		+ _Allowed values:_ Any or "auto" (if ephemeris defined by the user)
 	+ <a id="observer.type"></a> **TYPE property**
 		+ _Type:_ string
 		+ _Required:_ True
@@ -247,7 +249,7 @@
 	+ <a id="observer.ephem"></a> **EPHEM property**
 		+ _Type:_ string
 		+ _Required:_ True
-		+ _Description:_ 
+		+ _Description:_ Path of the ephemeris file (if defined by the user)
 		+ _Allowed values:_ Any
 	+ <a id="observer.phase"></a> **PHASE property**
 		+ _Type:_ number
@@ -267,7 +269,7 @@
 	+ <a id="observer.sc"></a> **SC property**
 		+ _Type:_ string
 		+ _Required:_ True
-		+ _Description:_ 
+		+ _Description:_ Named of the spacecraft
 		+ _Allowed values:_ ```Juno```,```Earth```
 	+ <a id="observer.subl"></a> **SUBL property**
 		+ _Type:_ number
@@ -280,9 +282,10 @@
 		+ _Description:_ Semi major axis (in case of 'Orbiter' type)
 		+ _Allowed values:_ Any
 	+ <a id="observer.fixe_dist"></a> **FIXE\_DIST property**
+		+ _Type:_ number or string
 		+ _Required:_ True
-		+ _Description:_ 
-		+ _Allowed values:_ Any
+		+ _Description:_ Distance between the parent and the observer
+		+ _Allowed values:_ Any or "auto" (if ephemeris defined by the user)
 
 ### <a id="spdyn"></a> SPDYN property
 + _Type:_ object
@@ -475,7 +478,7 @@
 	+ <a id="spdyn.infos"></a> **INFOS property**
 		+ _Type:_ boolean
 		+ _Required:_ True
-		+ _Description:_ ???
+		+ _Description:_ Output file in *sav format
 		+ _Allowed values:_ Any
 		
 ### <a id="movie3d"></a> MOVIE3 property
@@ -523,7 +526,7 @@
 	+ <a id="movie3d.subcycle"></a> **SUBCYCLE property**
 		+ _Type:_ integer
 		+ _Required:_ True
-		+ _Description:_ ???
+		+ _Description:_ Number of time steps in a cycle
 		+ _Allowed values:_ Any
 	+ <a id="movie3d.obs"></a> **OBS property**
 		+ _Type:_ boolean
@@ -617,7 +620,7 @@
 		+ <a id="items.accel"></a> **ACCEL property**
 			+ _Type:_ number
 			+ _Required:_ True
-			+ _Description:_ ???
+			+ _Description:_ Energy of the electrons
 			+ _Allowed values:_ Any
 		+ <a id="items.temp"></a> **TEMP property**
 			+ _Type:_ number
@@ -628,7 +631,7 @@
 			+ _Type:_ string
 			+ _Required:_ True
 			+ _Description:_ Type of electron distribution in the source
-			+ _Allowed values:_ ```Transient (Alfvenic)```
+			+ _Allowed values:_ ```Transient (Alfvenic)```,```Constant```,```Steady-State```,```Shell```
 		+ <a id="items.width"></a> **WIDTH property**
 			+ _Type:_ number
 			+ _Required:_ True
@@ -637,7 +640,7 @@
 		+ <a id="items.constant"></a> **CONSTANT property**
 			+ _Type:_ number
 			+ _Required:_ True
-			+ _Description:_ ???
+			+ _Description:_ Value of the constant beaming angle
 			+ _Allowed values:_ Any
 		+ <a id="items.refraction"></a> **REFRACTION property**
 			+ _Type:_ boolean
@@ -676,7 +679,7 @@
 		+ <a id="items.sub"></a> **SUB property**
 			+ _Type:_ integer
 			+ _Required:_ True
-			+ _Description:_ ??? of the source
+			+ _Description:_ factor of sub-corotation of the source
 			+ _Allowed values:_ Any
 
 ### <a id=".frequency"></a> FREQUENCY property
