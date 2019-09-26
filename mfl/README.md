@@ -22,7 +22,7 @@ The following precomputed datasets are available:
 ```
 (1) FOLDERS XXX_lat and XXX_lsh (XXX=model's name)
 |
-|	contain pre-calcultaed field lines mapping at :
+|	contain pre-calculated field lines mapping at :
 |		- XXX_lat: a given latitude on the planet (lat from 1 to 90 deg by 1deg step)
 |		- XXX_lsh: a given distance in the equatorial plane (L-shell by 1 planet radius step)
 |		- XXX_msh: a given distance in the magnetic plane (M-shell by 1 planet radius step)
