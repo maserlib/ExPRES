@@ -22,15 +22,17 @@ The following precomputed datasets are available:
 ```
 (1) FOLDERS XXX_lat and XXX_lsh (XXX=model's name)
 |
-|	contain field lines mapping at a given latitude on the planet (lat from 1 to 90 deg by 1deg step)
-|	or a given distance in the equatorial plane (lsh from 2 to 50 by 1 planet radius step)
+|	contain pre-calcultaed field lines mapping at :
+|		- XXX_lat: a given latitude on the planet (lat from 1 to 90 deg by 1deg step)
+|		- XXX_lsh: a given distance in the equatorial plane (L-shell by 1 planet radius step)
+|		- XXX_msh: a given distance in the magnetic plane (M-shell by 1 planet radius step)
 |
 |_(2) Either FOLDERS (0,1,2,...N) or files (0,1,2,...N, -0,-1,...)
    |
-   |	numbers correspond to lat or lsh, folder for non axisymmetric, files for axisymmetric (sign=north/south)
+   |	numbers correspond to lat or lsh or msh, folder for non axisymmetric, files for axisymmetric (sign=north/south)
    |
    |_ files (0,1,2,...359, -0,-1,...,-359)
-	numbers correspond to longitudes (sign to north/south)
+	numbers correspond to longitudes (no sign for north/ '-' sign for south)
 
 	field lines are stored from 2.9*(1E-3 *dip moment in Gauss) MHz to the max frequency by steps 
 	of 2.9*(1E-3 *dip moment in Gauss) MHz
