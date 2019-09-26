@@ -474,6 +474,11 @@ if cnt ne 0 then begin
                   nerr +=1 
                 error = [error,'Missing SPDYN.CDF.SRCPOS Element.']
               endif  
+        test = where(key_list_lev2 eq 'SRCVIS',cnt)
+              if cnt eq 0 then begin 
+                  nerr +=1 
+                error = [error,'Missing SPDYN.CDF.SRCVIS Element.']
+              endif  
       endelse
 
 	test = where(key_list_lev1 eq 'INFOS',cnt)
@@ -1145,11 +1150,11 @@ serpe_save = json_parse(file_name)
 
 ; ***** checking JSON input *****
 check = check_save_json(serpe_save,error=error_messages)
-if check ne 0 then begin
-	message,/info,'Something wrong happened with JSON file... Aborting.'
-	print,error_messages
-	stop
-endif
+;if check ne 0 then begin
+;	message,/info,'Something wrong happened with JSON file... Aborting.'
+	print, 'In JSON file: '+error_messages
+;	stop
+;endif
 
 ;***** ticket number for the simulation *****
 caldat,systime(/julian),month,day,year
