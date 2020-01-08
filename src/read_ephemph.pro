@@ -59,7 +59,7 @@ nbr_lines_suppr=nbr_lines_suppr+1
 
 while strmid(buf,0,1) eq '#' do begin
 		readf,u,buf
-		if strmatch(buf,"*Planet:*") then begin
+		if strmatch(buf,"*Planet:*") or strmatch(buf,"*Planet :*") then begin
 			tmp=(STRSPLIT(buf,' * ',/EXTRACT))
 			planet=tmp[n_elements(tmp)-1]
 		endif
