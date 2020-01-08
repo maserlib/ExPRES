@@ -155,6 +155,13 @@ INIT,parameters
 print,'Looping...'
 for i=0,parameters.time.n_step-1 do begin
 	;print,parameters.time.debut+i*parameters.time.step
+	
+	if i eq long(parameters.time.n_step*.10) then print,"## 10 % ##################"
+	if i eq long(parameters.time.n_step*.25) then print,"##### 25 % ###############"
+	if i eq long(parameters.time.n_step*.50) then print,"########## 50 % ##########"
+	if i eq long(parameters.time.n_step*.75) then print,"############### 75 % #####"
+	if i eq long(parameters.time.n_step*.90) then print,"################## 90 % ##"
+
 	parameters.time.time=float(i)*parameters.time.step+parameters.time.t0
 	parameters.time.istep=i
 	CALLBACK,parameters
