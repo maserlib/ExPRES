@@ -1546,7 +1546,7 @@ for i=0,nbody-1 do begin
 		bd[n].rad=((serpe_save['BODY'])[i])['RADIUS']
 		bd[n].per=((serpe_save['BODY'])[i])['PERIOD']
 		bd[n].flat=((serpe_save['BODY'])[i])['FLAT']
-		bd[n].orb1=((serpe_save['BODY'])[i])['ORB_PER']
+		bd[n].orb1=((serpe_save['BODY'])[i])['ORB_PER']    ; # orb_per=2*pi*sqrt(a^3/(GM)) with a the radius of the body, G=6.67430e-11 and M the mass of thd body ; Third law of Kepler  
 		bd[n].lg0=((serpe_save['BODY'])[i])['INIT_AX']
 		bd[n].mfl=((serpe_save['BODY'])[i])['MAG']
 		bd[n].sat=((serpe_save['BODY'])[i])['MOTION']
@@ -1731,7 +1731,8 @@ for i=0,nbody-1 do begin
 					while (error eq 1) do begin
 						call_ephemph,((serpe_save['BODY'])[i])['PARENT'],observer=((serpe_save['BODY'])[i])['NAME'],date,name   ; search ephem (OV Miriade)
             ;call_ephemph,((serpe_save['BODY'])[i])['PARENT'],observer=(serpe_save['OBSERVER'])['SC'],date,name	; search ephem (OV Miriade)
-						read_ephemph,name,longitude=longitude,error=error														; read Miriade ephem
+						stop
+            read_ephemph,name,longitude=longitude,error=error														; read Miriade ephem
 						if (error2 gt 30) then stop,'Veuillez relancer la simulation'
 						error2=error2+1	
 					endwhile
