@@ -5,8 +5,10 @@ if tmp[-1] eq 'csv' then begin
 
 	result=read_csv(ephem,n_table_header=14,table_header=head)
 	if n_elements(result.field01) lt 7 then goto, erreur	
-	nbr_lines_end=7
-	n = n_elements(result.field01)-nbr_lines_end
+	
+	;nbr_lines_end=7
+	;n = n_elements(result.field01)-nbr_lines_end
+	n=n_elements(where(result.field04 ne 0))
 	Date=strarr(n)
 	longitude=dblarr(n)
 	lat=dblarr(n)
@@ -16,7 +18,6 @@ if tmp[-1] eq 'csv' then begin
 	longitude=(360+(-1)*result.field02[0:n-1]+360.) mod 360d
 	lat=result.field03[0:n-1]
 	distance=result.field04[0:n-1]/71492d
-
 endif
 
 if tmp[-1] ne 'csv' then begin 
