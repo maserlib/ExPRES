@@ -15,7 +15,7 @@ if tmp[-1] eq 'csv' then begin
 	distance=dblarr(n)
 	
 	date=strmid(result.field01[0:n-1],0,4)+strmid(result.field01[0:n-1],5,2)+strmid(result.field01[0:n-1],8,2)+strmid(result.field01[0:n-1],11,2)+strmid(result.field01[0:n-1],14,2)
-	longitude=(360+(-1)*result.field02[0:n-1]+360.) mod 360d
+	longitude=(result.field02[0:n-1]+360.) mod 360d
 	lat=result.field03[0:n-1]
 	distance=result.field04[0:n-1]/71492d
 endif
