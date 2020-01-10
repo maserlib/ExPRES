@@ -1731,7 +1731,6 @@ for i=0,nbody-1 do begin
 					while (error eq 1) do begin
 						call_ephemph,((serpe_save['BODY'])[i])['PARENT'],observer=((serpe_save['BODY'])[i])['NAME'],date,name   ; search ephem (OV Miriade)
             ;call_ephemph,((serpe_save['BODY'])[i])['PARENT'],observer=(serpe_save['OBSERVER'])['SC'],date,name	; search ephem (OV Miriade)
-						stop
             read_ephemph,name,longitude=longitude,error=error														; read Miriade ephem
 						if (error2 gt 30) then stop,'Veuillez relancer la simulation'
 						error2=error2+1	
