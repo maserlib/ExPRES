@@ -1215,10 +1215,27 @@ observer.name=(serpe_save['OBSERVER'])['SC']
 
 observer.start=(serpe_save['OBSERVER'])['SCTIME'] 
 
+;************* ephemeris given by the users ************
 
-;************* epehemeris given by the users ************
+;             ----------- WGC ----------
 
-if (serpe_save['OBSERVER'])['EPHEM'] ne '' then begin
+if (serpe_save['OBSERVER'])['EPHEM'] eq "@wgc" then begin
+
+    if observer.name eq 'Earth' then begin
+        py = Python.Import('read_ephem_obs')
+        result = py.get_ephem_from_wgc(observer, serpe_save['TIME'])
+        observer.start=result['time0']
+        time.mini=(result['time'])['MINI']
+        time.maxi=(result['time'])['MAXI']
+        time.nbr=(result['time'])['NBR']
+        time.dt=(result['time'])['DT']
+        struct_replace_field,observer,'PHS',-result['longitude']
+        struct_replace_field,observer,'DECL',result['lat']
+        struct_replace_field,observer,'SMAJ',result['distance']
+        struct_replace_field,observer,'SMIN',result['distance']
+    endif
+
+endif else if (serpe_save['OBSERVER'])['EPHEM'] ne '' then begin
   read_ephem_obs,(serpe_save['OBSERVER'])['EPHEM'],time0,time,observer,longitude,distance,lat,error
   if error eq 1 then stop,'Check your ephemeris'
   struct_replace_field,observer,'SMAJ',distance
