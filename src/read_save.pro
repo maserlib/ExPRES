@@ -14,7 +14,7 @@
 ;***                                                     ***
 ;***.....................................................***
 ;***     function: init_serpe_structures;                ***
-;***          Initiliazes SERPE Parameter Structures     ***
+;***          Initializes SERPE Parameter Structures     ***
 ;***     Version history                                 ***
 ;***     [BC] V6.1: Extracted from previous read_save    ***
 ;***                                                     ***
