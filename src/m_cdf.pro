@@ -6,10 +6,10 @@
 ;***                                                     ***
 ;***       MODULE: M_CDF                                 ***
 ;***                                                     ***
-;***     function: INIT_cdf						 		 ***
+;***     function: INIT_cdf				 ***
 ;***     INIT   [INIT_CDF]    	                         ***
-;***     CALLBACK [CB_CDF]		                         ***
-;***     FINALIZE [FZ_CDF]		                         ***
+;***     CALLBACK [CB_CDF]		                 ***
+;***     FINALIZE [FZ_CDF]		                 ***
 ;***                                                     ***
 ;***     Version history                                 ***
 ;***     [CL] V6.1: First release                        ***
@@ -178,9 +178,9 @@ end
 ; =============================================================================
 pro cb_cdf,obj,parameters
 ; =============================================================================
-; A faire a chaque pas de la boucle temporelle
+; To be executed at each temporal step
 ; =============================================================================
-; a chaque boucle il faudra calculer intensity comme suit :
+; at each iteration, the intensity should be computed this way: 
 ; intensity = total(theta gt 0.,1)      
 h=0
 i=parameters.time.istep
@@ -252,7 +252,7 @@ end
 
 pro fz_cdf,obj,parameters
 ; =============================================================================
-; Fermeture fichier cdf
+; Closing CDF file
 ; =============================================================================
 
 
