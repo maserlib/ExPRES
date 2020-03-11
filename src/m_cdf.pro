@@ -30,7 +30,7 @@ nfreq = parameters.freq.n_freq
 
 
 ; =============================================================================
-; A faire une fois au debut, donc dans la partie _INIT
+; To be executed once, so it goes into the `_INIT`
 ; =============================================================================
 
 ; Defining ID and Labels
@@ -60,7 +60,7 @@ for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i
 			lon=long((*parameters.objects(i)).LGMIN)
 			lat=long((*parameters.objects(i)).LATMIN)
 ; *********************************
-; probleme de longueur de phrase !!!!! ?????
+; Issue with string length in CDF... !!!!! ?????
 ; *********************************
 	print,'There may be a sentence length problem for the description of the sources - see m_cdf.pro file - line 53 if error'
 			sourcedescr(h)='main oval at longitude='+strtrim(lon,2)+' degrees (with L_equateur='+strtrim(lat,2)+' R_'+(*(*(*parameters.objects(i)).parent).parent).name+')'
