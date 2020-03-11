@@ -75,20 +75,26 @@ error=0
 time0=date[0]
 
 ; # Set simulation Time
+Y1=fix(strmid(time0,0,4))
+Mo1=fix(strmid(time0,4,2))
+D1=fix(strmid(time0,6,2))
 H1=fix(strmid(time0,8,2))
 Mi1=fix(strmid(time0,10,2))
 S1=fix(strmid(time0,12,2))
-aj1=amj_aj(double(strmid(time0,0,8)))+double(h1)/24.+double(Mi1)/24./60.
+julday1=JULDAY(Mo1, D1, Y1, H1, Mi1, S1)     
+
+Y2=fix(strmid(date[-1],0,4))
+Mo2=fix(strmid(date[-1],4,2))
+D2=fix(strmid(date[-1],6,2))
 H2=fix(strmid(date[-1],8,2))
 Mi2=fix(strmid(date[-1],10,2))
 S2=fix(strmid(date[-1],12,2))
-aj2=amj_aj(double(strmid(date[-1],0,8)))+double(h2)/24.+double(Mi2)/24./60.
+julday2=JULDAY(Mo2, D2, Y2, H2, Mi2, S2)     
+
 
 time.nbr=n
 time.mini=0
-time.maxi=(aj2-aj1)*24.*60.+1
-;time.mini = double(strmid(time0,8,2))*60.+double(strmid(time0,10,2))
-;time.maxi = double(strmid(time0,8,2))*60.+double(strmid(time0,10,2))+(aj2-aj1)*24.*60.+1
+time.maxi=(julday2-julday1)*24.*60.+1
 time.dt = (time.maxi-time.mini)/float(time.nbr)
 return
 
