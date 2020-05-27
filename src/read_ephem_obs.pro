@@ -94,8 +94,8 @@ julday2=JULDAY(Mo2, D2, Y2, H2, Mi2, S2)
 
 time.nbr=n
 time.mini=0
-time.maxi=(julday2-julday1)*24.*60.+1
-time.dt = (time.maxi-time.mini)/float(time.nbr)
+time.maxi=(julday2-julday1)*24.*60.
+time.dt = (time.maxi-time.mini)/float(time.nbr-1)
 return
 
 erreur :
