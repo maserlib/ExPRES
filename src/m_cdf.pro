@@ -111,7 +111,6 @@ for i=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[i]
 		observer=(*parameters.objects(i)).name else $
 		observer='Earth'		
 endif	
-
 dt=strtrim(parameters.time.step*60.,1)
 
 
@@ -122,7 +121,7 @@ for i=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[i]
 	t0=julday((*parameters.objects[i]).date[1],(*parameters.objects[i]).date[2],(*parameters.objects[i]).date[0],$
 	(*parameters.objects[i]).date[3],(*parameters.objects[i]).date[4],(*parameters.objects[i]).date[5])
 	time=dblarr(parameters.time.n_step)
-	for i=0,parameters.time.n_step-1 do time(i)=t0+i*parameters.time.fin/60./24./parameters.time.n_step
+	for i=0,parameters.time.n_step-1 do time(i)=t0+i*parameters.time.fin/60./24./(parameters.time.n_step-1)
 
 caldat,time,mo,dd,yr,hh,mn,second
 ss = fix(second)
@@ -130,7 +129,6 @@ ms = fix((second-ss)*1000.)
 us = fix((second-ss-ms/1000.)*1000.)
 ns = fix((second-ss-ms/1000.-us/1.e6)*1000.)
 CDF_TT2000, epoch, yr, mo, dd, hh, mn, ss, ms, us, ns, /COMPUTE_EPOCH
-
 
 
 for i=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SACRED' then begin
