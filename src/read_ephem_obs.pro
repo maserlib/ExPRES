@@ -4,20 +4,32 @@ tmp=(STRSPLIT(ephem,'.',/EXTRACT))
 if tmp[-1] eq 'csv' then begin
 
 	result=read_csv(ephem,n_table_header=14,table_header=head)
-	if n_elements(result.field01) lt 7 then goto, erreur	
+	if size(result) ge 10 then begin
+		if n_elements(result.field01) lt 7 then goto, erreur
+	endif else begin
+		if n_elements(result.field1) lt 7 then goto, erreur
+	endelse
 	
-	;nbr_lines_end=7
-	;n = n_elements(result.field01)-nbr_lines_end
-	n=n_elements(where(result.field04 ne 0))
+	if size(result) ge 10 then begin
+		n=n_elements(where(result.field04 ne 0))
+	endif else begin
+		n=n_elements(where(result.field4 ne 0))
+	endelse
 	Date=strarr(n)
 	longitude=dblarr(n)
 	lat=dblarr(n)
 	distance=dblarr(n)
-	
-	date=strmid(result.field01[0:n-1],0,4)+strmid(result.field01[0:n-1],5,2)+strmid(result.field01[0:n-1],8,2)+strmid(result.field01[0:n-1],11,2)+strmid(result.field01[0:n-1],14,2)
-	longitude=(360+(-1.)*result.field02[0:n-1]+360.) mod 360d
-	lat=result.field03[0:n-1]
-	distance=result.field04[0:n-1]/71492d
+	if size(result) ge 10 then begin
+		date=strmid(result.field01[0:n-1],0,4)+strmid(result.field01[0:n-1],5,2)+strmid(result.field01[0:n-1],8,2)+strmid(result.field01[0:n-1],11,2)+strmid(result.field01[0:n-1],14,2)
+		longitude=(360+(-1.)*result.field02[0:n-1]+360.) mod 360d
+		lat=result.field03[0:n-1]
+		distance=result.field04[0:n-1]/71492d
+	endif else begin
+		date=strmid(result.field1[0:n-1],0,4)+strmid(result.field1[0:n-1],5,2)+strmid(result.field1[0:n-1],8,2)+strmid(result.field1[0:n-1],11,2)+strmid(result.field1[0:n-1],14,2)
+		longitude=(360+(-1.)*result.field2[0:n-1]+360.) mod 360d
+		lat=result.field3[0:n-1]
+		distance=result.field4[0:n-1]/71492d
+	endelse
 endif
 
 if tmp[-1] ne 'csv' then begin 
