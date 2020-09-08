@@ -4,6 +4,7 @@ tmp=(STRSPLIT(ephem,'.',/EXTRACT))
 if tmp[-1] eq 'csv' then begin
 
 	result=read_csv(ephem,n_table_header=14,table_header=head)
+	if head[-2] ne 'State Vector Results' then result=read_csv(ephem,n_table_header=16,table_header=head)
 	if n_elements(size(result)) ge 10 then begin
 		if n_elements(result.field01) lt 7 then goto, erreur
 	endif else begin
