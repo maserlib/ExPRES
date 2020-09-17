@@ -170,6 +170,11 @@ if cnt ne 0 then begin
       nerr +=1 
       error = [error,'Missing FREQUENCY.MIN Element.']
     endif 
+    if (json_hash['FREQUENCY'])['MIN'] eq 0 and ((json_hash['FREQUENCY'])['TYPE'] eq 'Log') then begin
+      nerr +=1 
+      error = [error,"FREQUENCY.MIN Element cannot be 0 if FREQUENCY.TYPE: Log."]
+    endif
+
 
     test = where(key_list_lev1 eq 'MAX',cnt)
     if cnt eq 0 then begin 
