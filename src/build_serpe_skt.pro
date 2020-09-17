@@ -74,7 +74,7 @@ endif else begin
 	if file_test(file) then spawn,'rm -rf '+file
 endelse
 
-; Siez of arrays and strings
+; Size of arrays and strings
 nf = n_elements(frequency)
 nfs = max(strlen(Freq_Label))
 ns = n_elements(Src_ID_Label)
@@ -172,7 +172,6 @@ caldat,systime(/julian),month,day,year,h,m,s
 ticket=string(format='(I04,"-",I02,"-",I02,"T",I02,":",I02,":",I02)',year,month,day,h,m,s)
 printf,lun,"  ""Generation_date""	1:		CDF_CHAR	{"""+ticket[0]+"""}	 ."
 printf,lun,""
-;printf,lun,"  ""Acknowledgement"" 	1:		CDF_CHAR	{ "" ""} ."
 printf,lun,"  ""Acknowledgement"" 	1:		CDF_CHAR	{""The authors acknowledge the MASER (Measurement, Analysis and Simulations "" -"
 printf,lun,"                                             ""of Emissions in Radio frequencies) project "" -"
 printf,lun,"                                             ""and PADC (Paris Astronomical Data Centre) for providing access "" -"
@@ -871,7 +870,6 @@ if option.srcpos eq 1 then begin
 	printf,lun,"! Name              Type     Elements  Dims  Sizes  Variance  Variances"
 	printf,lun,"! --------          ----     --------  ----  -----  --------  ---------"
 	printf,lun,""
-	;printf,lun,"  ""SrcPosition""       CDF_REAL4      1       3   "+strtrim(string(ns),2)+" 3 "+strtrim(string(nf),2)+"      T        T T T"
 	printf,lun,"  ""SrcPosition""       CDF_REAL4      1       3   "+strtrim(string(nf),2)+" "+strtrim(string(ns),2)+" 3      T        T T T"
 	printf,lun,""
 	printf,lun,"  ! VAR_COMPRESSION: None"
