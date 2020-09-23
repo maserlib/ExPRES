@@ -1589,7 +1589,7 @@ for i=0,nbody-1 do begin
 		bd[n].rad=((serpe_save['BODY'])[i])['RADIUS']
 		bd[n].per=((serpe_save['BODY'])[i])['PERIOD']
 		bd[n].flat=((serpe_save['BODY'])[i])['FLAT']
-		bd[n].orb1=((serpe_save['BODY'])[i])['ORB_PER']    ; # orb_per=2*pi*sqrt(a^3/(GM)) with a the radius of the body, G=6.67430e-11 and M the mass of thd body ; Third law of Kepler  
+		bd[n].orb1=((serpe_save['BODY'])[i])['ORB_PER']    ; # orb_per=(2*pi*sqrt(a^3/(GM))/60 (in minutes) with a the radius of the body, G=6.67430e-11 and M the mass of thd body ; Third law of Kepler  
 		bd[n].lg0=((serpe_save['BODY'])[i])['INIT_AX']
 		bd[n].mfl=((serpe_save['BODY'])[i])['MAG']
 		bd[n].sat=((serpe_save['BODY'])[i])['MOTION']
