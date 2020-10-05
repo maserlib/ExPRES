@@ -103,42 +103,30 @@ The parameters can be adjusted:
 - `PERP` is the location of the peak density, in planetary radii.
 
 ### Setting the radio source parameters 
-The `SOURCE` section defines teh radio source parameters. There may be several sources in the configuration file. 
+The `SOURCE` section defines teh radio source parameters. There may be several sources in the configuration file. The parameters are:
+- `TYPE`: `attached to a satellite`, which means that the magnetic field lines used will be those connected to a moon.
+- `SAT`: if `TYPE=attached to a satellite`, then provide the name of the moon (which also needs to be defined as a `BODY`)
+- `aurora_alt`: sets the altitude (in Jovian radius) of the UV aurora (altitude below which electrons are lost by collision with the atmosphere)
+- `NORTH`: emission will be produce in the northern hemisphere
+- `SOUTH`: emission will be produce in the southern hemisphere
+- `Width`: width of the beaming hollow cone (in degrees)
+- `current`: 
+  - In most cases it should be set to `Transient (Alfvenic)`, which calculates self-consistently the beaming angle using the Cyclotron maser Instability (CMI) and a loss cone distribution function
+  - It can also be set to `Constant`, so that the beaming angle will not be calculated using the CMI, but will be set at a chosen values (see next parameters)
+- `Constant`: if `Current=Constant` then provide here the value in degree (80.0 for example)
+- `Accel`: the energy of the resonant electrons (in keV)
+- `Refraction`: to take into account refraction in the source’s vicinity (not implemented yet)
 
-> SOURCE: to set the source’s parameters
-	- Type: ‘'attached to a satellite’ means that the magnetic field lines used will be the ones related to a moon
-	- sat: if TYPE:’’attached to a satellite’’ then required the name of the related satellite (which need to be defined as a BODY)
-	- aurora_alt: fixes the altitude (in Jovian radius) of the UV aurora (altitude below which electrons are lost by collision with the atmosphere)
-	- NORTH: emission will be produce in the northern hemisphere
-	- SOUTH: emission will be produce in the southern hemisphere
-	- Width: width of the beaming hollow cone (in degrees)
-	- current: '’Transient (Alfvenic)’’ : allow to calculate self-consistently the beaming angle using the CMI +  a loss cone distribution function
-		—> you can also set this parameters as ‘’Constant’’ and then the beaming angle will not be calculated using CMI, but will be fixed at a chosen values (see next parameters)
-	- Constant: if Current:’’Constant’’ then you have to give here a value in degree (80.0 for example)
-	- Accel: energy of the resonant electrons (in keV)
-	- Refraction: to take into account refraction in the source’s vicinity (currently in test)
+## Run ExPRES
 
-Then you know how to set and fill the configuration file !
+The code is available for Run-on-Demand at Observatoire de Paris: https://voparis-uws-maser.obspm.fr/client/
 
-
-You now need to go to this webpage:
-https://voparis-uws-maser.obspm.fr/client/
-> Click on ''Job List’’ (top left)
-> In ‘’Job List for’’, select ‘’ExPRES’'
-> Click on ‘’+ Create New Job’’ (top right)
-> In ''config’’ choose the configuration file (***.json) you want to run. The other parameters (runId, slurp_mem and Add control parameters, have to be left like there are)
-> Click on Submit, and wait for a response. It will first marked as ‘’Queued’ and then as ‘’Executing’’. It will last a few 10s of second to a few minutes (depends on how many time/frequency steps and how many cdf-output parameters you asked for). 
-> Then it will be marked as ‘’Completed’,
-> In ‘’> Job Results''  you will be able to download the cdf file.
-> If the Job is marked as ‘’Error’’, something goes wrong during the simulation. Then, please look at the ‘’> Job Details’’, and send me the stdout and stderr files. (Or just send me an email and give me the jobId, and I will directly take a look on the website). And I will help you to figure out why the simulation didn’t run.
-
-During January, we will do a release of the latest version of ExPRES, which is more stable, and allow to do more things (to obtain the sources position for examples).
-
-Let me know if you have any question ! 
-
-You can also find link to ExPRES related content:
-https://github.com/maserlib/ExPRES      —> ExPRES github repository 
-http://maser.obspm.fr/support/serpe/mfl/ —> pre-calculated magnetic field lines
-
-Have a nice day,
-Corentin.
+Short worksflow to use this interface:
+- Click on ''Job List’’ (top left)
+- In `Job List for`, select `ExPRES`
+- Click on `+ Create New Job` (top right)
+- In `config` choose the configuration file (`***.json`) you want to run. The other parameters (`runId`, `slurp_mem` and `Add control parameters` have to be left as there are)
+- Click on `Submit`, and wait for a response. It will first marked as `Queued` and then as `Executing`. It will last a few tens of second to a few minutes (depends on how many time/frequency steps and how many cdf-output parameters you asked for). 
+- Then it will be marked as `Completed`,
+- In `> Job Results`  you will be able to download resulting files.
+- If the Job is marked as `Error`, something went wrong during the simulation. Then, look at the `> Job Details`, and check the `stdout` and `stderr` sections. 
