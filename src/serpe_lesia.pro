@@ -141,14 +141,6 @@ parameters.out=adresse_save
 print,'Simulation file ok'
 print,'Results will be saved under the name ',parameters.out
 
-if parameters.freq.log then begin
-parameters.freq.step=(alog(parameters.freq.fmax)-alog(parameters.freq.fmin))/(parameters.freq.n_freq-1)
-parameters.freq.freq_tab=ptr_new(exp(findgen(parameters.freq.n_freq)*parameters.freq.step+alog(parameters.freq.fmin)))
-endif else begin
-parameters.freq.step=(parameters.freq.fmax-parameters.freq.fmin)/(parameters.freq.n_freq-1)
-parameters.freq.freq_tab=ptr_new(findgen(parameters.freq.n_freq)*parameters.freq.step+parameters.freq.fmin)
-endelse
-
 print,'Initialization'
 INIT,parameters
 

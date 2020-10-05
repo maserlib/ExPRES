@@ -170,6 +170,11 @@ if cnt ne 0 then begin
       nerr +=1 
       error = [error,'Missing FREQUENCY.MIN Element.']
     endif 
+    if (json_hash['FREQUENCY'])['MIN'] eq 0 and ((json_hash['FREQUENCY'])['TYPE'] eq 'Log') then begin
+      nerr +=1 
+      error = [error,"FREQUENCY.MIN Element cannot be 0 if FREQUENCY.TYPE: Log."]
+    endif
+
 
     test = where(key_list_lev1 eq 'MAX',cnt)
     if cnt eq 0 then begin 
@@ -182,15 +187,15 @@ if cnt ne 0 then begin
       nerr +=1 
       error = [error,'Missing FREQUENCY.NBR Element.']
     endif 
-    
     test = where(key_list_lev1 eq 'SC',cnt)
     if cnt eq 0 then begin 
       nerr +=1 
       error = [error,'Missing FREQUENCY.SC Element.']
-    endif else if ((json_hash['FREQUENCY'])['TYPE'] eq 'Pre-Defined') $
-			and ((json_hash['FREQUENCY'])['SC'] eq "") then begin 
+    endif else if ((json_hash['FREQUENCY'])['TYPE'] eq 'Pre-Defined') then begin
+      if (n_elements((json_hash['FREQUENCY'])['SC']) eq 0) then begin 
       			nerr +=1 
 		      	error = [error,'Empty FREQUENCY.SC Value.']
+      endif
     endif 
     
 endif else begin
@@ -907,7 +912,7 @@ PRO init_serpe_structures,time,freq,observer,body,dens,src,spdyn,cdf,mov2d,mov3d
 
 ; ***** initializing local structures *****
 time={TI,mini:0d,maxi:0d,nbr:0l,dt:0.}
-freq={FR,mini:0.,maxi:0.,nbr:0l,df:0.,name:'',log:0b,predef:0b}
+freq={FR,mini:0.,maxi:0.,nbr:0l,df:0.,name:'',log:0b,predef:0b,freq_tab:PTR_NEW(/ALLOCATE_HEAP)}
 observer={OB,motion:0b,smaj:0.,smin:0.,decl:0.,alg:0.,incl:0.,phs:0.,predef:0b,name:'',parent:'',start:''}
 body={BO,on:0b,name:'',rad:0.,per:0.,flat:0.,orb1:0.,lg0:0.,sat:0b,smaj:0.,smin:0.,decl:0.,alg:0.,incl:0.,phs:0.,parent:'', mfl:'',dens:intarr(4),ipar:0}
 dens={DE,on:0b,name:'',type:'',rho0:0.,height:0.,perp:0.}
@@ -928,7 +933,7 @@ nobj=n_elements(bd)-1+n_elements(ds)-1+2*(n_elements(sc)-1)+2+mov2d.on+mov3d.on+
 
 ; ***** initializing variables *****
 TEMPS={TIME,debut:time.mini,fin:time.maxi,step:time.dt,n_step:time.nbr,time:0d,t0:0.,istep:0}
-FREQUE={FREQ,fmin:freq.mini,fmax:freq.maxi,n_freq:freq.nbr,step:freq.df,file:freq.name,log:freq.log,freq_tab:PTR_NEW(/ALLOCATE_HEAP)}
+FREQUE={FREQ,fmin:freq.mini,fmax:freq.maxi,n_freq:freq.nbr,step:freq.df,file:freq.name,log:freq.log,freq_tab:freq.freq_tab}
 simu_name_tmp=strsplit(file_name,'/',/extract)
 simu_name_tmp=strsplit(simu_name_tmp[-1],'.',/extract)
 parameters={PARAMETERS,ticket:ticket,time:temps,freq:freque,name:simu_name_tmp[0],objects:PTRARR(nobj,/ALLOCATE_HEAP),out:''}
@@ -1074,7 +1079,12 @@ for i=0,n_elements(sc)-2 do begin
   
   if ((sc[i+1]).type eq 'fixed in latitude') then (*((parameters.objects[n]))).folder=fld+'_lat' else begin
     if strlowcase((*parent).name) eq 'jupiter' then begin
-      if ((sc[i+1]).type eq 'attached to a satellite') then (*((parameters.objects[n]))).folder=fld+'_lsh' else (*((parameters.objects[n]))).folder=fld+'_msh'    
+      case strlowcase((sc[i+1]).type) of
+        'attached to a satellite': (*((parameters.objects[n]))).folder=fld+'_lsh'
+        'l-shell': (*((parameters.objects[n]))).folder=fld+'_lsh'
+        'm-shell': (*((parameters.objects[n]))).folder=fld+'_msh'
+        else: (*((parameters.objects[n]))).folder=fld+'_msh'
+      endcase
     endif else (*((parameters.objects[n]))).folder=fld+'_lsh'
   endelse
   print, (*((parameters.objects[n]))).folder
@@ -1192,15 +1202,36 @@ case (serpe_save['FREQUENCY'])['TYPE'] of
     'Log' : freq.log=1b
     'Linear': 
 endcase
-freq.mini = float((serpe_save['FREQUENCY'])['MIN'])
-freq.maxi = float((serpe_save['FREQUENCY'])['MAX'])
-freq.nbr = long((serpe_save['FREQUENCY'])['NBR'])
-freq.df=(freq.maxi-freq.mini)/float(freq.nbr)
-freq.name=''
-if freq.predef then if (serpe_save['FREQUENCY'])['SC'] ne "" then begin 
-	stop,'External frequency list : not yet implemented - please contact the ExPRES team - contact.maser@obspm.fr'
-  ;freq.name=(adresse_lib+'freq/'+(serpe_save['FREQUENCY'])['SC']) 
-endif
+if freq.predef then begin
+    freq.freq_tab=ptr_new(((serpe_save['FREQUENCY'])['SC']).toArray(dimension=0))
+    freq.mini=min(*freq.freq_tab)
+    freq.maxi=max(*freq.freq_tab)
+    freq.nbr=n_elements(*freq.freq_tab)
+    freq.df=0
+    freq.name='User-defined'
+    ;freq.name=(adresse_lib+'freq/'+(serpe_save['FREQUENCY'])['SC']) 
+endif else begin
+  freq.mini = float((serpe_save['FREQUENCY'])['MIN'])
+  freq.maxi = float((serpe_save['FREQUENCY'])['MAX'])
+  freq.nbr = long((serpe_save['FREQUENCY'])['NBR'])
+  if freq.log then begin
+    freq.df=(alog(freq.maxi)-alog(freq.mini))/(float(freq.nbr)-1)
+    freq.freq_tab=ptr_new(exp(findgen(freq.nbr)*freq.df+alog(freq.mini)))
+    freq.name='Logarithm'
+  endif else begin
+    freq.df=(freq.maxi-freq.mini)/(freq.nbr-1)
+    freq.freq_tab=ptr_new(findgen(freq.nbr)*freq.df+freq.mini)
+    freq.name='Linear'
+  endelse
+endelse
+
+
+
+
+
+
+
+
 
 ; ***** loading OBSERVER section *****
 observer.motion=0b
@@ -1563,7 +1594,7 @@ for i=0,nbody-1 do begin
 		bd[n].rad=((serpe_save['BODY'])[i])['RADIUS']
 		bd[n].per=((serpe_save['BODY'])[i])['PERIOD']
 		bd[n].flat=((serpe_save['BODY'])[i])['FLAT']
-		bd[n].orb1=((serpe_save['BODY'])[i])['ORB_PER']    ; # orb_per=2*pi*sqrt(a^3/(GM)) with a the radius of the body, G=6.67430e-11 and M the mass of thd body ; Third law of Kepler  
+		bd[n].orb1=((serpe_save['BODY'])[i])['ORB_PER']    ; # orb_per=(2*pi*sqrt(a^3/(GM))/60 (in minutes) with a the radius of the body, G=6.67430e-11 and M the mass of thd body ; Third law of Kepler  
 		bd[n].lg0=((serpe_save['BODY'])[i])['INIT_AX']
 		bd[n].mfl=((serpe_save['BODY'])[i])['MAG']
 		bd[n].sat=((serpe_save['BODY'])[i])['MOTION']

@@ -1,4 +1,4 @@
-# Exoplanetary and Planetary Radio Emission Simulator (ExPRES) V1.0.0
+# Exoplanetary and Planetary Radio Emission Simulator (ExPRES) V1.1.0
 
 ## Directories
 * [src](src) contains the ExPRES code IDL routines.
