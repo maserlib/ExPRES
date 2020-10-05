@@ -1087,7 +1087,6 @@ for i=0,n_elements(sc)-2 do begin
       endcase
     endif else (*((parameters.objects[n]))).folder=fld+'_lsh'
   endelse
-  stop
   print, (*((parameters.objects[n]))).folder
   
 
