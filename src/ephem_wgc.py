@@ -135,11 +135,12 @@ def get_ephem_from_wgc(observer, time):
             'longitude': longitude,
             'lat': latitude,
             'distance': distance,
+            'error': 0
         }
 
     except Exception as e:
         print(e)
-        result_data = None
+        result_data = {'error': 1}
 
     return result_data
 
