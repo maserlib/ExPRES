@@ -6,7 +6,7 @@
 The ExPRES models CMI (Cyclotron Maser Instability) driven radio emissions. It provides radio dynamic spectra observed from a defined location. Since the CMI emission process is very anisotropic, the relative geometry of the radio source and the observer drives the observability of the source. More info on the ExPRES code: [ExPRES on the MASER web site](http://maser.lesia.obspm.fr/tools-services-6/expres/). The code can be launched from [the MASER run on demand interface](https://voparis-uws-maser.obspm.fr). 
 
 Reference: [Louis et al., 
-ExPRES: a Tool to Simulate Exoplanetary and Planetary Radio Emissions, ArXiv, astro-ph.EP, 2019](https://arxiv.org/abs/1901.11523) 
+ExPRES: a Tool to Simulate Exoplanetary and Planetary Radio Emissions, A&A 627, A30 (2019)](https://doi.org/10.1051/0004-6361/201935161) 
 
 ## Repository Description 
 
