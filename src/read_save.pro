@@ -1177,7 +1177,7 @@ endif
 
 ;***** ticket number for the simulation *****
 caldat,systime(/julian),month,day,year
-ticket=(serpe_save['SIMU'])['NAME']+'_'+strtrim(long((systime(/seconds)-aj_t70(amj_aj(year*10000+month*100+day-1))*24.*60.*60.)*1000),1)
+ticket='ExPRES_simulation_'+strtrim(long((systime(/seconds)-aj_t70(amj_aj(year*10000+month*100+day-1))*24.*60.*60.)*1000),1)
 ;***** *****
 
 
