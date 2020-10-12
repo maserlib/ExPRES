@@ -1,3 +1,4 @@
 idlpy
 numpy
 lxml
+jsonschema
