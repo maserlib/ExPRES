@@ -1129,12 +1129,12 @@ endif
 ; ***** preparing SACRED parameters *****
 CALDAT,SYSTIME(/JULIAN), Mo, D, Y, H, Mi, S
 if (STRLEN(observer.start) ge 12) then begin
-	Y=fix(strmid(observer.start,0,4))
-	Mo=fix(strmid(observer.start,4,2))
-	D=fix(strmid(observer.start,6,2))
-	H=fix(strmid(observer.start,8,2))
-	Mi=fix(strmid(observer.start,10,2))
-	S=fix(strmid(observer.start,12,2))
+	Y=double(strmid(observer.start,0,4))
+	Mo=double(strmid(observer.start,4,2))
+	D=double(strmid(observer.start,6,2))
+	H=double(strmid(observer.start,8,2))
+	Mi=double(strmid(observer.start,10,2))
+	S=double(strmid(observer.start,12,2))
 endif
 (parameters.objects[n])=PTR_NEW({SACRED,date:[Y,Mo,D,H,Mi,S],it:['init_sacred'],cb:['cb_sacred'],fz:['fz_sacred']})
 n=n+1
