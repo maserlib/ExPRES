@@ -44,7 +44,7 @@ You first need to download the uws client:
     git checkout python3-support
     python setup.py install 
 
-The following script gives a python example of how to launch a simulation via the uws client, with a guest access:
+The following script gives a python example of how to run a simulation via the uws client, with a guest access:
 
 **Example**
 
