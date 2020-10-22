@@ -1,6 +1,8 @@
 Advanced Users' Guide
 ======================
 
+ExPRES is a versatile tool that is fully configurable through the simulation run input file. We present here
+the details of each configuration parameter.
 
 
 
