@@ -33,7 +33,7 @@ Command Line Interface
 ----------------------
 Guest Access
 ------------
-The code can also be launch from a Command Line Interface, using the[uws client](https://github.com/aicardi-obspm/uws-client) (more info and examples [here] (https://aicardi.pages.obspm.fr/uws-cli/)).
+The code can also be launch from a Command Line Interface, using the `uws client <https://github.com/aicardi-obspm/uws-client>`_ (more info and examples `here <https://aicardi.pages.obspm.fr/uws-cli/>`_).
 
 You first need to download the uws client:
 
