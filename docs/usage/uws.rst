@@ -108,6 +108,7 @@ The following script gives a python example of how to launch a simulation via th
 Then to run the simulation and retrieve the results:
 
 .. code-block::
+
     from uws_call_simu_ephem import uws_call_simu_ephem
     uws_call_simu_ephem(FILE="example.json",LOOP=True) 
 
