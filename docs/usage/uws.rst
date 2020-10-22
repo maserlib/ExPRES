@@ -36,14 +36,20 @@ Guest Access
 The code can also be launch from a Command Line Interface, using the[uws client](https://github.com/aicardi-obspm/uws-client) (more info and examples [here] (https://aicardi.pages.obspm.fr/uws-cli/)).
 
 You first need to download the uws client:
+
 .. code-block::
+
     git clone https://github.com/aicardi-obspm/uws-client
     cd uws-client
     git checkout python3-support
     python setup.py install 
 
 The following script gives a python example of how to launch a simulation via the uws client, with a guest access:
+
+**Example**
+
 .. code-block::
+
     #−∗− coding : utf−8 −∗−
     from uws import UWS
     import time
