@@ -105,6 +105,12 @@ The following script gives a python example of how to launch a simulation via th
                 uws_client.connection.download_file(str(result.reference), LOGIN, TOKEN, filename)
 
 
+Then to run the simulation and retrieve the results:
+
+.. code-block::
+    from uws_call_simu_ephem import uws_call_simu_ephem
+    uws_call_simu_ephem(FILE="example.json",LOOP=True) 
+
 Authenticated Access
 --------------------
 The above script is also valid for people with autenticated access. At this point, you must replace LOGIN=None and TOKEN=None with your login credentials (in text format). You will be able to access any of the ExPRES git repository branches by replacing branch=None by the desired branch (e.g. branch="master" or branch="develop").
