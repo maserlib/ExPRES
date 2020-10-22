@@ -54,7 +54,7 @@ The following script gives a python example of how to run a simulation via the u
     from uws import UWS
     import time
    
-    def uws_call_simu_ephem(FILE="example.json", FILE_EPHEM=None, JID=None, runID=None, LOOP=False, branch=None, LOGIN=None,executionDuration=None):
+    def uws_call_simu_ephem(FILE="example.json", FILE_EPHEM=None, Job_List=None, runID=None, LOOP=False, branch=None, LOGIN=None,executionDuration=None):
         FILE = "@"+FILE           
         SERVER = "voparis-uws-maser.obspm.fr"
         if runID == None:
@@ -62,13 +62,13 @@ The following script gives a python example of how to run a simulation via the u
         if LOGIN == None:
             LOGIN = ""
             TOKEN = ""
-            JID="ExPRES"
+            Job_List="ExPRES"
             branch="master"
         if branch == None:
             branch="master"
-            JID="ExPRES"
+            Job_List="ExPRES"
         if branch == "develop"
-           JID ="ExPRES-dev"
+           Job_List ="ExPRES-dev"
            
         parameters = {'config':FILE, 'runId':runID, 'branch':branch}
         if FILE_EPHEM != None:
@@ -79,7 +79,7 @@ The following script gives a python example of how to run a simulation via the u
 
         print(parameters)
 
-        uws_client = UWS.client.Client(url=f"https://{SERVER}/rest/{JID}", user=LOGIN, password=TOKEN)
+        uws_client = UWS.client.Client(url=f"https://{SERVER}/rest/{Job_List}", user=LOGIN, password=TOKEN)
      
         job= uws_client.new_job(parameters)
         job = uws_client.run_job(job.job_id)
