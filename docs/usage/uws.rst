@@ -31,3 +31,74 @@ The authenticated access has be to requested to the `MASER team
 
 Command Line Interface
 ----------------------
+Guest Access
+------------
+The code can also be launch from a Command Line Interface, using the[uws client](https://github.com/aicardi-obspm/uws-client) (more info and examples [here] (https://aicardi.pages.obspm.fr/uws-cli/)).
+
+You first need to download the uws client:
+    git clone https://github.com/aicardi-obspm/uws-client
+    cd uws-client
+    git checkout python3-support
+    python setup.py install 
+
+The following script gives a python example of how to launch a simulation via the uws client, with a guest access:
+
+.. code-block::
+   #−∗− coding : utf−8 −∗−
+   from uws import UWS
+   import time
+   
+   def uws_call_simu_ephem(FILE="example.json", FILE_EPHEM=None, JID=None, runID=None, LOOP=False, branch=None, LOGIN=None,executionDuration=None):
+       FILE = "@"+FILE           
+       SERVER = "voparis-uws-maser.obspm.fr"
+       if runID == None:
+           runID = "test_job"
+       if LOGIN == None:
+           LOGIN = ""
+           TOKEN = ""
+           JID="ExPRES"
+           branch="master"
+       if branch == None:
+           branch="master"
+           JID="ExPRES"
+       if branch == "develop"
+          JID ="ExPRES-dev"
+          
+       parameters = {'config':FILE, 'runId':runID, 'branch':branch}
+       if FILE_EPHEM != None:
+           FILE_EPHEM = "@"+FILE_EPHEM
+           parameters['ephemeride']=FILE_EPHEM
+       if executionDuration != None:
+           parameters['executionDuration']=executionDuration
+
+       print(parameters)
+
+       uws_client = UWS.client.Client(url=f"https://{SERVER}/rest/{JID}", user=LOGIN, password=TOKEN)
+    
+       job= uws_client.new_job(parameters)
+       job = uws_client.run_job(job.job_id)
+    
+       print(uws_client.get_phase(job.job_id))
+       print(f"Job : {job.job_id}")
+    
+       if LOOP:
+           while True:
+               time.sleep(2)
+               phase = uws_client.get_phase(job.job_id)
+               if phase == UWS.models.JobPhases.COMPLETED:
+                   print("Job completed")
+                   break
+               elif phase == UWS.models.JobPhases.ERROR or phase == UWS.models.JobPhases.ABORTED:
+                   print("Job failed")
+                   break
+        
+           job = uws_client.get_job(job.job_id)
+           for result in job.results:
+               filename = "./" + result.id
+               print(f"Downloading {result.id}")
+               uws_client.connection.download_file(str(result.reference), LOGIN, TOKEN, filename)
+
+
+Authenticated Access
+--------------------
+The above script is also valid for people with autenticated access. At this point, you must replace LOGIN=None and TOKEN=None with your login credentials (in text format). You will be able to access any of the ExPRES git repository branches by replacing branch=None by the desired branch (e.g. branch="master" or branch="develop").
