@@ -1245,18 +1245,6 @@ observer.parent=(serpe_save['OBSERVER'])['PARENT']
 observer.name=(serpe_save['OBSERVER'])['SC']
 
 observer.start=(serpe_save['OBSERVER'])['SCTIME']
-if strlen(observer.start) eq 12 then observer.start=observer.start+'00'
-Y1=double(strmid(observer.start,0,4))  
-Mo1=double(strmid(observer.start,4,2))  
-D1=double(strmid(observer.start,6,2))  
-H1=double(strmid(observer.start,8,2))
-Mi1=double(strmid(observer.start,10,2))
-S1=double(strmid(observer.start,12,2)) 
-doy1=strtrim(amj_aj(long64(Y1*10000l+Mo1*100+D1)),2) 
-julday1=JULDAY(Mo1, D1, Y1, H1, Mi1, S1) 
-julday2=julday1+time.maxi/60./24.    
-caldat,julday2,Mo2,D2,Y2,H2,Mi2,S2
-doy2=strtrim(amj_aj(long64(Y2*10000l+Mo2*100+D2)),2) 
 
 
 ;************* ephemeris given by the users ************
@@ -1288,6 +1276,20 @@ endif else if (serpe_save['OBSERVER'])['EPHEM'] ne '' then begin
   struct_replace_field,observer,'DECL',lat
   observer.start=time0
 endif
+
+if strlen(observer.start) eq 12 then observer.start=observer.start+'00'
+Y1=double(strmid(observer.start,0,4))  
+Mo1=double(strmid(observer.start,4,2))  
+D1=double(strmid(observer.start,6,2))  
+H1=double(strmid(observer.start,8,2))
+Mi1=double(strmid(observer.start,10,2))
+S1=double(strmid(observer.start,12,2)) 
+doy1=strtrim(amj_aj(long64(Y1*10000l+Mo1*100+D1)),2) 
+julday1=JULDAY(Mo1, D1, Y1, H1, Mi1, S1) 
+julday2=julday1+time.maxi/60./24.    
+caldat,julday2,Mo2,D2,Y2,H2,Mi2,S2
+doy2=strtrim(amj_aj(long64(Y2*10000l+Mo2*100+D2)),2) 
+
 
 date=STRMID(observer.start,0,10)+':'+STRMID(observer.start,10,2)+':'+STRMID(observer.start,12,2)
 adresse_ephem=loadpath('adresse_ephem',parameters,config=config)
