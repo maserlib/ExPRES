@@ -1,4 +1,4 @@
-from . import *
+from ExPRES.test import *
 import unittest
 import datetime
 import numpy

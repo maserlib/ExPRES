@@ -1,4 +1,4 @@
-from . import *
+from ExPRES.test import *
 import unittest
 from pathlib import Path
 import numpy

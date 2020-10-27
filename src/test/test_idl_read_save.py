@@ -1,4 +1,4 @@
-from . import *
+from ExPRES.test import *
 import numpy
 import unittest
 import collections

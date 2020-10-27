@@ -7,22 +7,25 @@ import os
 cur_dir = pathlib.Path(__file__).parent
 src_dir = cur_dir.parent / 'src'
 sup_dir = cur_dir.parent / 'support' / 'tests'
+
+mfl_url = 'http://maser.obspm.fr/support/expres/mfl/'
+
 cdawlib_path = '/Users/baptiste/Projets/JUNO/Ground-Support/cdf/cdawlib'
 coyote_path = '/Users/baptiste/Development/idl_lib/coyote'
 
-mfl_url = 'http://maser.obspm.fr/support/expres/mfl/'
+print(src_dir)
+
+def init_serpe_idl():
+    IDL.run("CD, '{}'".format(str(src_dir)))
+    IDL.run('!path = !path + ":" + EXPAND_PATH("+{}") + ":" + EXPAND_PATH("+{}")'.format(cdawlib_path, coyote_path))
+    return IDL
+
 
 
 def get_config():
     config = configparser.ConfigParser()
     config.read(str(cur_dir / 'config.ini'))
     return config
-
-
-def init_serpe_idl():
-    IDL.run("CD, '{}'".format(str(src_dir)))
-    IDL.run('!path = !path + ":" + EXPAND_PATH("+{}") + ":" + EXPAND_PATH("+{}")'.format(cdawlib_path, coyote_path))
-    return IDL
 
 
 def get_test_json_file():

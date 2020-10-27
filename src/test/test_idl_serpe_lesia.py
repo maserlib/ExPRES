@@ -1,4 +1,4 @@
-from . import *
+from ExPRES.test import *
 import numpy
 import math
 import unittest
