@@ -12,7 +12,7 @@ The single step installation is to clone the repository:
 
    git clone https://github.com/maserlib/ExPRES.git
 
-Running the code requires to install other softwares, as described below.
+Running the code requires to install other software, as described below.
 
 Required software
 -----------------
@@ -20,7 +20,7 @@ Required software
 IDL
 +++
 
-The ExpRES code is running under `IDL (Interactive Data Language) <https://www.harrisgeospatial.com/Software-Technology/IDL>`_, has
+The ExPRES code is running under `IDL (Interactive Data Language) <https://www.harrisgeospatial.com/Software-Technology/IDL>`_, has
 been developed and tested on IDL version 8.5, 8.6 and 8.7. This software must be installed for running the ExPRES code.
 
 **Note**
