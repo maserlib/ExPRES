@@ -2,6 +2,7 @@ import urllib.request
 import json
 import datetime
 import numpy
+import requests
 
 wgc_esa_api_url = 'http://spice.esac.esa.int/webgeocalc/api'
 wgc_nasa_api_url = 'https://wgc2.jpl.nasa.gov:8443/webgeocalc/api'
