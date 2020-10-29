@@ -7,13 +7,14 @@ Welcome to ExPRES' documentation!
 ==================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+  :maxdepth: 2
+  :caption: Contents:
 
-   installation
-   quickstart
-   usage/uws
-   usage/advanced
+  installation
+  quickstart
+  usage/uws
+  usage/advanced
+  references
 
 
 Indices and tables

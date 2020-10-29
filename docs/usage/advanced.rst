@@ -10,6 +10,8 @@ Simulation Setup
 The simulation setup is configured via an ExPRES configuration file (in *JSON* format), following the `ExPRES
 JSON-Schema v1.1 <https://voparis-ns.pages.obspm.fr/maser/expres/v1.1/schema#>`_.
 
+
+
 The ExPRES configuration file should start with the reference to the validation schema to be used:
 
 .. code-block::
@@ -271,8 +273,9 @@ where:
   **PERP**.
 - :math:`H` is the reference scale-height (in planetary radii). Configuration keyword: **SCALE**.
 
-**Example:** We define a Jovian ionospheric model, with a peak reference density of :math:`350\,10^3\,\textrm{cm}^{-3}`
-at an altitude of 890 km (1.012465 :math:`R_p`) and a scale height of 1600 km (0.0223801 :math:`R_p`).
+**Example:** We define a Jovian ionospheric model, with a peak reference density of :math:`3.5\,10^5\,\textrm{cm}^{-3}`
+at an altitude of 650 km above the 1 bar level (1.009092 :math:`R_p`) and a scale height of 1600 km (0.0223801
+:math:`R_p`), as defined in :cite:`doi:10.1029/97JA03689`.
 
 .. code-block::
 
@@ -282,7 +285,7 @@ at an altitude of 890 km (1.012465 :math:`R_p`) and a scale height of 1600 km (0
     "TYPE": "Ionospheric",
     "RHO0": 350000.0,
     "SCALE": 0.0223801,
-    "PERP": 0.012465
+    "PERP": 0.009092
   }
 
 
@@ -337,7 +340,8 @@ where:
 - :math:`H` is the torus scale-height (in planetary radii). Configuration keyword: **SCALE**.
 
 **Example:** We define the Io torus, with a peak reference density of :math:`2000\,\textrm{cm}^{-3}`, an equatorial
-diameter of 5.91 Jovian Radii (orbit of Io) and a torus scale-height of 1 Jovian radius.
+diameter of 5.91 Jovian Radii (orbit of Io) and a torus scale-height of 1 Jovian radius, as defined in
+:cite:`doi:10.1029/93JA02908`.
 
 .. code-block::
 
@@ -359,3 +363,7 @@ The *BODY* section is required in ExPRES v1.1. It contains the celestial bodies 
 Two types of celestial bodies can be included in the simulations, fixed bodies (at least one needed, the simulation run
 reference body) and orbiting bodies (which can orbit both fixed and orbiting bodies).
 
+References
+----------
+
+.. bibliography:: /refs.bib
