@@ -34,6 +34,7 @@ extensions = [
     'recommonmark',
     'sphinx-jsonschema',
     'sphinx_rtd_theme',
+    'sphinxcontrib.bibtex',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
