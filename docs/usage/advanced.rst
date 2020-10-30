@@ -4,34 +4,107 @@ Advanced Users' Guide
 ExPRES (Exoplanetary and Planetary Radio Emission Simulator) is a versatile tool that is fully configurable through
 the simulation run input file. We present here the details of each configuration parameter.
 
+Main Concepts
+-------------
+
+The ExPRES tool is modeling planetary radio emission observability. It is described in details in :cite:`Louis:2019`.
+It is implementing the Cyclotron Maser Instability (CMI) radio emission mechanism :cite:`wu_SSR_85`, which predicts
+a strongly anisotropic radio source beaming pattern. The beaming pattern is a hollow cone, whose axis is aligned with
+the local magnetic field direction, and the cone opening angle is related to the unstable particle distribution
+function properties. ExPRES computes the *radio source* to *observer* spatial vector and compares is direction to the
+modelled radio source beaming pattern.
+
+The ExPRES code configuration requires the definition of:
+
+- *The celestial bodies involved in the simulation.* At least one central planetary body must be defined, which serves
+  as the spatial origin for the simulation. All spatial parameters of the simulation configuration (distances, radii,
+  lengths...) must be defined in units of the main body. Hence, setting the central body radius to 1 implies that all
+  other spatial parameters are provided in units of the central body planetary radii. On the contrary, providing the
+  radius of the central body in km implies that all other spatial parameters must be also provided in km. The
+  recommended convention is to set the central body radius to 1. When several bodies are defined, their relative
+  location with the central body must be available either as precomputed data, or through orbital parameters provided
+  in the configuration file.
+- *The location of the observer with respect to the central body.* The location data must be available (either as
+  precomputed data, or through parameters provided in the configuration file.
+- *The magnetic field and plasma density models associated to the celestial bodies.* Several type of models can be
+  configured. ExPRES is using a set of pre-computed magnetic field lines from a series of magnetic field models. The
+  plasma density models are set through configuration parameters.
+- *The spatial distribution of the radio sources*. This location is related to the magnetic field line carrying the
+  unstable particles. The range of radio source frequencies must also be set.
+- *The radio source properties.* The radio emission mechanism is defined by a set of parameters characterising the radio
+  source beaming pattern.
+
 Simulation Setup
 ----------------
 
 The simulation setup is configured via an ExPRES configuration file (in *JSON* format), following the `ExPRES
 JSON-Schema v1.1 <https://voparis-ns.pages.obspm.fr/maser/expres/v1.1/schema#>`_.
 
+Configuration File Description
+++++++++++++++++++++++++++++++
 
-
-The ExPRES configuration file should start with the reference to the validation schema to be used:
+The ExPRES configuration file should start with the reference to the validation schema to be used. The configuration
+sections and structure are summarised below:
 
 .. code-block::
 
-  "$schema": "https://voparis-ns.obspm.fr/maser/expres/v1.1/schema#",
+  {
+    "$schema": "https://voparis-ns.obspm.fr/maser/expres/v1.1/schema#",
+    "SIMU": {...},
+    "NUMBER": {...},
+    "TIME": {...},
+    "FREQUENCY": {...},
+    "OBSERVER": {...},
+    "SPDYN": {...},
+    "MOVIE2D": {...},
+    "MOVIE3D": {...},
+    "BODY": [{...}, {...}]
+    "SOURCE": [{...}, {...}]
+  }
+
+Each JSON entry shown here is described in the next sections. The *BODY* section is specific: it is a list of *BODY*
+elements, each of which containing a list of *DENS* elements.
+
++------------------------+-------------------+--------------------------------------+
+| Section                | Mandatory in v1.1 | Description                          |
++========================+===================+======================================+
+| :ref:`SIMU<SIM>`       | no                | Simulation run description           |
++------------------------+-------------------+--------------------------------------+
+| :ref:`NUMBER<NBR>`     | yes               | Number of elements for lists         |
++------------------------+-------------------+--------------------------------------+
+| :ref:`TIME<TIME>`      | yes               | Time axis configuration              |
++------------------------+-------------------+--------------------------------------+
+| :ref:`FREQUENCY<FREQ>` | yes               | Spectral axis configuration          |
++------------------------+-------------------+--------------------------------------+
+| :ref:`OBSERVER<OBS>`   | yes               | Observer's configuration             |
++------------------------+-------------------+--------------------------------------+
+| :ref:`SPDYN<SPD>`      | yes               | Dynamic Spectra output configuration |
++------------------------+-------------------+--------------------------------------+
+| :ref:`MOVIE2D<M2D>`    | yes               | 2D movie output configuration        |
++------------------------+-------------------+--------------------------------------+
+| :ref:`MOVIE3D<M3D>`    | yes               | 3D movie output configuration        |
++------------------------+-------------------+--------------------------------------+
+| :ref:`BODY<BODY>`      | yes               | Celestial bodies configuration       |
++------------------------+-------------------+--------------------------------------+
+| :ref:`SOURCE<SRC>`     | yes               | Radio Sources configuration          |
++------------------------+-------------------+--------------------------------------+
 
 General Parameters
 ++++++++++++++++++
 
 The general parameters cover the time and frequency domain covered by the simulation, allow to give it a name to set
-the number of objects that will be included in the model. It is composed of 4 sections: *SIMU*, *NUMBER*, *TIME*,
-*FREQUENCY*
+the number of objects that will be included in the model. It is composed of 4 sections: ``SIMU``, ``NUMBER``, ``TIME``,
+``FREQUENCY``.
 
-SIMU
-....
+.. _SIM:
 
-The *SIMU* section is optional in ExPRES v1.1. It contains the simulation run description. It is composed of 2 keywords:
+Simulation Run Description
+..........................
 
-- **NAME**: The name of the simulation
-- **OUT**: Output directory location (full path). If this path is empty, the current execution location is used. If this
+The ``SIMU`` section contains the simulation run description. It is composed of 2 keywords:
+
+- ``NAME``: The name of the simulation
+- ``OUT``: Output directory location (full path). If this path is empty, the current execution location is used. If this
   path points a file, the parent directory is selected.
 
 **Example:** The simulation name is set to *Io2015-04-30*, and the output directory is defined from the path of the
@@ -44,18 +117,20 @@ ExPRES configuration file.
     "OUT": "/Groups/SERPE/SERPE_6.1/Corentin/save/Earth/VIPAL/2015/3kev/Io/Io2015-04-30.json"
   },
 
-NUMBER
-......
+.. _NBR:
 
-The *NUMBER* section is required in ExPRES v1.1. It defines maximum numbers of *BODY*, *DENSITY* and *SOURCE* objects,
-which can be configured in the simulation run. It is composed of 3 keywords:
+Simulation List Sizes
+.....................
 
-- **BODY**: The number of planetary bodies in the simulation (e.g., 2 for Jupiter and Io)
-- **DENSITY**: The number of plasma density model in the simulation (usually 1 per body)
-- **SOURCE**: The number of radio source types in the simulation (usually 1 per interaction and per hemisphere)
+The ``NUMBER`` section defines maximum numbers of ``BODY``, ``DENSITY`` and ``SOURCE`` objects, which can be
+configured in the simulation run. It is composed of 3 keywords:
 
-**Example:** We will define two bodies (Jupiter and Io), two density models (one for Jupiter, the other for the Io
-Torus) and two sets of radio sources (one for each hemisphere).
+- ``BODY``: The number of planetary bodies in the simulation (e.g., 2 for Jupiter and Io)
+- ``DENSITY``: The number of plasma density model in the simulation (usually 1 per body)
+- ``SOURCE``: The number of radio source types in the simulation (usually 1 per interaction and per hemisphere)
+
+**Example:** We want to define two bodies (Jupiter and Io), two density models (one for Jupiter's ionosphere, and
+the other for the Io Torus) and two sets of radio sources (one for each hemisphere).
 
 .. code-block::
 
@@ -65,16 +140,18 @@ Torus) and two sets of radio sources (one for each hemisphere).
     "SOURCE": 2
   },
 
-TIME
-....
+.. _TIME:
 
-The *TIME* section is required in ExPRES v1.1. It contains the simulation time configuration. Times are given in
-minute from the simulation time origin. The time origin is either set by the input ephemeris data or by the input
-orbital parameters. It is composed of 3 keywords:
+Temporal Axis
+.............
 
-- **MIN**: The start time of the simulation (in minutes), usually set to 0.
-- **MAX**: The end time of the simulation (in minutes).
-- **NBR**: The number of time steps of the simulation.
+The ``TIME`` section contains the simulation time configuration. Times are given in minute from the simulation time
+origin. The time origin is either set by the input ephemeris data or by the input orbital parameters. It is composed
+of 3 keywords:
+
+- ``MIN``: The start time of the simulation (in minutes), usually set to 0.
+- ``MAX``: The end time of the simulation (in minutes).
+- ``NBR``: The number of time steps of the simulation.
 
 **Example:** The simulation starts at the simulation time origin, with 1440 minutes duration (one day), with one step
 per minute.
@@ -87,11 +164,12 @@ per minute.
      "NBR": 1440
    }
 
-FREQUENCY
-.........
+.. _FREQ:
 
-The *FREQUENCY* section is required in ExPRES v1.1. It contains the simulation spectral configuration. Frequency
-values are always in MHz units.
+Spectral Axis
+.............
+
+The ``FREQUENCY`` section contains the simulation spectral configuration. Frequency values are always in MHz units.
 
 The spectral axis can be defined in several ways. The more generic way is to set the spectral axis bounds, the number
 of steps and the linear and logarithmic scale (see example below). It is also possible to use a predefined set of
@@ -100,12 +178,12 @@ provided.
 
 This section is composed of 5 keywords:
 
-- **TYPE**: The spectral axis type. The allowed values are *Linear*, *Log* and *Pre-Defined*.
-- **MIN**: The spectral axis lower bound in MHZ. Not used in *TYPE=Pre-Defined*
-- **MAX**: The spectral axis upper bound in MHZ. Not used in *TYPE=Pre-Defined*
-- **NBR**: The number of steps of the spectral axis. Not used in *TYPE=Pre-Defined*
-- **SC**: In case *TYPE=Pre-Defined*, the name of the specific spacecraft (allowed values TBD), or a list of frequency
-  values.
+- ``TYPE``: The spectral axis type. The allowed values are *Linear*, *Log* and *Pre-Defined*.
+- ``MIN``: The spectral axis lower bound in MHZ. Not used in *TYPE=Pre-Defined*
+- ``MAX``: The spectral axis upper bound in MHZ. Not used in *TYPE=Pre-Defined*
+- ``NBR``: The number of steps of the spectral axis. Not used in *TYPE=Pre-Defined*
+- ``SC``: In case ``TYPE="Pre-Defined"``, the name of the specific spacecraft (allowed values TBD), or a list of
+  frequency values.
 
 **Example:** The simulation spectral axis is a linear scale, ranging from 10 kHz to 40 MHz, with 781 steps.
 
@@ -133,44 +211,43 @@ This section is composed of 5 keywords:
       4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 5, 6, 7, 8, 9, 10, 11, 12]
   },
 
-
+.. _OBS:
 
 Observer Definition
 +++++++++++++++++++
 
-The *OBSERVER* section is required in ExPRES v1.1. It contains the observer's configuration.
+The ``OBSERVER`` section contains the observer's configuration. There are three types of observers:
 
-There are three types of observers:
-
-- *fixed* observers, whose position does not vary in the reference frame of the simulation;
-- *orbiters*, which moves in the reference frame of the simulation, orbiting around a celestial body;
-- *predefined* observers, which concerns known space mission around celestial bodies.
+- ``Fixed`` observers, whose position does not vary in the reference frame of the simulation;
+- ``Orbiters``, which moves in the reference frame of the simulation, orbiting around a celestial body;
+- ``Pre-Defined`` observers, which concerns known space mission around celestial bodies.
 
 In any cases, it is necessary to define the celestial body which serves as reference for the position of the observer.
-The list of reference position body must be defined in the *BODY* section.
+The list of reference position body must be defined in the ``BODY`` section.
 
 This section is composed of several keywords:
 
-- **TYPE**: The observer's type (see above). Allowed values: *Pre-Defined*, *Orbiter*, *Fixed*.
-- **EPHEM**: File name containing user defined ephemeris of observer.
-- **FIXE_DIST**: Observer's distance to *PARENT* body (if TYPE=Fixed), set to 'auto' is other cases.
-- **FIXE_SUBL**: Observer's longitude to *PARENT* (if TYPE=Fixed), set to 'auto' is other cases.
-- **FIXE_DECL**: Observer's latitude to *PARENT* (if TYPE=Fixed), set to 'auto' is other cases.
-- **PARENT**: Simulation reference frame centre (must be the same as the source parent, and the first element of the
+- ``TYPE``: The observer's type (see above). Allowed values: ``Pre-Defined``, ``Orbiter``, ``Fixed``.
+- ``EPHEM``: File name containing user defined ephemeris of observer.
+- ``FIXE_DIST``: Observer's distance to ``PARENT`` body (if ``TYPE="Fixed"``), set to 'auto' is other cases.
+- ``FIXE_SUBL``: Observer's longitude to ``PARENT`` (if ``TYPE="Fixed"``), set to 'auto' is other cases.
+- ``FIXE_DECL``: Observer's latitude to ``PARENT`` (if ``TYPE="Fixed"``), set to 'auto' is other cases.
+- ``PARENT``: Simulation reference frame centre (must be the same as the source parent, and the first element of the
   list of bodies)
-- **SC**: Observer's name. Allowed values: *Juno*, *Earth*, *Galileo*, *JUICE*, *Cassini*, *Voyager1*, *Voyager2*
-- **SCTIME**: Start time of the simulation run in SCET (YYYYMMDDHHMMSS format)
-- **SEMI_MAJ**: Semi major axis (in case of 'Orbiter' type)
-- **SEMI_MIN**: Semi minor axis (in case of 'Orbiter' type)
-- **SUBL**: Sublongitude of apoapsis (in case of 'Orbiter' type)
-- **DECL**: Declination of apoapsis (in case of 'Orbiter' type)
-- **PHASE**: Phase (East-Longitude shift) of observer from apoapsis (in case of 'Orbiter' type)
-- **INCL**: Inclination of orbit plane (in case of 'Orbiter' type)
+- ``SC``: Observer's name. Allowed values: ``Juno``, ``Earth``, ``Galileo``, ``JUICE``, ``Cassini``, ``Voyager1``,
+  ``Voyager2``
+- ``SCTIME``: Start time of the simulation run in SCET (``YYYYMMDDHHMMSS`` format)
+- ``SEMI_MAJ``: Semi major axis (in case of ``Orbiter`` type)
+- ``SEMI_MIN``: Semi minor axis (in case of ``Orbiter`` type)
+- ``SUBL``: Sublongitude of apoapsis (in case of ``Orbiter`` type)
+- ``DECL``: Declination of apoapsis (in case of ``Orbiter`` type)
+- ``PHASE``: Phase (East-Longitude shift) of observer from apoapsis (in case of ``Orbiter`` type)
+- ``INCL``: Inclination of orbit plane (in case of ``Orbiter`` type)
 
 Fixed Observer
 ..............
 
-Fixed observer are configured by their distance to the reference body, their sublongitude and their declination (in
+Fixed observer are configured by their distance to the reference body, their sub-longitude and their declination (in
 the reference body reference frame, and at the simulation time origin).
 
 Orbiter
@@ -186,10 +263,10 @@ Pre-Defined
 
 In the case of predefined observers, the code is expecting to have access to ephemeris information. For a set of space
 missions (Cassini, Voyager1, Voyager2, Juno) or planetary bodies (Ganymede, Earth), the code will call the Miriade
-*ephemph* webservice at IMCCE. For all other cases, an ephemeris file extracted from WebGeoCalc shall be provided
-using the *EPHEM* keyword.
+``ephemph`` webservice at IMCCE. For all other cases, an ephemeris file extracted from WebGeoCalc shall be provided
+using the ``EPHEM`` keyword.
 
-**Example:** We configure a simulation with an observer at Earth, with a simulation starting on 2015-04-30T00:00.
+**Example:** We configure a simulation with an observer at Earth, with a simulation starting on ``2015-04-30T00:00:00``.
 
 .. code-block::
 
@@ -231,47 +308,164 @@ using the *EPHEM* keyword.
     "INCL": 0
   },
 
+.. _BODY:
 
-Plasma Density Profiles
-+++++++++++++++++++++++
+Celestial Bodies Definition
++++++++++++++++++++++++++++
 
-The *DENS* sections are required in ExPRES v1.1. They contain the plasma density model configurations. These sections
-are defined in the *BODY* sections (see below).
+The ``BODY`` section contains the celestial bodies configuration.
 
-Several kinds of plasma density profile can be defined in ExPRES, and are associated to celestial bodies. Four types of
-density models are available:
+Two types of celestial bodies can be included in the simulations:
 
-- *Ionospheric*: exponential decrease versus distance,
-- *Stellar*: decreases as the distance squared,
-- *Disk*: exponential decrease with altitude relative to equatorial plane and distance,
-- *Torus*: exponential decrease from the center of a torus of given radius.
+- ``Fixed`` bodies, at least is one needed: the simulation run reference body;
+- ``Orbiting`` bodies, which can orbit both fixed and orbiting bodies.
 
-Profile definitions include the following keywords:
+Each body must be given a unique name within the configuration file, since the name is used internally by ExPRES to
+refer to them. Each body radius must be specified. All distances and scales units must be consistent throughout a
+configuration file.
 
-- **ON**: Set to *true* to activate the density model or to *false* deactivate.
-- **NAME**: The name of the density model (must be present, not empty and unique in the configuration file).
-- **TYPE**: The type of the density model, with the allowed values: *Ionospheric*, *Stellar*, *Disk*, *Torus*.
-- **RHO0**: Definition depends on density model type (see below).
-- **SCALE**: Definition depends on density model type (see below).
-- **PERP**: Definition depends on density model type (see below).
+Celestial body definitions include the following keywords:
 
-Ionospheric Type Profile
-........................
+- ``ON``: Flag to activate the current body (``true`` or ``false``)
+- ``NAME``: The name of the current body (must be unique in the configuration file)
+- ``RADIUS``: The radius of the current body (in consistent units throughout the configuration file)
+- ``PERIOD``: The sidereal rotation period of the current body (in minutes)
+- ``FLAT``: The polar flatening ratio of the current body.
+- ``ORB_PER``: The orbital period according to 3rd Kepler's law at 1 radius (in minutes)
+- ``INIT_AX``: The reference longitude (in degrees)
+- ``MAG``: The internal body magnetic field model (see the :ref:`Magnetic Field Model<MFL>` section below)
+- ``MOTION``: Flag to indicate if the current body is moving in the simulation frame (must be ``false`` for the central
+  body)
+- ``PARENT``: Named body, around which the current body is orbiting (must be one of the defined bodies, and must be
+  empty for the central body)
+- ``SEMI_MAJ``: The semi-major axis orbital parameter of the current body (must be 0 for the central body)
+- ``SEMI_MIN``: The semi-minor axis orbital parameter of the current body (must be 0 for the central body)
+- ``DECLINATION``: The declination orbital parameter of the current body (must be 0 for the central body)
+- ``APO_LONG``: The apoapsis Longitude parameter of the current body (must be 0 for the central body)
+- ``INCLINATION``: The inclination orbital parameter of the current body (must be 0 for the central body)
+- ``PHASE``: The initial orbital phase (at simulation start time) of the current body (must be 0 for the central body)
+- ``DENS``: A list of configuration of the plasma density model(s) related to the current body (see the
+  :ref:`DENS<DENS>` section)
 
-The ionospheric density profile is modeled as:
+**Example:** Defining Jupiter with the latest JRM09 magnetic field model and the CAN81 current sheet model. The body
+radius is set to 1, so that all distance and scale parameters must be given in Jovian radii in the configuration file.
+
+.. code-block::
+
+  {
+    "ON": true,
+    "NAME": "Jupiter",
+    "RADIUS": 1,
+    "PERIOD": 595.5,
+    "FLAT": 0.064935,
+    "ORB_PER": 177.83,
+    "INIT_AX": 0,
+    "MAG": "JRM09+Connerney CS",
+    "MOTION": false,
+    "PARENT": "",
+    "SEMI_MAJ": 0,
+    "SEMI_MIN": 0,
+    "DECLINATION": 0,
+    "APO_LONG": 0,
+    "INCLINATION": 0,
+    "PHASE": 0,
+    "DENS": [...]
+  }
+
+Orbital Parameters
+..................
+
+.. _SRC:
+
+Radio Source Configuration
+++++++++++++++++++++++++++
+
+- ``ON``: Flag to activate the current radio source (``true`` or ``false``)
+- ``NAME``: The name of the current radio source
+- ``PARENT``: The name of the parent body for this source (must correspond to a defined ``BODY`` name)
+- ``TYPE``: The type of radio source location. Four allowed values ``fixed in latitude``,  ``attached to a satellite``,
+  ``L-shell``, ``M-shell``.
+- ``LG_MIN``: The lower bound value of the source longitude (in degrees)
+- ``LG_MAX``: The upper bound value of the source longitude (in degrees)
+- ``LG_NBR``: The number of steps for the source longitude.
+- ``LAT``: If ``Fixed in latitude``: Latitude in degree; else: apex distance in planetary radii.
+- ``SUB``: The subcorotation rate of the source (0 = no corotation)
+- ``AURORA_ALT``: The altitude of the aurora (in planetary radii)
+- ``SAT``: The name of the satellite when ``attached to a satellite`` is selected
+- ``NORTH``: Flag to activate the Northern hemisphere source (exclusive with ``SOUTH`` item)
+- ``SOUTH``: Flag to activate the Southern hemisphere source (exclusive with ``NORTH`` item)
+- ``WIDTH``: The thickness of the radio emission sheet (in degrees)
+- ``CURRENT``: The type of electron distribution in the source (see documentation). Allowed values:
+  ``Transient (Alfvenic)``, ``Constant``, ``Steady-State``, ``Shell``
+- ``CONSTANT``: The value of beaming pattern half-cone opening angle (if ``Constant`` is selected), in degrees
+- ``ACCEL``: The value of resonant electron beam energy in keV (not used when ``Constant`` is selected)
+- ``TEMP``: The value of the cold electron distribution temperature (in keV)
+- ``TEMPH``: The value of the halo electron distribution temperature (in keV)
+- ``REFRACTION``: Flag to activate refraction effects (**not implemented yet**)
+
+Output Configuration
++++++++++++++++++++++
+
+.. _SPD:
+
+Dynamic Spectrum Output
+.......................
+
+.. _M2D:
+
+2D Movie Output
+...............
+
+.. _M3D:
+
+3D Movie Output
+...............
+
+
+.. _DENS:
+
+Plasma Density Models
+---------------------
+
+Various types of plasma density models can be used in ExPRES. They are configured by the ``DENS`` section in the
+``BODY`` section (see the :ref:`Celestial Body<BODY>` section above). Four types of density models are available:
+
+- ``Ionospheric``: exponential decrease with distance,
+- ``Stellar``: decreases with the distance squared,
+- ``Disk``: exponential decrease with altitude relative to equatorial plane and radial distance,
+- ``Torus``: exponential decrease from the center of a torus of given radius.
+
+Plasma density model definitions include the following keywords:
+
+- ``ON``: Set to ``true`` to activate the density model or to ``false`` deactivate.
+- ``NAME``: The name of the density model (must be present, not empty and unique in the configuration file).
+- ``TYPE``: The type of the density model, with the allowed values: ``Ionospheric``, ``Stellar``, ``Disk``, ``Torus``.
+- ``RHO0``: Definition depends on density model type (see below).
+- ``SCALE``: Definition depends on density model type (see below).
+- ``PERP``: Definition depends on density model type (see below).
+
+Ionospheric Model
++++++++++++++++++
+
+The ``Ionospheric`` density profile is modeled as:
 
 .. math::
 
-    \rho = \rho_0 \exp\left(-\frac{r-(R_p+h_0)}{H}\right)
+    \rho = \rho_0 \exp\left(-\frac{r-(1+h_0)}{H}\right)
 
 where:
 
-- :math:`\rho_0` is the reference plasma number density (in :math:`\textrm{cm}^{-3}`). Configuration keyword: **RHO0**.
-- :math:`r` is the radial distance (in planetary radii).
-- :math:`R_p` is the planetary radius (defined in the *BODY* section).
-- :math:`h_0` is the reference peak density altitude above 1 :math:`R_p` (in planetary radii). Configuration keyword:
-  **PERP**.
-- :math:`H` is the reference scale-height (in planetary radii). Configuration keyword: **SCALE**.
++----------------+-----------------------------------------+----------------------------+---------------+
+| Parameter      | Definition                              | Unit                       | Keyword       |
++================+=========================================+============================+===============+
+| :math:`\rho_0` | Reference plasma number density         | :math:`\textrm{cm}^{-3}`   | ``RHO0``      |
++----------------+-----------------------------------------+----------------------------+---------------+
+| :math:`r`      | Radial distance                         | :math:`R_p`                |               |
++----------------+-----------------------------------------+----------------------------+---------------+
+| :math:`h_0`    | Peak density altitude above 1 bar level | :math:`R_p`                | ``PERP``      |
++----------------+-----------------------------------------+----------------------------+---------------+
+| :math:`H`      | Scale-height                            | :math:`R_p`                | ``SCALE``     |
++----------------+-----------------------------------------+----------------------------+---------------+
 
 **Example:** We define a Jovian ionospheric model, with a peak reference density of :math:`3.5\,10^5\,\textrm{cm}^{-3}`
 at an altitude of 650 km above the 1 bar level (1.009092 :math:`R_p`) and a scale height of 1600 km (0.0223801
@@ -289,10 +483,10 @@ at an altitude of 650 km above the 1 bar level (1.009092 :math:`R_p`) and a scal
   }
 
 
-Stellar Type Profile
-....................
+Stellar Model
++++++++++++++
 
-The stellar density profile is modeled as:
+The ``Stellar`` density profile is modeled as:
 
 .. math::
 
@@ -300,15 +494,20 @@ The stellar density profile is modeled as:
 
 where:
 
-- :math:`\rho_0` is the reference plasma number density (in :math:`\textrm{cm}^{-3}`). Configuration keyword: **RHO0**.
-- :math:`r` is the radial distance (in planetary radii).
++----------------+-----------------------------------------+----------------------------+---------------+
+| Parameter      | Definition                              | Unit                       | Keyword       |
++================+=========================================+============================+===============+
+| :math:`\rho_0` | Reference plasma number density         | :math:`\textrm{cm}^{-3}`   | ``RHO0``      |
++----------------+-----------------------------------------+----------------------------+---------------+
+| :math:`r`      | Radial distance                         | :math:`R_p`                |               |
++----------------+-----------------------------------------+----------------------------+---------------+
 
-Configuration keywords **SCALE** and **PERP** are not used for this model.
+**Note:** Configuration keywords ``SCALE`` and ``PERP`` are not used for this model.
 
-Disk Type Profile
-.................
+Disk Model
+++++++++++
 
-The disk density profile is modeled as:
+The ``Disk`` density profile is modeled as:
 
 .. math::
 
@@ -316,16 +515,24 @@ The disk density profile is modeled as:
 
 where:
 
-- :math:`\rho_0` is the reference plasma number density (in :math:`\textrm{cm}^{-3}`). Configuration keyword: **RHO0**.
-- :math:`r` is the equatorial radial distance (in planetary radii).
-- :math:`H_r` is the equatorial radial scale-height (in planetary radii). Configuration keyword: **PERP**.
-- :math:`z` is the altitude above the equator (in planetary radii).
-- :math:`H_z` is the vertical scale-height (in planetary radii). Configuration keyword: **SCALE**.
++----------------+-----------------------------------------+----------------------------+---------------+
+| Parameter      | Definition                              | Unit                       | Keyword       |
++================+=========================================+============================+===============+
+| :math:`\rho_0` | Reference plasma number density         | :math:`\textrm{cm}^{-3}`   | ``RHO0``      |
++----------------+-----------------------------------------+----------------------------+---------------+
+| :math:`r`      | Equatorial radial distance              | :math:`R_p`                |               |
++----------------+-----------------------------------------+----------------------------+---------------+
+| :math:`z`      | Altitude above equator                  | :math:`R_p`                |               |
++----------------+-----------------------------------------+----------------------------+---------------+
+| :math:`H_r`    | Equatorial radial scale-height          | :math:`R_p`                | ``PERP``      |
++----------------+-----------------------------------------+----------------------------+---------------+
+| :math:`H_z`    | Vertical scale-height                   | :math:`R_p`                | ``SCALE``     |
++----------------+-----------------------------------------+----------------------------+---------------+
 
-Torus Type Profile
-..................
+Torus Model
++++++++++++
 
-The disk density profile is modeled as:
+The ``Torus`` density profile is modeled as:
 
 .. math::
 
@@ -333,11 +540,19 @@ The disk density profile is modeled as:
 
 where:
 
-- :math:`\rho_0` is the reference plasma number density (in :math:`\textrm{cm}^{-3}`). Configuration keyword: **RHO0**.
-- :math:`r` is the equatorial radial distance (in planetary radii).
-- :math:`r_0` is the torus equatorial diameter (in planetary radii). Configuration keyword: **PERP**.
-- :math:`z` is the altitude above the equator (in planetary radii).
-- :math:`H` is the torus scale-height (in planetary radii). Configuration keyword: **SCALE**.
++----------------+-----------------------------------------+----------------------------+---------------+
+| Parameter      | Definition                              | Unit                       | Keyword       |
++================+=========================================+============================+===============+
+| :math:`\rho_0` | Reference plasma number density         | :math:`\textrm{cm}^{-3}`   | ``RHO0``      |
++----------------+-----------------------------------------+----------------------------+---------------+
+| :math:`r`      | Equatorial radial distance              | :math:`R_p`                |               |
++----------------+-----------------------------------------+----------------------------+---------------+
+| :math:`z`      | Altitude above equator                  | :math:`R_p`                |               |
++----------------+-----------------------------------------+----------------------------+---------------+
+| :math:`r_0`    | Torus center equatorial diameter        | :math:`R_p`                | ``PERP``      |
++----------------+-----------------------------------------+----------------------------+---------------+
+| :math:`H`      | Torus scale-height                      | :math:`R_p`                | ``SCALE``     |
++----------------+-----------------------------------------+----------------------------+---------------+
 
 **Example:** We define the Io torus, with a peak reference density of :math:`2000\,\textrm{cm}^{-3}`, an equatorial
 diameter of 5.91 Jovian Radii (orbit of Io) and a torus scale-height of 1 Jovian radius, as defined in
@@ -355,13 +570,43 @@ diameter of 5.91 Jovian Radii (orbit of Io) and a torus scale-height of 1 Jovian
   }
 
 
-Celestial Bodies Definition
-+++++++++++++++++++++++++++
+.. _MFL:
 
-The *BODY* section is required in ExPRES v1.1. It contains the celestial bodies configuration.
+Magnetic Field Models
+---------------------
 
-Two types of celestial bodies can be included in the simulations, fixed bodies (at least one needed, the simulation run
-reference body) and orbiting bodies (which can orbit both fixed and orbiting bodies).
+The detailed magnetic field models available for ExPRES are listed in the `LESIA_mag
+<https://gitlab.obspm.fr/maser/lesia-mag/lesia-mag_idl>`_ repository. We recall below the list of models and the
+related references.
+
++---------+----------------------------+----------------------------+------------------------+
+| Planet  | Magnetic Field Model       | Current Sheet Model        | ``BODY.MAG`` Value     |
+|         +------------+---------------+------------+---------------+                        |
+|         | Short Name | Reference     | Model Name | Reference     |                        |
++=========+============+===============+============+===============+========================+
+| Mercury | A12        | :cite:`And12` |                            | ``A12``                |
++---------+------------+---------------+------------+---------------+------------------------+
+| Jupiter | ISaAC      | :cite:`HBZ11` | CAN81      | :cite:`CAN81` | ``ISaAC+Connerney CS`` |
+|         +------------+---------------+            |               +------------------------+
+|         | JRM09      | :cite:`CKO18` |            |               | ``JRM09+Connerney CS`` |
+|         +------------+---------------+            |               +------------------------+
+|         | O6         | :cite:`C1992` |            |               | ``O6+Connerney CS``    |
+|         +------------+---------------+            |               +------------------------+
+|         | VIP4       | :cite:`CAN98` |            |               | ``VIP4+Connerney CS``  |
+|         +------------+---------------+            |               +------------------------+
+|         | VIPAL      | :cite:`HBB17` |            |               | ``VIPAL+Connerney CS`` |
+|         +------------+---------------+            |               +------------------------+
+|         | VIT4       | :cite:`C2007` |            |               | ``VIT4+Connerney CS``  |
++---------+------------+---------------+------------+---------------+------------------------+
+| Saturn  | SPV        | :cite:`DS90`  |                            | ``SPV``                |
+|         +------------+---------------+----------------------------+------------------------+
+|         | Z3         | :cite:`CAN84` |                            | ``Z3``                 |
++---------+------------+---------------+----------------------------+------------------------+
+| Uranus  | AH5        | :cite:`H2009` |                            | ``AH5``                |
+|         +------------+---------------+----------------------------+------------------------+
+|         | Q3         | :cite:`CAN87` |                            | ``Q3``                 |
++---------+------------+---------------+----------------------------+------------------------+
+
 
 References
 ----------
