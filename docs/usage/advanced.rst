@@ -16,13 +16,9 @@ modelled radio source beaming pattern.
 
 The ExPRES code configuration requires the definition of:
 
-- *The celestial bodies involved in the simulation.* At least one central planetary body must be defined, which serves
-  as the spatial origin for the simulation. All spatial parameters of the simulation configuration (distances, radii,
-  lengths...) must be defined in units of the main body. Hence, setting the central body radius to 1 implies that all
-  other spatial parameters are provided in units of the central body planetary radii. On the contrary, providing the
-  radius of the central body in km implies that all other spatial parameters must be also provided in km. The
-  recommended convention is to set the central body radius to 1. When several bodies are defined, their relative
-  location with the central body must be available either as precomputed data, or through orbital parameters provided
+- *The celestial bodies involved in the simulation.* At least one *central body** must be defined, which serves
+  as the *spatial origin* for the simulation. When several bodies are defined, their relative location with the
+  *central body* must be available either as precomputed data, or through orbital parameters provided
   in the configuration file.
 - *The location of the observer with respect to the central body.* The location data must be available (either as
   precomputed data, or through parameters provided in the configuration file.
@@ -33,6 +29,13 @@ The ExPRES code configuration requires the definition of:
   unstable particles. The range of radio source frequencies must also be set.
 - *The radio source properties.* The radio emission mechanism is defined by a set of parameters characterising the radio
   source beaming pattern.
+
+All spatial parameters of the simulation configuration (distances, radii, lengths...) must be defined in the same units
+as that of provided *central body* radius. Hence, setting the central body radius to *1* implies that all other spatial
+parameters are provided in units of the central body planetary radii. On the contrary, providing the radius of the
+central body in km implies that all other spatial parameters must be also provided in km. The recommended convention
+is to provide all spatial parameters in units of the *central body* radius. This convention is followed in the examples
+provided below.
 
 Simulation Setup
 ----------------
@@ -216,53 +219,79 @@ This section is composed of 5 keywords:
 Observer Definition
 +++++++++++++++++++
 
-The ``OBSERVER`` section contains the observer's configuration. There are three types of observers:
+The ``OBSERVER`` section contains the observer's configuration. There are three types of observers, configured by the
+``TYPE`` keyword:
 
 - ``Fixed`` observers, whose position does not vary in the reference frame of the simulation;
-- ``Orbiters``, which moves in the reference frame of the simulation, orbiting around a celestial body;
+- ``Orbiter``, which moves in the reference frame of the simulation, orbiting around a celestial body;
 - ``Pre-Defined`` observers, which concerns known space mission around celestial bodies.
 
-In any cases, it is necessary to define the celestial body which serves as reference for the position of the observer.
-The list of reference position body must be defined in the ``BODY`` section.
+The observer's location is provided with respect to the simulation *central body*, defined in the ``BODY`` section.
 
-This section is composed of several keywords:
+This section is composed of a series of keywords. The table below provides which keyword shall be used, or
+left empty, or with a specific value. The following subsections give details for each observer's type.
 
-- ``TYPE``: The observer's type (see above). Allowed values: ``Pre-Defined``, ``Orbiter``, ``Fixed``.
-- ``EPHEM``: File name containing user defined ephemeris of observer.
-- ``FIXE_DIST``: Observer's distance to ``PARENT`` body (if ``TYPE="Fixed"``), set to 'auto' is other cases.
-- ``FIXE_SUBL``: Observer's longitude to ``PARENT`` (if ``TYPE="Fixed"``), set to 'auto' is other cases.
-- ``FIXE_DECL``: Observer's latitude to ``PARENT`` (if ``TYPE="Fixed"``), set to 'auto' is other cases.
-- ``PARENT``: Simulation reference frame centre (must be the same as the source parent, and the first element of the
-  list of bodies)
-- ``SC``: Observer's name. Allowed values: ``Juno``, ``Earth``, ``Galileo``, ``JUICE``, ``Cassini``, ``Voyager1``,
-  ``Voyager2``
-- ``SCTIME``: Start time of the simulation run in SCET (``YYYYMMDDHHMMSS`` format)
-- ``SEMI_MAJ``: Semi major axis (in case of ``Orbiter`` type)
-- ``SEMI_MIN``: Semi minor axis (in case of ``Orbiter`` type)
-- ``SUBL``: Sublongitude of apoapsis (in case of ``Orbiter`` type)
-- ``DECL``: Declination of apoapsis (in case of ``Orbiter`` type)
-- ``PHASE``: Phase (East-Longitude shift) of observer from apoapsis (in case of ``Orbiter`` type)
-- ``INCL``: Inclination of orbit plane (in case of ``Orbiter`` type)
++-----------------+--------------------------------------------------+
+| Keyword         | Observer's type                                  |
++=================+===========+====================+=================+
+| ``TYPE``        | ``Fixed`` | ``Orbiter``        | ``Pre-Defined`` |
++-----------------+-----------+--------------------+-----------------+
+| ``EPHEM``       | empty     | empty              | file name       |
++-----------------+-----------+--------------------+-----------------+
+| ``FIXE_DIST``   | distance  | ``auto``           | ``auto``        |
++-----------------+-----------+--------------------+-----------------+
+| ``FIXE_SUBL``   | longitude | ``auto``           | ``auto``        |
++-----------------+-----------+--------------------+-----------------+
+| ``FIXE_DECL``   | latitude  | ``auto``           | ``auto``        |
++-----------------+-----------+--------------------+-----------------+
+| ``PARENT``      | *central body*                                   |
++-----------------+--------------------------------------------------+
+| ``SC``          | Observer's name                                  |
++-----------------+--------------------------------------------------+
+| ``SCTIME``      | Start time                                       |
++-----------------+-----------+--------------------+-----------------+
+| ``SEMI_MAJ``    | 0         | Semi major axis    | 0               |
++-----------------+-----------+--------------------+-----------------+
+| ``SEMI_MIN``    | 0         | Semi minor axis    | 0               |
++-----------------+-----------+--------------------+-----------------+
+| ``SUBL``        | 0         | Apoapsis longitude | 0               |
++-----------------+-----------+--------------------+-----------------+
+| ``DECL``        | 0         | Apoapsis latitude  | 0               |
++-----------------+-----------+--------------------+-----------------+
+| ``PHASE``       | 0         | Phase from apoapis | 0               |
++-----------------+-----------+--------------------+-----------------+
+| ``INCL``        | 0         | Inclination        | 0               |
++-----------------+-----------+--------------------+-----------------+
+
+The observer's name (``SC`` keyword) must be set, and can't be empty. The currently allowed values are: ``Juno``,
+``Earth``, ``Galileo``, ``JUICE``, ``Cassini``, ``Voyager1``, ``Voyager2``.
+
+The ``PARENT`` keyword must be set to the *central body* name.
+
+The simulation start time (``SCTIME`` keyword) is provided in SCET (spacecraft event time), with a ``YYYYMMDDHHMMSS``
+format.
 
 Fixed Observer
 ..............
 
-Fixed observer are configured by their distance to the reference body, their sub-longitude and their declination (in
-the reference body reference frame, and at the simulation time origin).
+A fixed observer is configured by its distance (``FIXE_DIST`` keyword) to the *central body*, its sub-longitude in
+degrees (``FIXE_SUBL`` keyword) and its declination in degrees (``FIXE_DECL`` keyword) in the *central body* reference
+frame, and at the simulation time origin.
 
 Orbiter
 .......
 
-Orbiter orbits are defined by their semi-major and semi-minor axis, the apoapsis sublongitude and declination (in the
-reference body reference frame, and at the simulation time origin) and the inclination of the orbit plane around the
-semi-major axis). Finally, the orbiter position requires the definition of its initial phase on the orbit (0 degree is
-at the apoapsis position).
+The observer's orbital parameters are its semi-major (``SEMI_MAJ`` keyword) and semi-minor (``SEMI_MIN`` keyword) axis
+distances, its apoapsis sub-longitude (``SUBL`` keyword) and declination (``DECL`` keyword), as well as the inclination
+of the orbit plane around the semi-major axis (``INCL`` keyword). All angles are provided in the *central body*
+reference frame, and at the simulation time origin. Finally, the orbiter position requires the definition of its
+initial phase (``PHASE`` keyword) on the orbit, i.e., 0 degree is at the apoapsis position.
 
 Pre-Defined
 ...........
 
 In the case of predefined observers, the code is expecting to have access to ephemeris information. For a set of space
-missions (Cassini, Voyager1, Voyager2, Juno) or planetary bodies (Ganymede, Earth), the code will call the Miriade
+missions (Cassini, Voyager1, Voyager2, Juno) or planetary bodies (Ganymede, Earth), the code will call the *Miriade*
 ``ephemph`` webservice at IMCCE. For all other cases, an ephemeris file extracted from WebGeoCalc shall be provided
 using the ``EPHEM`` keyword.
 
@@ -279,12 +308,12 @@ using the ``EPHEM`` keyword.
     "PARENT": "Jupiter",
     "SC": "Earth",
     "SCTIME": "201504300000",
-    "SEMI_MAJ": 0.0,
-    "SEMI_MIN": 0.0,
-    "SUBL": 0.0,
-    "DECL": 0.0,
-    "PHASE": 0.0,
-    "INCL": 0.0
+    "SEMI_MAJ": 0,
+    "SEMI_MIN": 0,
+    "SUBL": 0,
+    "DECL": 0,
+    "PHASE": 0,
+    "INCL": 0
   },
 
 **Example:** We configure a simulation from the JUICE spacecraft, providing a WebGeocalc output CSV file.
