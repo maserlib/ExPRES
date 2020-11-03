@@ -2,10 +2,8 @@
 import json
 from jsonschema import validate as validate_schema
 from jsonschema.exceptions import ValidationError
-from .version import SCHEMA
-
-ExPRES_schema = SCHEMA
-
+from .schema import SCHEMA, schema_uri_from_version
+from .version import VERSION
 
 class ExPRESConfig:
 
@@ -19,7 +17,8 @@ class ExPRESConfig:
 
     @config.setter
     def config(self, config_data):
-        json_schema_id = config_data.get('$schema', ExPRES_schema)
+        json_schema = SCHEMA.get('$schema', schema_uri_from_version(VERSION))
+
         try:
             validate_schema(instance=config_data, schema=json_schema)
         except ValidationError as error:
