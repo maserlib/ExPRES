@@ -163,7 +163,7 @@ per minute.
 
    "TIME": {
      "MIN": 0,
-     "MAX": 1440,
+     "MAX": 1439,
      "NBR": 1440
    }
 
