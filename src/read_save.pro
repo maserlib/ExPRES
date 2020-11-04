@@ -1351,12 +1351,11 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
       restore,adresse_ephem+'Juno/2020.sav'
       
   	
-  		w=where((long(ephem.day) ge long(strmid(doy1,4,3)) and long(ephem.day) le long(strmid(doy2,4,3))) and (long(ephem.hr) ge long(H1) and long(ephem.hr) le long(H2)) and (long(ephem.min) ge long(Mi1) and long(ephem.min) le long(Mi2)))
+  		w=where((long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. ge long(strmid(doy1,4,3))+long(H1)/24.+long(Mi1)/24./60.) and (long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. le (long(strmid(doy2,4,3))+long(H2)/24.+long(Mi2)/24./60.)))
       
   		longitude=ephem[w].oblon
   		distance=ephem[w].dist_RJ
   		lat=ephem[w].oblat
-  	   
       longitude=interpol(longitude,time.nbr)
       distance=interpol(distance,time.nbr)
       lat=interpol(lat,time.nbr)
@@ -1365,7 +1364,7 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'galileo' then begin
   		restore,adresse_ephem+'Galileo/1996_240-260.sav'
   		
-      w=where((long(ephem.day) ge long(strmid(doy1,4,3)) and long(ephem.day) le long(strmid(doy2,4,3))) and (long(ephem.hr) ge long(H1) and long(ephem.hr) le long(H2)) and (long(ephem.min) ge long(Mi1) and long(ephem.min) le long(Mi2)))
+      w=where((long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. ge long(strmid(doy1,4,3))+long(H1)/24.+long(Mi1)/24./60.) and (long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. le (long(strmid(doy2,4,3))+long(H2)/24.+long(Mi2)/24./60.)))
       
       longitude=ephem[w].oblon
       distance=ephem[w].dist_RJ
@@ -1378,7 +1377,7 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   	endif else $
   	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'voyager1' and strmid((serpe_save['OBSERVER'])['SCTIME'],0,4) eq '1979' then begin
   		restore,adresse_ephem+'Voyager/Voyager1_ephem_1979.sav'
-  		w=where((long(ephem.day) ge long(strmid(doy1,4,3)) and long(ephem.day) le long(strmid(doy2,4,3))) and (long(ephem.hr) ge long(H1) and long(ephem.hr) le long(H2)) and (long(ephem.min) ge long(Mi1) and long(ephem.min) le long(Mi2)))
+  		w=where((long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. ge long(strmid(doy1,4,3))+long(H1)/24.+long(Mi1)/24./60.) and (long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. le (long(strmid(doy2,4,3))+long(H2)/24.+long(Mi2)/24./60.)))
       
       longitude=ephem[w].oblon
       distance=ephem[w].dist_RJ
@@ -1391,7 +1390,7 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   	endif else $
   	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'voyager2' and strmid((serpe_save['OBSERVER'])['SCTIME'],0,4) eq '1979' then begin
   		restore,adresse_ephem+'Voyager/Voyager2_ephem_1979.sav'
-  		w=where((long(ephem.day) ge long(strmid(doy1,4,3)) and long(ephem.day) le long(strmid(doy2,4,3))) and (long(ephem.hr) ge long(H1) and long(ephem.hr) le long(H2)) and (long(ephem.min) ge long(Mi1) and long(ephem.min) le long(Mi2)))
+  		w=where((long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. ge long(strmid(doy1,4,3))+long(H1)/24.+long(Mi1)/24./60.) and (long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. le (long(strmid(doy2,4,3))+long(H2)/24.+long(Mi2)/24./60.)))
       
       longitude=ephem[w].oblon
       distance=ephem[w].dist_RJ
