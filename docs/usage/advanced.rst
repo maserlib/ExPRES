@@ -277,14 +277,14 @@ Fixed Observer
 ..............
 
 A fixed observer is configured by its distance (``FIXE_DIST`` keyword) to the *central body*, its sub-longitude in
-degrees (``FIXE_SUBL`` keyword) and its declination in degrees (``FIXE_DECL`` keyword) in the *central body* reference
-frame, and at the simulation time origin.
+degrees (``FIXE_SUBL`` keyword) and its declination in degrees (``FIXE_DECL`` keyword) in the reference body frame,
+and at the simulation time origin.
 
 Orbiter
 .......
 
 The observer's orbital parameters are its semi-major (``SEMI_MAJ`` keyword) and semi-minor (``SEMI_MIN`` keyword) axis
-distances, its apoapsis sub-longitude (``SUBL`` keyword) and declination (``DECL`` keyword), as well as the inclination
+lengths, its apoapsis sub-longitude (``SUBL`` keyword) and declination (``DECL`` keyword), as well as the inclination
 of the orbit plane around the semi-major axis (``INCL`` keyword). All angles are provided in the *central body*
 reference frame, and at the simulation time origin. Finally, the orbiter position requires the definition of its
 initial phase (``PHASE`` keyword) on the orbit, i.e., 0 degree is at the apoapsis position.
@@ -293,7 +293,7 @@ Pre-Defined
 ...........
 
 In the case of predefined observers, the code is expecting to have access to ephemeris information. For a set of space
-missions (Cassini, Voyager1, Voyager2, Juno) or planetary bodies (Ganymede, Earth), the code will call the *Miriade*
+missions (Cassini, Voyager1, Voyager2, Juno) or planetary bodies (Earth), the code will call the *Miriade*
 ``ephemph`` webservice at IMCCE. For all other cases, an ephemeris file extracted from WebGeoCalc shall be provided
 using the ``EPHEM`` keyword.
 
