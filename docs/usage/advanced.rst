@@ -244,7 +244,7 @@ left empty, or with a specific value. The following subsections give details for
 +-----------------+-----------+--------------------+--------------------+
 | ``FIXE_DECL``   | latitude  | ``auto``           | ``auto``           |
 +-----------------+-----------+--------------------+--------------------+
-| ``PARENT``      | *central body*                                      |
+| ``PARENT``      | reference body                                      |
 +-----------------+-----------------------------------------------------+
 | ``SC``          | Observer's name                                     |
 +-----------------+-----------------------------------------------------+
@@ -267,7 +267,8 @@ The observer's name (``SC`` keyword) must be set, and can't be empty. When ``TYP
 the current allowed list of values is: ``Juno``, ``Earth``, ``Galileo``, ``JUICE``, ``Cassini``, ``Voyager1``,
 ``Voyager2``.
 
-The ``PARENT`` keyword must be set to the *central body* name.
+The ``PARENT`` keyword must be set to one of the celestial bodies defined in the ``BODY`` section, except for specific
+cases, it is usually the *central body* name.
 
 The simulation start time (``SCTIME`` keyword) is provided in SCET (spacecraft event time), with a ``YYYYMMDDHHMMSS``
 format.
