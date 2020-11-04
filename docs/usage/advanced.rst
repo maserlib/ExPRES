@@ -188,7 +188,7 @@ This section is composed of 5 keywords:
 - ``SC``: In case ``TYPE="Pre-Defined"``, the name of the specific spacecraft (allowed values TBD), or a list of
   frequency values.
 
-**Example:** The simulation spectral axis is a linear scale, ranging from 10 kHz to 40 MHz, with 781 steps.
+**Example:** The simulation spectral axis is a linear scale, ranging from 10 kHz to 44 MHz, with 781 steps.
 
 .. code-block::
 
