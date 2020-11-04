@@ -30,6 +30,17 @@ The ExPRES code configuration requires the definition of:
 - *The radio source properties.* The radio emission mechanism is defined by a set of parameters characterising the radio
   source beaming pattern.
 
+.. figure:: /img/expres-outline.jpg
+  :width: 300
+  :alt: Outline of ExPRES code
+  :align: center
+
+  **Fig. 1:** Schematic outline of the ExPRES code. The central body here is set up Jupiter and Juno is
+  the observer. The radio sources are placed along the magnetic field line connected to Io. The radio emission
+  beaming pattern model (hollow cone opening angle and thickness) is computed from the magnetic and plasma
+  models. The radio emission observable when the observer is located within the radio source beaming pattern.
+  (Figure adapted from C. Louis, PhD Dissertation, 2018)
+
 All spatial parameters of the simulation configuration (distances, radii, lengths...) must be defined in the same units
 as that of provided *central body* radius. Hence, setting the central body radius to *1* implies that all other spatial
 parameters are provided in units of the central body planetary radii. On the contrary, providing the radius of the
@@ -163,8 +174,8 @@ per minute.
 
    "TIME": {
      "MIN": 0,
-     "MAX": 1439,
-     "NBR": 1440
+     "MAX": 1440,
+     "NBR": 1441
    }
 
 .. _FREQ:
@@ -231,37 +242,37 @@ The observer's location is provided with respect to the simulation *central body
 This section is composed of a series of keywords. The table below provides which keyword shall be used, or
 left empty, or with a specific value. The following subsections give details for each observer's type.
 
-+-----------------+-----------------------------------------------------+
-| Keyword         | Observer's type                                     |
-+=================+===========+====================+====================+
-| ``TYPE``        | ``Fixed`` | ``Orbiter``        | ``Pre-Defined``    |
-+-----------------+-----------+--------------------+--------------------+
-| ``EPHEM``       | empty     | empty              | file name or empty |
-+-----------------+-----------+--------------------+--------------------+
-| ``FIXE_DIST``   | distance  | ``auto``           | ``auto``           |
-+-----------------+-----------+--------------------+--------------------+
-| ``FIXE_SUBL``   | longitude | ``auto``           | ``auto``           |
-+-----------------+-----------+--------------------+--------------------+
-| ``FIXE_DECL``   | latitude  | ``auto``           | ``auto``           |
-+-----------------+-----------+--------------------+--------------------+
-| ``PARENT``      | reference body                                      |
-+-----------------+-----------------------------------------------------+
-| ``SC``          | Observer's name                                     |
-+-----------------+-----------------------------------------------------+
-| ``SCTIME``      | Start time                                          |
-+-----------------+-----------+--------------------+--------------------+
-| ``SEMI_MAJ``    | 0         | Semi major axis    | 0                  |
-+-----------------+-----------+--------------------+--------------------+
-| ``SEMI_MIN``    | 0         | Semi minor axis    | 0                  |
-+-----------------+-----------+--------------------+--------------------+
-| ``SUBL``        | 0         | Apoapsis longitude | 0                  |
-+-----------------+-----------+--------------------+--------------------+
-| ``DECL``        | 0         | Apoapsis latitude  | 0                  |
-+-----------------+-----------+--------------------+--------------------+
-| ``PHASE``       | 0         | Phase from apoapis | 0                  |
-+-----------------+-----------+--------------------+--------------------+
-| ``INCL``        | 0         | Inclination        | 0                  |
-+-----------------+-----------+--------------------+--------------------+
++-----------------+---------------------------------------------------------+
+| Keyword         | Observer's type                                         |
++=================+===========+====================+========================+
+| ``TYPE``        | ``Fixed`` | ``Orbiter``        | ``Pre-Defined``        |
++-----------------+-----------+--------------------+------------------------+
+| ``EPHEM``       | *empty*   | *empty*            | *file name* or *empty* |
++-----------------+-----------+--------------------+------------------------+
+| ``FIXE_DIST``   |*distance* | ``auto``           | ``auto``               |
++-----------------+-----------+--------------------+------------------------+
+| ``FIXE_SUBL``   |*longitude*| ``auto``           | ``auto``               |
++-----------------+-----------+--------------------+------------------------+
+| ``FIXE_DECL``   |*latitude* | ``auto``           | ``auto``               |
++-----------------+-----------+--------------------+------------------------+
+| ``PARENT``      | *Reference body name*                                   |
++-----------------+---------------------------------------------------------+
+| ``SC``          | *Observer's name*                                       |
++-----------------+---------------------------------------------------------+
+| ``SCTIME``      | *Start time*                                            |
++-----------------+-----------+--------------------+------------------------+
+| ``SEMI_MAJ``    | 0         | *Semi major axis*  | 0                      |
++-----------------+-----------+--------------------+------------------------+
+| ``SEMI_MIN``    | 0         |*Semi minor axis*   | 0                      |
++-----------------+-----------+--------------------+------------------------+
+| ``SUBL``        | 0         |*Apoapsis longitude*| 0                      |
++-----------------+-----------+--------------------+------------------------+
+| ``DECL``        | 0         |*Apoapsis latitude* | 0                      |
++-----------------+-----------+--------------------+------------------------+
+| ``PHASE``       | 0         |*Phase from apoapis*| 0                      |
++-----------------+-----------+--------------------+------------------------+
+| ``INCL``        | 0         |*Inclination*       | 0                      |
++-----------------+-----------+--------------------+------------------------+
 
 The observer's name (``SC`` keyword) must be set, and can't be empty. When ``TYPE="Pre-Defined"`` and ``EPHEM=""``,
 the current allowed list of values is: ``Juno``, ``Earth``, ``Galileo``, ``JUICE``, ``Cassini``, ``Voyager1``,
@@ -482,7 +493,7 @@ The ``Ionospheric`` density profile is modeled as:
 
 .. math::
 
-    \rho = \rho_0 \exp\left(-\frac{r-(1+h_0)}{H}\right)
+    \rho = \rho_0 \exp\left(-\frac{r-(r_{ref}+h_0)}{H}\right)
 
 where:
 
@@ -493,13 +504,18 @@ where:
 +----------------+-----------------------------------------+----------------------------+---------------+
 | :math:`r`      | Radial distance                         | :math:`R_p`                |               |
 +----------------+-----------------------------------------+----------------------------+---------------+
+| :math:`r_{ref}`| Reference radial distance on ellipsoid  | :math:`R_p`                |               |
++----------------+-----------------------------------------+----------------------------+---------------+
 | :math:`h_0`    | Peak density altitude above 1 bar level | :math:`R_p`                | ``PERP``      |
 +----------------+-----------------------------------------+----------------------------+---------------+
 | :math:`H`      | Scale-height                            | :math:`R_p`                | ``SCALE``     |
 +----------------+-----------------------------------------+----------------------------+---------------+
 
+The :math:`r_{ref}` is computed by ExPRES using the ellipsoid flattening parameter (``FLAT`` keyword in ``BODY``
+section) and the radio source latitude (computed from the ``SOURCE`` section).
+
 **Example:** We define a Jovian ionospheric model, with a peak reference density of :math:`3.5\,10^5\,\textrm{cm}^{-3}`
-at an altitude of 650 km above the 1 bar level (1.009092 :math:`R_p`) and a scale height of 1600 km (0.0223801
+at an altitude of 650 km above the 1 bar level (0.009092 :math:`R_p`) and a scale height of 1600 km (0.0223801
 :math:`R_p`), as defined in :cite:`doi:10.1029/97JA03689`.
 
 .. code-block::
