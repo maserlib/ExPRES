@@ -54,7 +54,8 @@ The following script gives a python example of how to run a simulation via the u
     from uws import UWS
     import time
    
-    def uws_call_simu_ephem(FILE="example.json", FILE_EPHEM=None, Job_List=None, runID=None, LOOP=False, branch=None, LOGIN=None,executionDuration=None):
+    def uws_call_expres(FILE="example.json", FILE_EPHEM=None, Job_List=None, runID=None,
+            LOOP=False, branch=None, LOGIN=None, executionDuration=None):
         FILE = "@"+FILE           
         SERVER = "voparis-uws-maser.obspm.fr"
         if runID == None:
@@ -62,26 +63,27 @@ The following script gives a python example of how to run a simulation via the u
         if LOGIN == None:
             LOGIN = ""
             TOKEN = ""
-            Job_List="ExPRES"
-            branch="master"
+            Job_List = "ExPRES"
+            branch = "master"
         if branch == None:
-            branch="master"
-            Job_List="ExPRES"
+            branch = "master"
+            Job_List = "ExPRES"
         if branch == "develop"
-           Job_List ="ExPRES-dev"
+           Job_List = "ExPRES-dev"
            
         parameters = {'config':FILE, 'runId':runID, 'branch':branch}
         if FILE_EPHEM != None:
             FILE_EPHEM = "@"+FILE_EPHEM
-            parameters['ephemeride']=FILE_EPHEM
+            parameters['ephemeride'] = FILE_EPHEM
         if executionDuration != None:
-            parameters['executionDuration']=executionDuration
+            parameters['executionDuration'] = executionDuration
 
         print(parameters)
 
-        uws_client = UWS.client.Client(url=f"https://{SERVER}/rest/{Job_List}", user=LOGIN, password=TOKEN)
+        uws_client = UWS.client.Client(url=f"https://{SERVER}/rest/{Job_List}", user=LOGIN,
+            password=TOKEN)
      
-        job= uws_client.new_job(parameters)
+        job = uws_client.new_job(parameters)
         job = uws_client.run_job(job.job_id)
      
         print(uws_client.get_phase(job.job_id))
@@ -109,9 +111,12 @@ Then to run the simulation and retrieve the results:
 
 .. code-block::
 
-    from uws_call_simu_ephem import uws_call_simu_ephem
-    uws_call_simu_ephem(FILE="example.json",LOOP=True) 
+    from uws_call_expres import uws_call_expres
+    uws_call_expres(FILE="example.json",LOOP=True)
 
 Authenticated Access
 --------------------
-The above script is also valid for people with autenticated access. At this point, you must replace LOGIN=None and TOKEN=None with your login credentials (in text format). You will be able to access any of the ExPRES git repository branches by replacing branch=None by the desired branch (e.g. branch="master" or branch="develop").
+The above script is also valid for people with authenticated access. At this point, you must replace ``LOGIN=None``
+and ``TOKEN=None`` with your login credentials (in text format). You will be able to access any of the
+ExPRES git repository branches by replacing branch=None by the desired branch (e.g. ``branch="master"`` or
+``branch="develop"``).
