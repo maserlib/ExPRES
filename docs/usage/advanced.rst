@@ -182,11 +182,11 @@ provided.
 This section is composed of 5 keywords:
 
 - ``TYPE``: The spectral axis type. The allowed values are ``Linear``, ``Log`` and ``Pre-Defined``.
-- ``MIN``: The spectral axis lower bound in MHZ. Not used in ``TYPE="Pre-Defined"``
-- ``MAX``: The spectral axis upper bound in MHZ. Not used in ``TYPE="Pre-Defined"``
-- ``NBR``: The number of steps of the spectral axis. Not used in ``TYPE="Pre-Defined"``
-- ``SC``: In case ``TYPE="Pre-Defined"``, the name of the specific spacecraft (allowed values TBD), or a list of
-  frequency values.
+- ``MIN``: The spectral axis lower bound in MHz. Not used when ``TYPE="Pre-Defined"``
+- ``MAX``: The spectral axis upper bound in MHz. Not used when ``TYPE="Pre-Defined"``
+- ``NBR``: The number of steps of the spectral axis. Not used when ``TYPE="Pre-Defined"``
+- ``SC``: In case ``TYPE="Pre-Defined"``, the name of the specific spacecraft (not implemented, allowed values TBD), or
+  a list of frequency values.
 
 **Example:** The simulation spectral axis is a linear scale, ranging from 10 kHz to 44 MHz, with 781 steps.
 
@@ -231,40 +231,41 @@ The observer's location is provided with respect to the simulation *central body
 This section is composed of a series of keywords. The table below provides which keyword shall be used, or
 left empty, or with a specific value. The following subsections give details for each observer's type.
 
-+-----------------+--------------------------------------------------+
-| Keyword         | Observer's type                                  |
-+=================+===========+====================+=================+
-| ``TYPE``        | ``Fixed`` | ``Orbiter``        | ``Pre-Defined`` |
-+-----------------+-----------+--------------------+-----------------+
-| ``EPHEM``       | empty     | empty              | file name       |
-+-----------------+-----------+--------------------+-----------------+
-| ``FIXE_DIST``   | distance  | ``auto``           | ``auto``        |
-+-----------------+-----------+--------------------+-----------------+
-| ``FIXE_SUBL``   | longitude | ``auto``           | ``auto``        |
-+-----------------+-----------+--------------------+-----------------+
-| ``FIXE_DECL``   | latitude  | ``auto``           | ``auto``        |
-+-----------------+-----------+--------------------+-----------------+
-| ``PARENT``      | *central body*                                   |
-+-----------------+--------------------------------------------------+
-| ``SC``          | Observer's name                                  |
-+-----------------+--------------------------------------------------+
-| ``SCTIME``      | Start time                                       |
-+-----------------+-----------+--------------------+-----------------+
-| ``SEMI_MAJ``    | 0         | Semi major axis    | 0               |
-+-----------------+-----------+--------------------+-----------------+
-| ``SEMI_MIN``    | 0         | Semi minor axis    | 0               |
-+-----------------+-----------+--------------------+-----------------+
-| ``SUBL``        | 0         | Apoapsis longitude | 0               |
-+-----------------+-----------+--------------------+-----------------+
-| ``DECL``        | 0         | Apoapsis latitude  | 0               |
-+-----------------+-----------+--------------------+-----------------+
-| ``PHASE``       | 0         | Phase from apoapis | 0               |
-+-----------------+-----------+--------------------+-----------------+
-| ``INCL``        | 0         | Inclination        | 0               |
-+-----------------+-----------+--------------------+-----------------+
++-----------------+-----------------------------------------------------+
+| Keyword         | Observer's type                                     |
++=================+===========+====================+====================+
+| ``TYPE``        | ``Fixed`` | ``Orbiter``        | ``Pre-Defined``    |
++-----------------+-----------+--------------------+--------------------+
+| ``EPHEM``       | empty     | empty              | file name or empty |
++-----------------+-----------+--------------------+--------------------+
+| ``FIXE_DIST``   | distance  | ``auto``           | ``auto``           |
++-----------------+-----------+--------------------+--------------------+
+| ``FIXE_SUBL``   | longitude | ``auto``           | ``auto``           |
++-----------------+-----------+--------------------+--------------------+
+| ``FIXE_DECL``   | latitude  | ``auto``           | ``auto``           |
++-----------------+-----------+--------------------+--------------------+
+| ``PARENT``      | *central body*                                      |
++-----------------+-----------------------------------------------------+
+| ``SC``          | Observer's name                                     |
++-----------------+-----------------------------------------------------+
+| ``SCTIME``      | Start time                                          |
++-----------------+-----------+--------------------+--------------------+
+| ``SEMI_MAJ``    | 0         | Semi major axis    | 0                  |
++-----------------+-----------+--------------------+--------------------+
+| ``SEMI_MIN``    | 0         | Semi minor axis    | 0                  |
++-----------------+-----------+--------------------+--------------------+
+| ``SUBL``        | 0         | Apoapsis longitude | 0                  |
++-----------------+-----------+--------------------+--------------------+
+| ``DECL``        | 0         | Apoapsis latitude  | 0                  |
++-----------------+-----------+--------------------+--------------------+
+| ``PHASE``       | 0         | Phase from apoapis | 0                  |
++-----------------+-----------+--------------------+--------------------+
+| ``INCL``        | 0         | Inclination        | 0                  |
++-----------------+-----------+--------------------+--------------------+
 
-The observer's name (``SC`` keyword) must be set, and can't be empty. The currently allowed values are: ``Juno``,
-``Earth``, ``Galileo``, ``JUICE``, ``Cassini``, ``Voyager1``, ``Voyager2``.
+The observer's name (``SC`` keyword) must be set, and can't be empty. When ``TYPE="Pre-Defined"`` and ``EPHEM=""``,
+the current allowed list of values is: ``Juno``, ``Earth``, ``Galileo``, ``JUICE``, ``Cassini``, ``Voyager1``,
+``Voyager2``.
 
 The ``PARENT`` keyword must be set to the *central body* name.
 
