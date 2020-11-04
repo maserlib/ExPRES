@@ -181,10 +181,10 @@ provided.
 
 This section is composed of 5 keywords:
 
-- ``TYPE``: The spectral axis type. The allowed values are *Linear*, *Log* and *Pre-Defined*.
-- ``MIN``: The spectral axis lower bound in MHZ. Not used in *TYPE=Pre-Defined*
-- ``MAX``: The spectral axis upper bound in MHZ. Not used in *TYPE=Pre-Defined*
-- ``NBR``: The number of steps of the spectral axis. Not used in *TYPE=Pre-Defined*
+- ``TYPE``: The spectral axis type. The allowed values are ``Linear``, ``Log`` and ``Pre-Defined``.
+- ``MIN``: The spectral axis lower bound in MHZ. Not used in ``TYPE="Pre-Defined"``
+- ``MAX``: The spectral axis upper bound in MHZ. Not used in ``TYPE="Pre-Defined"``
+- ``NBR``: The number of steps of the spectral axis. Not used in ``TYPE="Pre-Defined"``
 - ``SC``: In case ``TYPE="Pre-Defined"``, the name of the specific spacecraft (allowed values TBD), or a list of
   frequency values.
 
