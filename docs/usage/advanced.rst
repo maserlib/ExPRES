@@ -16,7 +16,7 @@ modelled radio source beaming pattern.
 
 The ExPRES code configuration requires the definition of:
 
-- *The celestial bodies involved in the simulation.* At least one *central body** must be defined, which serves
+- *The celestial bodies involved in the simulation.* At least one *central body* must be defined, which serves
   as the *spatial origin* for the simulation. When several bodies are defined, their relative location with the
   *central body* must be available either as precomputed data, or through orbital parameters provided
   in the configuration file.
