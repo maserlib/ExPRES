@@ -30,6 +30,10 @@ The ExPRES code configuration requires the definition of:
 - *The radio source properties.* The radio emission mechanism is defined by a set of parameters characterising the radio
   source beaming pattern.
 
+The *central body* is the simulation run spatial origin and its radius sets the units of spatial parameters. The times
+are given in a UTC scale in the observer's frame. The time origin of the simulation run is provided in the observer's
+definition.
+
 .. figure:: /img/expres-outline.jpg
   :width: 300
   :alt: Outline of ExPRES code
@@ -48,11 +52,38 @@ central body in km implies that all other spatial parameters must be also provid
 is to provide all spatial parameters in units of the *central body* radius. This convention is followed in the examples
 provided below.
 
+The file output file names are built by ExPRES, using a set up configuration parameters. The general scheme is:
+``expres_{OBS}_{BODY}_{SRC}_{MAG}_{SRC_PROP}_{DATE}_v{VERS}.json``. The parts of the template are explained in the table
+below, with an example using the file: `expres_juno_jupiter_io_jrm09_lossc-wid1deg_3kev_20180913_v01.json
+<http://maser.obspm.fr/data/expres/juno/2018/09/expres_juno_jupiter_io_jrm09_lossc-wid1deg_3kev_20180913_v01.json>`_
+
++---------------+---------------------------+------------------------+
+| Template part | Description               | Example                |
++===============+===========================+========================+
+| ``{OBS}``     | Observer name             | ``juno``               |
++---------------+---------------------------+------------------------+
+| ``{BODY}``    | Central body name         | ``jupiter``            |
++---------------+---------------------------+------------------------+
+| ``{SRC}``     | Radio source driver       | ``io``                 |
++---------------+---------------------------+------------------------+
+| ``{MAG}``     | Magnetic field model name | ``jrm09``              |
++---------------+---------------------------+------------------------+
+| ``{SRC_PROP}``| Radio source properties   | ``lossc-wid1deg_3kev`` |
++---------------+---------------------------+------------------------+
+| ``{DATE}``    | Simulation date           | ``20180913``           |
++---------------+---------------------------+------------------------+
+| ``{VERS}``    | Version of ExPRES         | ``01``                 |
++---------------+---------------------------+------------------------+
+
+
 Simulation Setup
 ----------------
 
 The simulation setup is configured via an ExPRES configuration file (in *JSON* format), following the `ExPRES
 JSON-Schema v1.1 <https://voparis-ns.pages.obspm.fr/maser/expres/v1.1/schema#>`_.
+
+
+
 
 Configuration File Description
 ++++++++++++++++++++++++++++++
@@ -417,6 +448,13 @@ radius is set to 1, so that all distance and scale parameters must be given in J
 Orbital Parameters
 ..................
 
+.. figure:: /img/orbital-params.png
+  :width: 300
+  :alt: Parameters for orbiting body
+  :align: center
+
+  **Fig. 2:**
+
 .. _SRC:
 
 Radio Source Configuration
@@ -654,8 +692,3 @@ related references.
 |         | Q3         | :cite:`CAN87` |                            | ``Q3``                 |
 +---------+------------+---------------+----------------------------+------------------------+
 
-
-References
-----------
-
-.. bibliography:: /refs.bib
