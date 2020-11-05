@@ -66,15 +66,15 @@ if adresse eq 'adresse_save' then begin
 			observer=strlowcase((*parameters.objects[i]).name)
 	endfor
 	if adresse_out ne './' then begin 
-		cmd="chmod g+w "+adresse_out+observer
+		cmd='mkdir -m g+w '+adresse_out+observer
 		spawn,cmd,resu
 		cmd="chmod g+w "+adresse_out+observer
 		spawn,cmd
-		cmd="chmod g+w "+adresse_out+observer+'/'+year
+		cmd='mkdir -m g+w '+adresse_out+observer+'/'+year
 		spawn,cmd,resu
 		cmd="chmod g+w "+adresse_out+observer+'/'+year
 		spawn,cmd
-		cmd="chmod g+w "+adresse_out+observer+'/'+year+'/'+month
+		cmd='mkdir -m g+w '+adresse_out+observer+'/'+year+'/'+month
 		spawn,cmd,resu
 		cmd="chmod g+w "+adresse_out+observer+'/'+year+'/'+month
 		spawn,cmd
