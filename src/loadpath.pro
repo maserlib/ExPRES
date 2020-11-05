@@ -68,10 +68,16 @@ if adresse eq 'adresse_save' then begin
 	if adresse_out ne './' then begin 
 		cmd='mkdir -m g+w '+adresse_out+observer
 		spawn,cmd,resu
+		cmd="chmod g+w "+adresse_out+observer
+		spawn,cmd
 		cmd='mkdir -m g+w '+adresse_out+observer+'/'+year
 		spawn,cmd,resu
+		cmd="chmod g+w "+adresse_out+observer+'/'+year
+		spawn,cmd
 		cmd='mkdir -m g+w '+adresse_out+observer+'/'+year+'/'+month
 		spawn,cmd,resu
+		cmd="chmod g+w "+adresse_out+observer+'/'+year+'/'+month
+		spawn,cmd
 		adresse_out=adresse_out+observer+'/'+year+'/'+month+'/'
 	endif
 endif
