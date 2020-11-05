@@ -14,7 +14,7 @@ Welcome to ExPRES' documentation!
   quickstart
   usage/uws
   usage/advanced
-  references
+  zreferences
 
 
 Indices and tables
