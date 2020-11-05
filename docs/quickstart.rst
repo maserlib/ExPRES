@@ -1,61 +1,41 @@
 Quickstart
 ==========
 
-
 This section presents a concise user's guide to ExPRES.
 
 Run Configuration File
 ----------------------
 
-An ExPRES run is configured through a configuration file (in *JSON*
-format). Examples of configuration files (and the associated results files)
-are available from the `MASER data repository <http://maser.obspm.fr/data/expres/>`_
-for Io-, Europa- and Ganymede-controlled emissions, and for various observers.
-The parameters for these *routine simulation files* are the following:
+An ExPRES run is configured through a configuration file (in *JSON* format). Examples of configuration files
+(and the associated results files) are available from the `MASER data repository <http://maser.obspm.fr/data/expres/>`_
+for Io-, Europa- and Ganymede-controlled emissions, and for various observers. The parameters for these *routine
+simulation files* are the following:
 
-- JRM09 (or ISaAC for some of them) + CAN81 current sheet models,
+- JRM09 :cite:`CKO18` (or ISaAC for :cite:`HBZ11` some of them) + CAN81 :cite:`CAN81` current sheet models,
 - Electron energy = 3 keV,
-- position of the Active flux tube (AFT) for Io based on the (corrected) lead angle
-  model of Hess et al., 2008 (for Europa and Ganymede the AFT is the same than the
-  flux tube connected to the moon).
+- position of the Active flux tube (AFT) for Io based on the (corrected) lead angle model of :cite:`hess_GRL_08`, for
+  Europa and Ganymede the AFT is the same than the flux tube connected to the moon.
 
-The file names are constructed automatically by ExPRES. For instance, the file
-*expres_juno_jupiter_io_jrm09_lossc-wid1deg_3kev_20180913_v01.json*
-(available `here <http://maser.obspm.fr/data/expres/juno/2018/09/expres_juno_jupiter_io_jrm09_lossc-wid1deg_3kev_20180913_v01.json>`_)
-corresponds to:
-
-- *expres* is name of the simulation code,
-- *juno* is the observer name,
-- *jupiter* is the main planet name,
-- *io* is the source control name,
-- *jrm09* is magnetic field model name,
-- *lossc-wid1deg* is the type of model (here: Loss-Cone distribution + a emission cone thickness of 1 degree),
-- *3kev* is the resonant electron energy,
-- *20180913* is the simulation date
-- *v01* is the version of ExPRES used for this run
-
-The easiest option to build your configuration file is to update an existing one.
+The file names are constructed automatically by ExPRES. The easiest option to build your configuration file is to
+update an existing one.
 
 Updating a Configuration File
 -----------------------------
 
-You can download a configuration file to get a template (please be sure to take one
-using JRM09 magnetic field model, for up-to-date description).
-There are many items and options in this file. Here are the important ones.
+You can download a configuration file to get a template (please be sure to take one using the JRM09 magnetic field
+model, for up-to-date description). There are many items and options in this file. Here are the important ones.
 
 Setting the temporal axis
 +++++++++++++++++++++++++
 
-The temporal axis is configured in the *TIME* section. The parameters are:
+The temporal axis is configured in the ``TIME`` section. The parameters are:
 
-- *MIN*: start time (in minutes)
-- *MAX*: end time (in minutes)
-- *NBR*: number of time steps.
+- ``MIN``: start time (in minutes)
+- ``MAX``: end time (in minutes)
+- ``NBR``: number of time steps.
 
-The maximum resolution of ExPRES is 1 minute. This time axis is defined as a relative axis. It
-is attached to the absolute time reference given in the *OBSERVER* section,
-with the *SCTIME* keyword. Hence, *MIN* should always be set to 0. All parameters must
-be integers.
+This time axis is defined as a relative axis. It is attached to the absolute time reference given in the ``OBSERVER``
+section, with the ``SCTIME`` keyword. Hence, ``MIN`` should always be set to 0. All parameters must be integers.
 
 **Example**
 
@@ -64,22 +44,22 @@ be integers.
    "TIME": {
      "MIN": 0,
      "MAX": 1440,
-     "NBR": 1440
+     "NBR": 1441
    }
 
 Setting the spectral axis
 +++++++++++++++++++++++++
 
-The spectral axis is configured in the *FREQUENCY* section. The parameters are:
+The spectral axis is configured in the ``FREQUENCY`` section. The parameters are:
 
-- *MIN*: lower bound of the spectral axis (in MHz),
-- *MAX*: upper bound of the spectral axis (in MHz)
-- *NBR*: number of spectral steps,
-- *TYPE*: the type of spectral axis,
-- *SC*: This option is not implemented.
+- ``MIN``: lower bound of the spectral axis (in MHz),
+- ``MAX``: upper bound of the spectral axis (in MHz)
+- ``NBR``: number of spectral steps,
+- ``TYPE``: the type of spectral axis,
+- ``SC``: This option is not implemented.
 
-The two main values for *TYPE* are *Log* or *Linear*, but the *Pre-Defined* option can
-be used to upload a custom spectral axis (see the `Advanced User's Guide <usage/advanced>`_)).
+The two main values for ``TYPE`` are ``Log`` or ``Linear``, but the ``Pre-Defined`` option can be used to upload a
+custom spectral axis (see the `Advanced User's Guide <usage/advanced>`_).
 
 **Example**
 
@@ -96,23 +76,19 @@ be used to upload a custom spectral axis (see the `Advanced User's Guide <usage/
 Setting the observer
 ++++++++++++++++++++
 
-The observer defines the place from which the observation will be done. Basic users
-only need to use a limited set of parameters:
+The observer defines the place from which the observation will be done. Basic users only need to use a limited set of
+parameters:
 
-- *TYPE*: Use the *Pre-Defined* option here, which means that it will a pre-defined
-  observer's ephemeris.
-- *PARENT*: Sets is the main planetary body of the simulation (do not change this, but
-  rather use another ExPRES configuration file, with the desired planet)
-- *SC*: Sets the name of the observer.
-- *SCTIME*: sets the start time (observer time) of the modeling (this corresponds to
-  the absolute starting point o fthe time axis). The format is *YYYYMMDDhhmm* (*YYYY*
-  = year, *MM* = month, *DD* = day, *hh* = hour, *mm* = minute, all
-  0-padded)
-- *FIXE_DIST*, *FIXE_SUBL* and *FIXE_DECL* (corresponding to *distance*, *longitude*
-  and *latitude*) must be set to *auto* in this case.
+- ``TYPE``: Use the ``Pre-Defined`` option here, which means that it will a pre-defined observer's ephemeris.
+- ``PARENT``: Sets is the main planetary body of the simulation (do not change this, but rather use another ExPRES
+  configuration file, with the desired planet)
+- ``SC``: Sets the name of the observer.
+- ``SCTIME``: sets the start time (observer time) of the modeling (this corresponds to the absolute starting point of
+  the time axis). The format is ``YYYYMMDDhhmm``, with ``YYYY`` is the year, ``MM`` the month, ``DD`` the day, ``hh``
+  the hour, ``mm`` the minute, all 0-padded.
+- ``FIXE_DIST``, ``FIXE_SUBL`` and ``FIXE_DECL`` must be set to ``auto`` in this case.
 
-The other parameters are not used in this case. They are described in the `Advanced
-User's Guide <usage/advanced>`_).
+The other parameters are not used in this case. They are described in the `Advanced User's Guide <usage/advanced>`_).
 
 **Example**
 
@@ -139,65 +115,65 @@ User's Guide <usage/advanced>`_).
 Setting the output parameters
 +++++++++++++++++++++++++++++
 
-The *CDF* sub-section of *SPDYN* defines the parameters that will be provided in the resulting CDF file. Each
-parameters can be selected/deselected setting its value to *true*/*false*.
+The ``CDF`` sub-section of ``SPDYN`` defines the parameters that will be provided in the resulting CDF file. Each
+parameters can be selected/deselected setting its value to ``true``/``false``.
 
-- *Theta*: value of the beaming angle at each time/frequency step
-- *Fp*: value of the plasma frequency at the source
-- *Fc*: value of the electron cyclotron frequency at the source
-- *azimuth*: not currently available
-- *obslatitude*: latitude of the observer at each time step
-- *CML*: longitude of the observer at each time step
-- *obsdistance*: longitude of the observer at each time step
-- *Obslocaltime*: not currently available
-- *srclongitude*: longitude of the source
-- *srcfreqmax*: maximal frequency at the magnetic flux tube footprint
-- *srcpos*: [x,y,z] position of each sources
+- ``Theta``: value of the beaming angle at each time/frequency step
+- ``Fp``: value of the plasma frequency at the source
+- ``Fc``: value of the electron cyclotron frequency at the source
+- ``azimuth``: not currently available
+- ``obslatitude``: latitude of the observer at each time step
+- ``CML``: longitude of the observer at each time step
+- ``obsdistance``: longitude of the observer at each time step
+- ``Obslocaltime``: not currently available
+- ``srclongitude``: longitude of the source
+- ``srcfreqmax``: maximal frequency at the magnetic flux tube footprint
+- ``srcpos``: [x,y,z] position of each sources
 
-In most cases, setting *Theta* to *true* is the minimal acceptable setup. Note that the more options are set,
+In most cases, setting ``Theta`` to ``true`` is the minimal acceptable setup. Note that the more options are set,
 the bigger is the output file.
 
 Setting the plasma model parameters
 +++++++++++++++++++++++++++++++++++
 
 The main set of parameters that can be adjusted is the plasma density model at the source. This is done
-through the *DENS* sub-section of *BODY*. The default model parameters, in case of the Io-controlled emissions,
+through the ``DENS`` sub-section of ``BODY``. The default model parameters, in case of the Io-controlled emissions,
 are:
 
-- an Ionospheric model (based on Hinson et al., 1998)
-- an Io torus model (based on Bagenal, 1994).
+- an Ionospheric model (based on :cite:`doi:10.1029/97JA03689`)
+- an Io torus model (based on :cite:`doi:10.1029/93JA02908`).
 
 The parameters can be adjusted (definitions variy with model types, see `Advanced User's Guide <usage/advanced>`_):
 
-- *RHO0* is the peak density, in *cm^-3*
-- *SCALE* is the scale of the density model (scale-height or thickness), in *Planetary Radii*
-- *PERP* is the location of the peak density (altitude or distance), in *Planetary Radii*.
+- ``RHO0`` is the peak density, in *cm^-3*
+- ``SCALE`` is the scale of the density model (scale-height or thickness), in *Planetary Radii*
+- ``PERP`` is the location of the peak density (altitude or distance), in *Planetary Radii*.
 
 Setting the radio source parameters
 +++++++++++++++++++++++++++++++++++
 
-The *SOURCE* section defines the radio source parameters. There may be several sources in the configuration
-file. The parameters are:
+The ``SOURCE`` section defines the radio source parameters. There may be several sources in the configuration file.
+The parameters are:
 
-- *TYPE*: here, *attached to a satellite*, which means that the magnetic field lines used will be those
-  connected to a moon.
-- *SAT*: if *TYPE=attached to a satellite*, then provide the name of the moon (which also needs to be
-  defined as a *BODY*)
-- *aurora_alt*: sets the altitude (in Planetary radius) of the UV aurora (altitude below which electrons
-  are lost by collision with the atmosphere)
-- *NORTH*: emission will be produced in the northern hemisphere
-- *SOUTH*: emission will be produced in the southern hemisphere
-- *Width*: width of the beaming hollow cone (in degrees)
-- *current*:
+- ``TYPE``: here, ``attached to a satellite``, which means that the magnetic field lines used will be those connected
+  to a moon.
+- ``SAT``: if ``TYPE="attached to a satellite"``, then provide the name of the moon (which also needs to be defined as
+  a ``BODY``)
+- ``aurora_alt``: sets the altitude (in Planetary radius) of the UV aurora (altitude below which electrons are lost by
+  collision with the atmosphere)
+- ``NORTH``: emission will be produced in the northern hemisphere
+- ``SOUTH``: emission will be produced in the southern hemisphere
+- ``Width``: width of the beaming hollow cone (in degrees)
+- ``current``:
 
-  - In most cases it should be set to *Transient (Alfvenic)*, which calculates self-consistently the
+  - In most cases it should be set to ``Transient (Alfvenic)``, which calculates self-consistently the
     beaming angle using the Cyclotron maser Instability (CMI) and a loss cone distribution function
-  - It can also be set to *Constant*, so that the beaming angle will not be calculated using the CMI,
+  - It can also be set to ``Constant``, so that the beaming angle will not be calculated using the CMI,
     but will be set at a chosen values (see next parameters)
 
-- *Constant*: if *Current=Constant* then provide here the value in degree (80.0 for example)
-- *Accel*: the energy of the resonant electrons (in keV)
-- *Refraction*: to take into account refraction in the source’s vicinity (not implemented yet)
+- ``Constant``: if ``Current="Constant"`` then provide here the value in degree (80.0 for example)
+- ``Accel``: the energy of the resonant electrons (in keV)
+- ``Refraction``: to take into account refraction in the source’s vicinity (not implemented yet)
 
 Run ExPRES
 ----------
