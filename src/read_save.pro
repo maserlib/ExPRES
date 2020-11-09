@@ -1155,8 +1155,6 @@ end
 pro read_save_json,adresse_mfl,file_name,parameters,config=config
 ;************************************************************** 
 
-
-
 ; ***** initializing local variables *****
 init_serpe_structures,time,freq,observer,body,dens,src,spdyn,cdf,mov2d,mov3d
 
@@ -1613,10 +1611,19 @@ for i=0,nbody-1 do begin
       ; # The longitude of a secondary body (a moon) is taken from the moon pov
       ; # It's necessary to go back in time, corresponding to the distance main body-observer
 
-     ; if observer.motion eq 0 then begin
-     ;   julday1-(observer.smaj[0]*71492./3e5/60./60./24.),M0,D0,Y0,H0,Mi0,S0
-     ; date=STRMID(observer.start,0,10)+':'+STRMID(observer.start,10,2)+':'+STRMID(observer.start,12,2)
-      
+      case ((serpe_save['BODY'])[i])['PARENT'] of 
+        'Jupiter': Rayon=71492.00
+        'Uranus': Rayon=25559.00
+        'Saturn': Rayon=60268.00
+      endcase
+      if observer.motion eq 0 then begin
+        caldat,julday1-(observer.smaj[0]*Rayon/3e5/60./60./24.),M0,D0,Y0,H0,Mi0,S0
+      endif else begin
+        stop,"The ExPRES team has to configure the light travel time correction for the case where the observer is an orbiter..."
+      endelse
+      date=strtrim(Y0*1000000+M0*10000+D0*100+H0,2)+':'+strtrim(Mi0,2)+':'+strtrim(S0,2)
+     ;date=STRMID(observer.start,0,10)+':'+STRMID(observer.start,10,2)+':'+STRMID(observer.start,12,2)
+stop
 
       ; #pour contrer les eventuels soucis de discussions avec l OV MIRIADE
 			error=1
@@ -1626,27 +1633,16 @@ for i=0,nbody-1 do begin
 
 			while (error eq 1) do begin
 					call_ephemph,((serpe_save['BODY'])[i])['PARENT'],observer=((serpe_save['BODY'])[i])['NAME'],date,name		; search ephem (OV Miriade)
-					read_ephemph,name,longitude=longitude,error=error,/km													; read Miriade ephem
+					read_ephemph,name,longitude=longitude,error=error												; read Miriade ephem
 					if (error2 gt 30) then  stop,'Error on the call of MIRIADE ephemerides. Please restart the simulation and/or check that MIRIADE is working properly'
 					error2=error2+1	
 			endwhile
 			; # phase eq auto is for a secondary body (moon). 
-      ; # MIRIADE gives the real longitude of the moon (if you)
-      ; # longitude_moon=CML+180°-phase_moon
-      ; # But in ExPRES the phase is 360-longitude.
-      ; # Thus CML=360.-observer.phs
-      ; # and phase_real=longitude[0] given by MIRIADE
-      ; # Thus here phase_moon_expres = 360-longitude_moon      
-      ; #      Thus phase_moon_expres = 360.-(longitude_observer + 180-phase_real)
-      ; #      Thus phase_moon_expres = 360.-(360.-observe.phs + 180-longitude[0])
-			; # bd[n].phs=360.-((360-observer.phs[0]+180.-longitude[0]) mod 360.) 		
-      ; # new MIRIADE allows to direclty obtain moon's longitude, but count EAST
-      ; # thus phase=(longitude) mod 360
+      ; # MIRIADE gives the real longitude of the moon (counted Eastward, 
+      ; # thus 360°-SEP long to have the Westward longitude, which is done in read_ephemph).
+      ; # Then to have the ExPRES Phase --> phs=360°-longitude_west
       bd[n].phs=360.-(longitude[0] mod 360.)
-      ;# since we ask MIRIADE for the body ephemeris in the parent frame AT the observer time,
-      ;# we need to correct it from the obsever-main body distance (i.e. light travel time)
-      ;# meaning that we have to go back in time by as much time as the light travel time
-			
+      
 		endif else bd[n].phs=((serpe_save['BODY'])[i])['PHASE']												; sinon enregistre phase donnee par utilisateur
 	endif
   ; ***** loading DENS section *****
