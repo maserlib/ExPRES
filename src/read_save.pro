@@ -1623,7 +1623,6 @@ for i=0,nbody-1 do begin
       endelse
       date=strtrim(Y0*1000000+M0*10000+D0*100+H0,2)+':'+strtrim(Mi0,2)+':'+strtrim(S0,2)
      ;date=STRMID(observer.start,0,10)+':'+STRMID(observer.start,10,2)+':'+STRMID(observer.start,12,2)
-stop
 
       ; #pour contrer les eventuels soucis de discussions avec l OV MIRIADE
 			error=1
