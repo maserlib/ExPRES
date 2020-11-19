@@ -6,10 +6,10 @@
 ;***                                                     ***
 ;***       MODULE: M_CDF                                 ***
 ;***                                                     ***
-;***     function: INIT_cdf						 		 ***
+;***     function: INIT_cdf				 ***
 ;***     INIT   [INIT_CDF]    	                         ***
-;***     CALLBACK [CB_CDF]		                         ***
-;***     FINALIZE [FZ_CDF]		                         ***
+;***     CALLBACK [CB_CDF]		                 ***
+;***     FINALIZE [FZ_CDF]		                 ***
 ;***                                                     ***
 ;***     Version history                                 ***
 ;***     [CL] V6.1: First release                        ***
@@ -31,7 +31,7 @@ nfreq = parameters.freq.n_freq
 
 
 ; =============================================================================
-; A faire une fois au debut, donc dans la partie _INIT
+; To be executed once, so it goes into the `_INIT`
 ; =============================================================================
 
 ; Defining ID and Labels
@@ -77,9 +77,7 @@ for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i
 		
 		if (*(parameters.objects[i])).refract then refr(h)='_refr' $
 		else refr(h)=''
-		
-	
-		
+
 		if (*(*parameters.objects(i)).parent).sat then originsrc(h)=(*(*(*parameters.objects(i)).parent).parent).name $
 			else originsrc(h)=strtrim(lon,2)+'d-'+strtrim(lat,2)+'R'
 		
@@ -176,8 +174,8 @@ end
 ; =============================================================================
 pro cb_cdf,obj,parameters
 ; =============================================================================
-; A faire a chaque pas de la boucle temporelle
-; =============================================================================  
+; To be executed at each temporal step
+; =============================================================================
 h=0
 i=parameters.time.istep
 ndat=parameters.time.n_step
@@ -289,7 +287,7 @@ end
 
 pro fz_cdf,obj,parameters
 ; =============================================================================
-; Fermeture fichier cdf
+; Closing CDF file
 ; =============================================================================
 
 

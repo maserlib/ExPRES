@@ -1,6 +1,16 @@
 # Exoplanetary and Planetary Radio Emission Simulator (ExPRES) V1.1.0
 
-## Directories
+<a href="http://ascl.net/1902.009"><img src="https://img.shields.io/badge/ascl-1902.009-blue.svg?colorB=262255" alt="ascl:1902.009" /></a>
+
+## Introduction
+The ExPRES models CMI (Cyclotron Maser Instability) driven radio emissions. It provides radio dynamic spectra observed from a defined location. Since the CMI emission process is very anisotropic, the relative geometry of the radio source and the observer drives the observability of the source. More info on the ExPRES code: [ExPRES on the MASER web site](http://maser.lesia.obspm.fr/tools-services-6/expres/). The code can be launched from [the MASER run on demand interface](https://voparis-uws-maser.obspm.fr). 
+
+Reference: [Louis et al., 
+ExPRES: a Tool to Simulate Exoplanetary and Planetary Radio Emissions, A&A 627, A30 (2019)](https://doi.org/10.1051/0004-6361/201935161) 
+
+## Repository Description 
+
+### Directories
 * [src](src) contains the ExPRES code IDL routines.
 * [mfl](mfl) stores the magnetic field lines used by ExPRES. When installing the code, precomputed data 
 files must be retrieved from [http://maser.obspm.fr/support/expres/mfl](http://maser.obspm.fr/support/expres/mfl). 
@@ -10,7 +20,7 @@ ephemerides. Other files (plain text format, .txt) will be stored here, and corr
 MIRIADE IMCCE webservice calls.
 * [cdawlib](cdawlib) is a placeholder for the NASA/GSFC CDAWLib library, required for the CDF files. 
 
-## Configuration
+### Configuration
 The `config.ini.template` file (in [src](src)) must be renamed `config.ini` and edited with the adequate paths:
 - `cdf_dist_path` must point to the local CDF distribution directory.
 - `ephem_path` is the path to the directory where the precomputed ephemerides files are
@@ -22,8 +32,7 @@ located, and where temporary ephemerides files will be written.
 
 Examples are provided in the header of [config.ini.template](src/config.ini.template).
 
-
-## Running the code
+### Running the code
 The code has been tested under IDL 8.5. You must have a functional installation of IDL 8.5 (or better) on your system.
 
 The IDL interpreter must be configured to look for routines into the [src](src) and [cdawlib](cdawlib) directories.
