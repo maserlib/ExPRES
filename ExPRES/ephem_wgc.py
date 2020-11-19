@@ -2,7 +2,6 @@ import urllib.request
 import json
 import datetime
 import numpy
-import requests
 
 wgc_esa_api_url = 'http://spice.esac.esa.int/webgeocalc/api'
 wgc_nasa_api_url = 'https://wgc2.jpl.nasa.gov:8443/webgeocalc/api'
@@ -136,11 +135,12 @@ def get_ephem_from_wgc(observer, time):
             'longitude': longitude,
             'lat': latitude,
             'distance': distance,
+            'error': 0
         }
 
     except Exception as e:
         print(e)
-        result_data = None
+        result_data = {'error': 1}
 
     return result_data
 
