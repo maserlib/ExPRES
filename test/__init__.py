@@ -12,6 +12,7 @@ coyote_path = '/Users/baptiste/Development/idl_lib/coyote'
 
 mfl_url = 'http://maser.obspm.fr/support/expres/mfl/'
 
+
 def get_config():
     config = configparser.ConfigParser()
     config.read(str(cur_dir / 'config.ini'))

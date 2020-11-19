@@ -141,20 +141,19 @@ parameters.out=adresse_save
 print,'Simulation file ok'
 print,'Results will be saved under the name ',parameters.out
 
-if parameters.freq.log then begin
-parameters.freq.step=(alog(parameters.freq.fmax)-alog(parameters.freq.fmin))/(parameters.freq.n_freq-1)
-parameters.freq.freq_tab=ptr_new(exp(findgen(parameters.freq.n_freq)*parameters.freq.step+alog(parameters.freq.fmin)))
-endif else begin
-parameters.freq.step=(parameters.freq.fmax-parameters.freq.fmin)/(parameters.freq.n_freq-1)
-parameters.freq.freq_tab=ptr_new(findgen(parameters.freq.n_freq)*parameters.freq.step+parameters.freq.fmin)
-endelse
-
 print,'Initialization'
 INIT,parameters
 
 print,'Looping...'
 for i=0,parameters.time.n_step-1 do begin
 	;print,parameters.time.debut+i*parameters.time.step
+	
+	if i eq long(parameters.time.n_step*.10) then print,"## 10 % ##################"
+	if i eq long(parameters.time.n_step*.25) then print,"##### 25 % ###############"
+	if i eq long(parameters.time.n_step*.50) then print,"########## 50 % ##########"
+	if i eq long(parameters.time.n_step*.75) then print,"############### 75 % #####"
+	if i eq long(parameters.time.n_step*.90) then print,"################## 90 % ##"
+
 	parameters.time.time=float(i)*parameters.time.step+parameters.time.t0
 	parameters.time.istep=i
 	CALLBACK,parameters

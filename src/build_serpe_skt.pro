@@ -67,7 +67,6 @@
 
 PRO BUILD_SERPE_SKT,frequency,Freq_Label,Flog,Src_ID_Label,originsrc,hemisphere,b_model,sourcetype,$
     observer,planet,wid,ener,refr,sourcedescr,dt,dated,datef,file,option
-
 ; Check if input parameters 'file' is set. Create new file name, if not set; remove previous one (if it exist) if set. 
 if ~keyword_set(file) then begin
 	file=string(format='(I12.12)',long(systime(1)))+'.skt'
@@ -75,11 +74,13 @@ endif else begin
 	if file_test(file) then spawn,'rm -rf '+file
 endelse
 
-; Siez of arrays and strings
+; Size of arrays and strings
 nf = n_elements(frequency)
 nfs = max(strlen(Freq_Label))
 ns = n_elements(Src_ID_Label)
 nss = max(strlen(Src_ID_Label))
+nhemi=n_elements(hemisphere)
+nhemis=max(strlen(hemisphere))
 
 ; Open file in write mode and output ASCII lines
 openw,lun,file,/get_lun
@@ -171,11 +172,10 @@ caldat,systime(/julian),month,day,year,h,m,s
 ticket=string(format='(I04,"-",I02,"-",I02,"T",I02,":",I02,":",I02)',year,month,day,h,m,s)
 printf,lun,"  ""Generation_date""	1:		CDF_CHAR	{"""+ticket[0]+"""}	 ."
 printf,lun,""
-;printf,lun,"  ""Acknowledgement"" 	1:		CDF_CHAR	{ "" ""} ."
 printf,lun,"  ""Acknowledgement"" 	1:		CDF_CHAR	{""The authors acknowledge the MASER (Measurement, Analysis and Simulations "" -"
 printf,lun,"                                             ""of Emissions in Radio frequencies) project "" -"
 printf,lun,"                                             ""and PADC (Paris Astronomical Data Centre) for providing access "" -"
-printf,lun,"                                             ""to ExPRES simulations accessible online at http://maser.obspm.fr/data/serpe/""}	."
+printf,lun,"                                             ""to ExPRES simulations accessible online at http://maser.obspm.fr/data/expres/""}	."
 printf,lun,""
 printf,lun,"  ""MODS"" ."
 printf,lun,""
@@ -195,15 +195,15 @@ printf,lun,"  ""PDS_Observation_target""	1:		CDF_CHAR	{"""+planet[0]+"""} ."
 printf,lun,""
 printf,lun,"  ""PDS_Observation_type""	1:		CDF_CHAR	{""radio simulations""} ."	
 printf,lun,""
-printf,lun,"  ""VESPA_spectral_range_min""	1:		CDF_REAL4	{"+strtrim(min(frequency)*10e6,1)+"} ."	
+printf,lun,"  ""VESPA_spectral_range_min""	1:		CDF_CHAR	{"""+strtrim(min(frequency)*10e6,1)+"""} ."	
 printf,lun,""
-printf,lun,"  ""VESPA_spectral_range_max""	1:		CDF_REAL4	{"+strtrim(max(frequency)*10e6,1)+"} ."	
+printf,lun,"  ""VESPA_spectral_range_max""	1:		CDF_CHAR	{"""+strtrim(max(frequency)*10e6,1)+"""} ."	
 printf,lun,""
-printf,lun,"  ""VESPA_spectral_sampling_step_min""	1:		CDF_REAL4	{"+strtrim(min(frequency(1:nf-1)-frequency(0:nf-2))*10e6,1)+"} ."	
+printf,lun,"  ""VESPA_spectral_sampling_step_min""	1:		CDF_CHAR	{"""+strtrim(min(frequency(1:nf-1)-frequency(0:nf-2))*10e6,1)+"""} ."	
 printf,lun,""
-printf,lun,"  ""VESPA_spectral_sampling_step_max""	1:		CDF_REAL4	{"+strtrim(max(frequency(1:nf-1)-frequency(0:nf-2))*10e6,1)+"} ."	
+printf,lun,"  ""VESPA_spectral_sampling_step_max""	1:		CDF_CHAR	{"""+strtrim(max(frequency(1:nf-1)-frequency(0:nf-2))*10e6,1)+"""} ."	
 printf,lun,""
-printf,lun,"  ""VESPA_time_sampling_step""			1:		CDF_REAL4	{"+strtrim(dt[0],1)+"} ."
+printf,lun,"  ""VESPA_time_sampling_step""			1:		CDF_CHAR	{"""+strtrim(dt[0],1)+"""} ."
 printf,lun,""
 printf,lun,"  ""VESPA_dataproduct_type""			1:		CDF_CHAR	{""DS>Dynamic Spectrum""} ."
 printf,lun,""
@@ -496,6 +496,35 @@ printf,lun,"! Variable          Data      Number                 Record   Dimens
 printf,lun,"! Name              Type     Elements  Dims  Sizes  Variance  Variances"
 printf,lun,"! --------          ----     --------  ----  -----  --------  ---------"
 printf,lun,""
+printf,lun,"  ""Hemisphere_ID_Label"""
+printf,lun,"                  CDF_CHAR      5       1    2       F         T"
+printf,lun,""
+printf,lun,"  ! VAR_COMPRESSION: None"
+printf,lun,"  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)"
+printf,lun,"  ! VAR_SPARSERECORDS: None"
+printf,lun,"  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)"
+printf,lun,"  ! VAR_PADVALUE: "" """
+printf,lun,""
+printf,lun,"  ! Attribute       Data"
+printf,lun,"  ! Name            Type       Value"
+printf,lun,"  ! --------        ----       -----"
+printf,lun,""
+printf,lun,"    ""UCD""     	CDF_CHAR     { ""meta.id;pos.bodyrc.lat"" }"
+printf,lun,"    ""CATDESC""     CDF_CHAR     { ""Hemisphere ID label"" }"
+printf,lun,"    ""FIELDNAM""    CDF_CHAR     { ""Hemisphere_ID_Label"" }"
+printf,lun,"    ""FORMAT""      CDF_CHAR     { ""A5"" }"
+printf,lun,"    ""VAR_TYPE""    CDF_CHAR     { ""metadata"" } ."
+printf,lun,""
+printf,lun,"  ! NRV values follow..."
+printf,lun,""
+printf,lun,"    [1] = { ""North"" }"
+printf,lun,"    [2] = { ""South"" }"
+printf,lun,""
+printf,lun,""
+printf,lun,"! Variable          Data      Number                 Record   Dimension"
+printf,lun,"! Name              Type     Elements  Dims  Sizes  Variance  Variances"
+printf,lun,"! --------          ----     --------  ----  -----  --------  ---------"
+printf,lun,""
 printf,lun,"  ""Src_Pos_Coord"""
 printf,lun,"                  CDF_CHAR      1       1    3       F         T"
 printf,lun,""
@@ -509,6 +538,7 @@ printf,lun,"  ! Attribute       Data"
 printf,lun,"  ! Name            Type       Value"
 printf,lun,"  ! --------        ----       -----"
 printf,lun,""
+printf,lun,"    ""UCD""     	CDF_CHAR     { ""pos.cartesian;src"" }"
 printf,lun,"    ""CATDESC""     CDF_CHAR     { ""Source Pos label"" }"
 printf,lun,"    ""FIELDNAM""    CDF_CHAR     { ""Src_Pos_Coord"" }"
 printf,lun,"    ""FORMAT""      CDF_CHAR     { ""A1"" }"
@@ -558,6 +588,46 @@ printf,lun,""
 printf,lun,"  ! RV values were not requested."
 printf,lun,""
 printf,lun,""
+if option.srcvis eq 1 then begin
+	printf,lun,"! Variable          Data      Number                 Record   Dimension"
+	printf,lun,"! Name              Type     Elements  Dims  Sizes  Variance  Variances"
+	printf,lun,"! --------          ----     --------  ----  -----  --------  ---------"
+	printf,lun,""
+	printf,lun,"  ""VisibleSources""     CDF_INT2      1       2   "+strtrim(string(nf),2)+" "+strtrim(string(2),2)+"      T        T T"
+	printf,lun,""
+	printf,lun,"  ! VAR_COMPRESSION: None"
+	printf,lun,"  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)"
+	printf,lun,"  ! VAR_SPARSERECORDS: None"
+	printf,lun,"  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)"
+	printf,lun,"  ! VAR_PADVALUE: 65534"
+	printf,lun,""
+	printf,lun,"  ! Attribute       Data"
+	printf,lun,"  ! Name            Type       Value"
+	printf,lun,"  ! --------        ----       -----"
+	printf,lun,""
+	printf,lun,"    ""UCD""     	CDF_CHAR     { ""phys.count"" }"
+	printf,lun,"    ""SCALEMIN""    CDF_INT2     { -32766 }"
+	printf,lun,"    ""SCALEMAX""    CDF_INT2     { +32766 }"
+	printf,lun,"    ""CATDESC""     CDF_CHAR     { ""Polarization and number of visible sources: North: <0; South: >0"" }"
+	printf,lun,"    ""DEPEND_0""    CDF_CHAR     { ""Epoch"" }"
+	printf,lun,"    ""DEPEND_1""    CDF_CHAR     { ""Frequency"" }"
+	printf,lun,"    ""DEPEND_2""    CDF_CHAR     { ""Hemisphere_ID_Label"" }"
+	printf,lun,"    ""DISPLAY_TYPE"""
+	printf,lun,"                  CDF_CHAR     { ""spectrogram"" }"
+	printf,lun,"    ""FIELDNAM""    CDF_CHAR     { ""Number of visible sources"" }"
+	printf,lun,"    ""FILLVAL""     CDF_INT2    { 32767 }"
+	printf,lun,"    ""FORMAT""      CDF_CHAR     { ""I6"" }"
+	printf,lun,"    ""LABLAXIS""    CDF_CHAR     { ""Visible sources"" }"
+	printf,lun,"    ""UNITS""      CDF_CHAR     { ""Number of visible sources"" }"
+	printf,lun,"    ""VALIDMIN""    CDF_INT2    { -32766 }"
+	printf,lun,"    ""VALIDMAX""    CDF_INT2    { +32766 }"
+	printf,lun,"    ""VAR_TYPE""    CDF_CHAR     { ""data"" }"
+	printf,lun,"    ""SCALETYP""    CDF_CHAR     { ""linear"" } ."
+	printf,lun,""
+	printf,lun,"  ! RV values were not requested."
+	printf,lun,""
+	printf,lun,""
+endif
 if option.theta eq 1 then begin
 	printf,lun,"! Variable          Data      Number                 Record   Dimension"
 	printf,lun,"! Name              Type     Elements  Dims  Sizes  Variance  Variances"
@@ -801,7 +871,6 @@ if option.srcpos eq 1 then begin
 	printf,lun,"! Name              Type     Elements  Dims  Sizes  Variance  Variances"
 	printf,lun,"! --------          ----     --------  ----  -----  --------  ---------"
 	printf,lun,""
-	;printf,lun,"  ""SrcPosition""       CDF_REAL4      1       3   "+strtrim(string(ns),2)+" 3 "+strtrim(string(nf),2)+"      T        T T T"
 	printf,lun,"  ""SrcPosition""       CDF_REAL4      1       3   "+strtrim(string(nf),2)+" "+strtrim(string(ns),2)+" 3      T        T T T"
 	printf,lun,""
 	printf,lun,"  ! VAR_COMPRESSION: None"
@@ -1010,10 +1079,6 @@ if option.fp eq 1 then begin
 	printf,lun,""
 endif
 if option.fc eq 1 then begin
-	printf,lun,"! Variable          Data      Number                 Record   Dimension"
-	printf,lun,"! Name              Type     Elements  Dims  Sizes  Variance  Variances"
-	printf,lun,"! --------          ----     --------  ----  -----  --------  ---------"
-	printf,lun,""
 	printf,lun,"! Variable          Data      Number                 Record   Dimension"
 	printf,lun,"! Name              Type     Elements  Dims  Sizes  Variance  Variances"
 	printf,lun,"! --------          ----     --------  ----  -----  --------  ---------"

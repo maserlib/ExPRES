@@ -21,7 +21,7 @@ Note that the code has been tested with the CDF C-Library version 3.6.4.
 
 ## IDL Astro
 
-The ExPRES code also uses some routines from the [IDLAstro](https://github.com/wlandsman/IDLAstro) library: ``
+The ExPRES code also uses some routines from the [IDLAstro](https://github.com/wlandsman/IDLAstro) library. 
 
 ## Precomputed datasets
 

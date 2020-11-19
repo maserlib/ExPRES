@@ -102,6 +102,12 @@ if wi[0] ne -1 then di[wi]=2.*di[wi]
 ;th=(gb*cos(thz)+asin(((n*sin(i))<1))+di)*!radeg
 ; With the effects of reflection :
 th=(gb*cos(thz)+asin(((n*sin(i))<1)))*!radeg
+;di=fltarr(n_elements(i))
+;wi1=where(i gt !pi/2.)
+;di[wi1]=!pi
+;i[wi1]=-i[wi1]
+;th[w2]=(gb[w2]*cos(thz[w2])+asin(((n[w2]*sin(i+di)))))*!radeg
+
 ;*********************************
 
 w=where(~FINITE(n))
@@ -411,9 +417,14 @@ if (*obj).lossbornes ne 0 then begin
 	if winf[0] ne -1 then thinf[winf]=0
 	if w2inf[0] ne -1 then thinf[w2inf]=1
 endif
-; shielding,x,obj,var,dist,rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),parameters,w3 ;faux c est pas v ici!!
+
+;shielding,x,obj,var,dist,rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),parameters,w3 
+; for isrc=0,n-1 do shielding,x,obj,var,dist,rebin(reform((*(*obj).f)[*,isrc,var]),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),parameters,w3 
+; shielding,x,obj,var,dist,(*(*obj).f)[*,*,var],parameters,w3 
+ ;faux c est pas v ici!!
 ; a la place de v, il faut que ca soit la frequence (fce), afin de comparer cette frequence a la frequence plasma dans shielding
 ;if w3[0] ne -1 then th[w3]=0
+
 x=0b
 
 if (*obj).lossbornes ne 0 then begin
@@ -423,6 +434,8 @@ if (*obj).lossbornes ne 0 then begin
 	spdynsup[*,*,var]=reform(thsup,parameters.freq.n_freq,nv*nlg*nlat,1)
 	spdyninf[*,*,var]=reform(thinf,parameters.freq.n_freq,nv*nlg*nlat,1)
 endif
+
+
 
 ; ***** intensite *****
 (*((*obj).spdyn))[*,*,var]=reform(th,parameters.freq.n_freq,nv*nlg*nlat,1)
@@ -439,6 +452,8 @@ for i=0,n_elements(f(0,*))-1 do fem(*,i)=fem(*,i)*(*parameters.freq.freq_tab)
 
 (*((*obj).f))[*,*,var]=reform(fem,parameters.freq.n_freq,nv*nlg*nlat,1)
 (*((*obj).azimuth))[*,*,var]=reform(thz,parameters.freq.n_freq,nv*nlg*nlat,1)
+
+
 
 for k=0,nv*nlg*nlat-1 do begin
 	w0=where(f[*,k] gt 1)

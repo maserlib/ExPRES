@@ -182,6 +182,7 @@ if (*obj).north then begin
                 (*((*obj).fmax))[0,j,i]=f_read(w(nw-1l))
 
             endelse
+
 ; fin boucle sur les longitudes
         endfor						
         (*((*obj).fmax))[0,*,i]=smooth(smooth(smooth(smooth((*((*obj).fmax))[0,*,i],5),5),5),5)
@@ -220,15 +221,22 @@ if (*obj).north then begin
 
 ;w_p^2/w_c^2
     (*((*obj).dens_n))[*,*,*]=((0.009*sqrt((*((*obj).dens_n))[*,*,*]))/rebin(*parameters.freq.freq_tab,parameters.freq.n_freq,360,(*obj).nlat))^2
-	for ilat=0,(*obj).nlat-1 do begin
-        for ilong=0,359 do begin 
-            wwpwc=where((*((*obj).dens_n))[*,ilong,ilat] lt 0.01)
-            if (wwpwc[-1]-wwpwc[0])/n_elements(wwpwc) ne 0 then begin
-                for iwwpwc=n_elements(wwpwc)-1,1,-1 do $
-                    if abs(wwpwc[iwwpwc]-wwpwc[iwwpwc-1]) gt 1 then (*((*obj).fmaxCMI))[0,ilong,ilat]=ff[wwpwc[iwwpwc-1]]
-            endif else (*((*obj).fmaxCMI))[0,ilong,ilat]=ff[wwpwc[-1]] 
+    for ilat=0,(*obj).nlat-1 do begin
+        for ilong=0,359 do begin
+            nwf=where((*(*obj).dens_n)[*,ilong,ilat] lt 0.01)
+            if ((nwf[-1]-nwf[0]+1) eq n_elements(nwf)) or (nwf[0] eq 0.) then (*((*obj).fmaxCMI))[0,ilong,ilat]=ff[nwf[-1]] $
+            else begin
+                test=1
+                k=-1
+                while (test eq 1) and (k gt -(n_elements(nwf))) do begin
+                    if (nwf[k] - nwf[k-1]) eq 1 then k=k-1 else test=0
+                endwhile
+                (*((*obj).fmaxCMI))[0,ilong,ilat]=ff[nwf[k-1]]
+            endelse
         endfor
     endfor
+
+
 ; fin boucle sur hemisphere nord
 endif			
 
@@ -343,17 +351,23 @@ if (*obj).south then begin
 ; fin boucle densite
     endfor
 
-; wp^2/wc^2 :
+; w_p^2/w_c^2 :
     (*((*obj).dens_s))[*,*,*]=((0.009*sqrt((*((*obj).dens_s))[*,*,*]))/rebin(*parameters.freq.freq_tab,parameters.freq.n_freq,360,(*obj).nlat))^2 
-	for ilat=0,(*obj).nlat-1 do begin
-        for ilong=0,359 do begin 
-            wwpwc=where((*((*obj).dens_s))[*,ilong,ilat] lt 0.01)
-            if (wwpwc[-1]-wwpwc[0])/n_elements(wwpwc) ne 0 then begin
-                for iwwpwc=n_elements(wwpwc)-1,1,-1 do $
-                    if abs(wwpwc[iwwpwc]-wwpwc[iwwpwc-1]) gt 1 then (*((*obj).fmaxCMI))[1,ilong,ilat]=ff[wwpwc[iwwpwc-1]]
-            endif else (*((*obj).fmaxCMI))[1,ilong,ilat]=ff[wwpwc[-1]] 
+	    for ilat=0,(*obj).nlat-1 do begin
+        for ilong=0,359 do begin
+            nwf=where((*(*obj).dens_s)[*,ilong,ilat] lt 0.01)
+            if ((nwf[-1]-nwf[0]+1) eq n_elements(nwf)) or (nwf[0] eq 0.) then (*((*obj).fmaxCMI))[1,ilong,ilat]=ff[nwf[-1]] $
+            else begin
+                test=1
+                k=-1
+                while (test eq 1) and (k gt -(n_elements(nwf))) do begin
+                    if (nwf[k] - nwf[k-1]) eq 1 then k=k-1 else test=0
+                endwhile
+                (*((*obj).fmaxCMI))[1,ilong,ilat]=ff[nwf[k-1]]
+            endelse
         endfor
     endfor
+
 ; fin boucle hemisphere sud
 endif
 
