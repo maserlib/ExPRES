@@ -1,0 +1,718 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://voparis-ns.obspm.fr/maser/expres/v1.0/schema#",
+    "title": "MASER/ExPRES input files schema",
+    "type": "object",
+    "required": [
+        "SIMU",
+        "NUMBER",
+        "TIME",
+        "FREQUENCY",
+        "OBSERVER",
+        "SPDYN",
+        "MOVIE2D",
+        "MOVIE3D",
+        "BODY",
+        "SOURCE"
+    ],
+    "properties": {
+        "SIMU": {
+            "description": "Simulation run description",
+            "type": "object",
+            "required": [
+                "NAME",
+                "OUT"
+            ],
+            "properties": {
+                "NAME": {
+                    "description": "Name of the simulation",
+                    "type": "string"
+                },
+                "OUT": {
+                    "description": "Output file location (full path)",
+                    "type": "string"
+                }
+            }
+        },
+        "NUMBER": {
+            "description": "Simulation run source setup",
+            "type": "object",
+            "required": [
+                "BODY",
+                "DENSITY",
+                "SOURCE"
+            ],
+            "properties": {
+                "BODY": {
+                    "description": "Number of natural bodies in the simulation",
+                    "type": "integer"
+                },
+                "DENSITY": {
+                    "description": "Number of density models in the simulation",
+                    "type": "integer"
+                },
+                "SOURCE": {
+                    "description": "Number of radio sources in the simulation",
+                    "type": "integer"
+                }
+            }
+        },
+        "TIME": {
+            "description": "Simulation run time axis setup",
+            "type": "object",
+            "required": [
+                "MIN",
+                "MAX",
+                "NBR"
+            ],
+            "properties": {
+                "MIN": {
+                    "description": "Start time index of the simulation (in minutes)",
+                    "type": "integer"
+                },
+                "MAX": {
+                    "description": "End time index of the simulation (in minutes)",
+                    "type": "integer"
+                },
+                "NBR": {
+                    "description": "Number of time steps of the simulation",
+                    "type": "integer"
+                }
+            }
+        },
+        "FREQUENCY": {
+            "description": "Simulation run spectral axis setup",
+            "type": "object",
+            "required": [
+                "TYPE",
+                "MIN",
+                "MAX",
+                "NBR",
+                "SC"
+            ],
+            "properties": {
+                "TYPE": {
+                    "description": "Type of spectral axis (linear or logarithmic scale)",
+                    "type": "string",
+                    "enum": [
+                        "Pre-Defined",
+                        "Linear",
+                        "Log"
+                    ]
+                },
+                "MIN": {
+                    "description": "Lower bound of the spectral axis (MHz)",
+                    "type": "number"
+                },
+                "MAX": {
+                    "description": "Upper bound of the spectral axis (MHz)",
+                    "type": "number"
+                },
+                "NBR": {
+                    "description": "Number of steps of the spectral axis",
+                    "type": "integer"
+                },
+                "SC": {
+                    "description": "Spacecraft name (use only when spectral type is 'Pre-defined') [not yet implemented]",
+                    "type": "string"
+                }
+            }
+        },
+        "OBSERVER": {
+            "description": "Simulation run observer setup",
+            "type": "object",
+            "required": [
+                "TYPE",
+                "EPHEM",
+                "FIXE_DIST",
+                "FIXE_SUBL",
+                "FIXE_DECL",
+                "PARENT",
+                "SC",
+                "SCTIME",
+                "SEMI_MAJ",
+                "SEMI_MIN",
+                "SUBL",
+                "DECL",
+                "PHASE",
+                "INCL"
+            ],
+            "properties": {
+                "TYPE": {
+                    "description": "Type of observer (Pre-Defined, Orbiter or Fixed)",
+                    "type": "string",
+                    "enum": [
+                        "Pre-Defined",
+                        "Orbiter",
+                        "Fixed"
+                    ]
+                },
+                "EPHEM": {
+                    "description": "",
+                    "type": "string"
+                },
+                "FIXE_DIST": {
+                    "description": "",
+                    "anyOf": [
+                        { "type": "string", "enum": ["auto"] },
+                        { "type": "number"}
+                    ]
+                },
+                "FIXE_SUBL": {
+                    "description": "",
+                    "anyOf": [
+                        { "type": "string", "enum": ["auto"] },
+                        { "type": "number"}
+                    ]
+                },
+                "FIXE_DECL": {
+                    "description": "",
+                    "anyOf": [
+                        { "type": "string", "enum": ["auto"] },
+                        { "type": "number"}
+                    ]
+                },
+                "PARENT": {
+                    "description": "",
+                    "type": "string",
+                    "enum": ["Jupiter"]
+                },
+                "SC": {
+                    "description": "",
+                    "type": "string",
+                    "enum": ["Juno", "Earth", "Galileo", "JUICE", "Cassini", "Voyager1", "Voyager2"]
+                },
+                "SCTIME": {
+                    "description": "Start time of the simulation run in SCET (YYYYMMDDHHMM format)",
+                    "anyOf": [
+                        {"type": "string", "pattern": "^[0-9]{12}$" },
+                        {"type": "string", "enum": [""] }
+                    ]
+                },
+                "SEMI_MAJ": {
+                    "description": "Semi major axis (in case of 'Orbiter' type)",
+                    "type": "number"
+                },
+                "SEMI_MIN": {
+                    "description": "Semi minor axis (in case of 'Orbiter' type)",
+                    "type": "number"
+                },
+                "SUBL": {
+                    "description": "Sublongitude of ??? (in case of 'Orbiter' type)",
+                    "type": "number"
+                },
+                "DECL": {
+                    "description": "Declination of ??? (in case of 'Orbiter' type)",
+                    "type": "number"
+                },
+                "PHASE": {
+                    "description": "Phase of ??? (in case of 'Orbiter' type)",
+                    "type": "number"
+                },
+                "INCL": {
+                    "description": "Inclination of ??? (in case of 'Orbiter' type)",
+                    "type": "number"
+                }
+            }
+        },
+        "SPDYN": {
+            "description": "Dynamic Spectra ouput setup",
+            "type": "object",
+            "required": [
+                "INTENSITY",
+                "POLAR",
+                "FREQ",
+                "LONG",
+                "LAT",
+                "DRANGE",
+                "LGRANGE",
+                "LARANGE",
+                "LTRANGE",
+                "KHZ",
+                "LOG",
+                "PDF",
+                "CDF",
+                "INFOS"
+            ],
+            "properties": {
+                "INTENSITY": {
+                    "description": "Flag to ouput 'Intensity' plots",
+                    "type": "boolean"
+                },
+                "POLAR": {
+                    "description": "Flag to ouput 'Polar' plots",
+                    "type": "boolean"
+                },
+                "FREQ": {
+                    "description": "Flags to setup output plot spectral axes",
+                    "type": "array",
+                    "items": {"type": "boolean"},
+                    "minItems": 5,
+                    "maxItems": 5
+                },
+                "LONG": {
+                    "description": "Flags to setup output plot longitude axes",
+                    "type": "array",
+                    "items": {"type": "boolean"},
+                    "minItems": 5,
+                    "maxItems": 5
+                },
+                "LAT": {
+                    "description": "Flags to setup output plot latitude axes",
+                    "type": "array",
+                    "items": {"type": "boolean"},
+                    "minItems": 5,
+                    "maxItems": 5
+                },
+                "DRANGE": {
+                    "description": "Distance range for plot setup",
+                    "type": "array",
+                    "items": {"type": "number"},
+                    "minItems": 2,
+                    "maxItems": 2
+                },
+                "LGRANGE": {
+                    "description": "Longitude range for plot setup",
+                    "type": "array",
+                    "items": {"type": "number"},
+                    "minItems": 2,
+                    "maxItems": 2
+                },
+                "LARANGE": {
+                    "description": "Latitude range for plot setup",
+                    "type": "array",
+                    "items": {"type": "number"},
+                    "minItems": 2,
+                    "maxItems": 2
+                },
+                "LTRANGE": {
+                    "description": "Local-Time range for plot setup",
+                    "type": "array",
+                    "items": {"type": "number"},
+                    "minItems": 2,
+                    "maxItems": 2
+                },
+                "KHZ": {
+                    "description": "Flag for spectral axis output in kHz (default is MHz)",
+                    "type": "boolean"
+                },
+                "LOG": {
+                    "description": "Flag for spectral axis output in log scale",
+                    "type": "boolean"
+                },
+                "PDF": {
+                    "description": "Flag for PDF file output",
+                    "type": "boolean"
+                },
+                "CDF": {
+                    "description": "Configuration of CDF file output",
+                    "type": "object",
+                    "required": [
+                        "THETA",
+                        "FP",
+                        "FC",
+                        "AZIMUTH",
+                        "OBSLATITUDE",
+                        "SRCLONGITUDE",
+                        "SRCFREQMAX",
+                        "OBSDISTANCE",
+                        "OBSLOCALTIME",
+                        "CML",
+                        "SRCPOS"
+                    ],
+                    "properties": {
+                        "THETA": {
+                            "description": "Flag for THETA parameter output in the CDF file.",
+                            "type": "boolean"
+                        },
+                        "FP": {
+                            "description": "Flag for FP parameter output in the CDF file.",
+                            "type": "boolean"
+                        },
+                        "FC": {
+                            "description": "Flag for FC parameter output in the CDF file.",
+                            "type": "boolean"
+                        },
+                        "AZIMUTH": {
+                            "description": "Flag for AZIMUTH parameter output in the CDF file.",
+                            "type": "boolean"
+                        },
+                        "OBSLATITUDE": {
+                            "description": "Flag for OBSLATITUDE parameter output in the CDF file.",
+                            "type": "boolean"
+                        },
+                        "SRCLONGITUDE": {
+                            "description": "Flag for SRCLONGITUDE parameter output in the CDF file.",
+                            "type": "boolean"
+                        },
+                        "SRCFREQMAX": {
+                            "description": "Flag for SRCFREQMAX parameter output in the CDF file.",
+                            "type": "boolean"
+                        },
+                        "OBSDISTANCE": {
+                            "description": "Flag for OBSDISTANCE parameter output in the CDF file.",
+                            "type": "boolean"
+                        },
+                        "OBSLOCALTIME": {
+                            "description": "Flag for OBSLOCALTIME parameter output in the CDF file.",
+                            "type": "boolean"
+                        },
+                        "CML": {
+                            "description": "Flag for CML parameter output in the CDF file.",
+                            "type": "boolean"
+                        },
+                        "SRCPOS": {
+                            "description": "Flag for SRCPOS parameter output in the CDF file.",
+                            "type": "boolean"
+                        },
+                        "SRCVIS": {
+                            "description": "Flag for SRCVIS parameter output in the CDF file.",
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "INFOS": {
+                    "description": "???",
+                    "type": "boolean"
+                }
+            }
+        },
+        "MOVIE2D": {
+            "description": "2D Movie output setup",
+            "type": "object",
+            "required": [
+                "ON",
+                "SUBCYCLE",
+                "RANGE"
+            ],
+            "properties": {
+                "ON": {
+                    "description": "Flag to activate Movie2D generation",
+                    "type": "boolean"
+                },
+                "SUBCYCLE": {
+                    "description": "???",
+                    "type": "integer"
+                },
+                "RANGE": {
+                    "description": "???",
+                    "type": "integer"
+                }
+            }
+        },
+        "MOVIE3D": {
+            "description": "3D Movie output setup",
+            "type": "object",
+            "required": [
+                "ON",
+                "SUBCYCLE",
+                "XRANGE",
+                "YRANGE",
+                "ZRANGE",
+                "OBS",
+                "TRAJ"
+            ],
+            "properties": {
+                "ON": {
+                    "description": "Flag to activate Movie3D generation",
+                    "type": "boolean"
+                },
+                "SUBCYCLE": {
+                    "description": "???",
+                    "type": "integer"
+                },
+                "XRANGE": {
+                    "description": "Plotting Range in X axis (in central planet radius units).",
+                    "type": "array",
+                    "items": {"type": "number"},
+                    "minItems": 2,
+                    "maxItems": 2
+                },
+                "YRANGE": {
+                    "description": "Plotting Range in Y axis (in central planet radius units).",
+                    "type": "array",
+                    "items": {"type": "number"},
+                    "minItems": 2,
+                    "maxItems": 2
+                },
+                "ZRANGE": {
+                    "description": "Plotting Range in Z axis (in central planet radius units).",
+                    "type": "array",
+                    "items": {"type": "number"},
+                    "minItems": 2,
+                    "maxItems": 2
+                },
+                "OBS": {
+                    "description": "Flag to activate plotting the location of the observer",
+                    "type": "boolean"
+                },
+                "TRAJ": {
+                    "description": "Flag to activate plotting the trajectories of the objects",
+                    "type": "boolean"
+                }
+            }
+        },
+        "BODY": {
+            "description": "Configuration of the Natural Bodies of the Simulation Run",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "ON",
+                    "NAME",
+                    "RADIUS",
+                    "PERIOD",
+                    "FLAT",
+                    "ORB_PER",
+                    "INIT_AX",
+                    "MAG",
+                    "MOTION",
+                    "PARENT",
+                    "SEMI_MAJ",
+                    "SEMI_MIN",
+                    "DECLINATION",
+                    "APO_LONG",
+                    "INCLINATION",
+                    "PHASE",
+                    "DENS"
+                ],
+                "properties": {
+                    "ON": {
+                        "description": "Flag to activate the current natural body",
+                        "type": "boolean"
+                    },
+                    "NAME": {
+                        "description": "Name of the current natural body",
+                        "type": "string"
+                    },
+                    "RADIUS": {
+                        "description": "Radius of the current natural body",
+                        "type": "number"
+                    },
+                    "PERIOD": {
+                        "description": "Sidereal rotation period of the current natural body (in minutes)",
+                        "type": "number"
+                    },
+                    "FLAT": {
+                        "description": "Flatening ratio of the current natural body",
+                        "type": "number"
+                    },
+                    "ORB_PER": {
+                        "description": "???",
+                        "type": "number"
+                    },
+                    "INIT_AX": {
+                        "description": "???",
+                        "type": "number"
+                    },
+                    "MAG": {
+                        "description": "Internal body magnetic field model",
+                        "type": "string",
+                        "enum": ["", "JRM09+Connerney CS", "VIPAL+Connerney CS"]
+                    },
+                    "MOTION": {
+                        "description": "Flag to indicate if the natural body is moving in the simulation frame",
+                        "type": "boolean"
+                    },
+                    "PARENT": {
+                        "description": "Named natural body around which the current body is orbiting (must be one of the defined bodies)",
+                        "type": "string"
+                    },
+                    "SEMI_MAJ": {
+                        "description": "Semi major axis orbital parameter of the current body",
+                        "type": "number"
+                    },
+                    "SEMI_MIN": {
+                        "description": "Semi minor axis orbital parameter of the current body",
+                        "type": "number"
+                    },
+                    "DECLINATION": {
+                        "description": "Declination orbital parameter of the current body",
+                        "type": "number"
+                    },
+                    "APO_LONG": {
+                        "description": "Apoapsis Longitude parameter of the current body",
+                        "type": "number"
+                    },
+                    "INCLINATION": {
+                        "description": "Inclination orbital parameter of the current body",
+                        "type": "number"
+                    },
+                    "PHASE": {
+                        "description": "Phase orbital parameter of the current body",
+                        "anyOf": [
+                            { "type": "string", "enum": ["auto"] },
+                            { "type": "number"}
+                        ]
+                     },
+                    "DENS": {
+                        "description": "Configuration of the plasma density model aroud the current body",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "required": [
+                                "ON",
+                                "NAME",
+                                "TYPE",
+                                "RHO0",
+                                "SCALE",
+                                "PERP"
+                            ],
+                            "properties": {
+                                "ON": {
+                                    "description": "Flag to activate the plasma density model",
+                                    "type": "boolean"
+                                },
+                                "NAME": {
+                                    "description": "Name of the current plasma density model",
+                                    "type": "string"
+                                },
+                                "TYPE": {
+                                    "description": "Type of density model",
+                                    "type": "string",
+                                    "enum": [
+                                        "Ionospheric",
+                                        "Torus"
+                                    ]
+                                },
+                                "RHO0": {
+                                    "description": "Rho0 parameter for the current plasma density model",
+                                    "type": "number"
+                                },
+                                "SCALE": {
+                                    "description": "Scale-height parameter for the current plasma density model",
+                                    "type": "number"
+                                },
+                                "PERP": {
+                                    "description": "Perp ??? parameter for the current plasma density model",
+                                    "type": "number"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "SOURCE": {
+            "description": "Configuration of the Radio Sources of the Simulation Run",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "ON",
+                    "NAME",
+                    "PARENT",
+                    "TYPE",
+                    "LG_MIN",
+                    "LG_MAX",
+                    "LG_NBR",
+                    "LAT",
+                    "SUB",
+                    "AURORA_ALT",
+                    "SAT",
+                    "NORTH",
+                    "SOUTH",
+                    "WIDTH",
+                    "CURRENT",
+                    "CONSTANT",
+                    "ACCEL",
+                    "TEMP",
+                    "TEMPH",
+                    "REFRACTION"
+                ],
+                "properties": {
+                    "ON": {
+                        "description": "Flag to activate the current radio source",
+                        "type": "boolean"
+                    },
+                    "NAME": {
+                        "description": "Name of the current radio source",
+                        "type": "string"
+                    },
+                    "PARENT": {
+                        "description": "Name of the parent body for this source (must correspond to a defined BODY name)",
+                        "type": "string"
+                    },
+                    "TYPE": {
+                        "description": "Type of radio source",
+                        "type": "string",
+                        "enum": ["", "fixed in latitude", "attached to a satellite"]
+                    },
+                    "LG_MIN": {
+                        "description": "Lower bound value of the source longitude (deg)",
+                        "anyOf": [
+                            { "type": "string", "enum": ["auto"] },
+                            { "type": "number"}
+                        ]
+                    },
+                    "LG_MAX": {
+                        "description": "Upper bound value of the source longitude (deg)",
+                        "anyOf": [
+                            { "type": "string", "enum": ["auto"] },
+                            { "type": "number"}
+                        ]
+                    },
+                    "LG_NBR": {
+                        "description": "Number of steps for the source longitude (deg)",
+                        "type": "integer"
+                    },
+                    "LAT": {
+                        "description": "Latitude of the source (deg)",
+                        "type": "integer"
+                    },
+                    "SUB": {
+                        "description": "??? of the source",
+                        "type": "integer"
+                    },
+                    "AURORA_ALT": {
+                        "description": "Altitude of the aurora",
+                        "type": "number"
+                    },
+                    "SAT": {
+                        "description": "Name of the satellite when 'attached to a satellite' is selected",
+                        "type": "string"
+                    },
+                    "NORTH": {
+                        "description": "Flag to activate the Northern hemisphere source ",
+                        "type": "boolean"
+                    },
+                    "SOUTH": {
+                        "description": "Flag to activate the Soutern hemisphere source ",
+                        "type": "boolean"
+                    },
+                    "WIDTH": {
+                        "description": "Width of the radio emission sheet (deg)",
+                        "type": "number"
+                    },
+                    "CURRENT": {
+                        "description": "Type of electron distribution in the source",
+                        "type": "string",
+                        "enum": ["Transient (Alfvenic)"]
+                    },
+                    "CONSTANT": {
+                        "description": "???",
+                        "type": "number"
+                    },
+                    "ACCEL": {
+                        "description": "???",
+                        "type": "number"
+                    },
+                    "TEMP": {
+                        "description": "???",
+                        "type": "number"
+                    },
+                    "TEMPH": {
+                        "description": "???",
+                        "type": "number"
+                    },
+                    "REFRACTION": {
+                        "description": "Flag to activate refraction effects (current not implemented)",
+                        "type": "boolean",
+                        "enum": [false]
+                    }
+                }
+            }
+        }
+    }
+}

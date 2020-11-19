@@ -94,7 +94,7 @@ target='-name='+type_new+':'+name+'&'
 ;2015-10-26T12:00:00 
 ;2015-10-2612:00
 
-date2=strmid(date,0,4)+'-'+strmid(date,4,2)+'-'+strmid(date,6,2)+'T'+strmid(date,8,2)+':'+strmid(date,11,2)
+date2=strmid(date,0,4)+'-'+strmid(date,4,2)+'-'+strmid(date,6,2)+'T'+strmid(date,8,2)+':'+strmid(date,11,2)+':'+strmid(date,14,2)
 
 epoch='-ep='+date2+'&'
 

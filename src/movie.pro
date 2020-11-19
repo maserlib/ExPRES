@@ -11,9 +11,10 @@
 ;***     FINALIZE  [FZ_MOVIE]                            ***
 ;***                                                     ***
 ;***********************************************************
-;/opt/local/bin/ffmpeg -f image2 -an -i Test_Io_movie%03d.png -vcodec h264 -vpre slow -crf 22 video-test-ffmpeg-x264.mp4
 
-;************************************************************** INIT_MOVIE
+;************************************************************** 
+; Initialization procedure (INIT_MOVIE)
+;************************************************************** 
 pro init_movie
 rad=0.1
 oOrb = OBJ_NEW('orb', COLOR=[255, 0, 0])
@@ -24,25 +25,48 @@ img->GetProperty, DATA=imag
 write_png,'test.png',imag
 end
 
-;************************************************************** FZ_MOVIE
+;************************************************************** 
+; Finalize procedure (FZ_MOVIE)
+;************************************************************** 
 pro fz_movie,obj,parameters
-comd="rm -f "+parameters.out+"_movie.mp4"
+
+; filename for MP4 movie output
+filename_mp4 = parameters.out+"_movie.mp4"
+
+; removing pre-existing .mp4 file with same name 
+comd="rm -f "+filename_mp4
 spawn,comd
+
+; creating the movie with the ffmpeg package
+;/opt/local/bin/ffmpeg -f image2 -an -i Test_Io_movie%03d.png -vcodec h264 -vpre slow -crf 22 video-test-ffmpeg-x264.mp4
+
 adr=loadpath('ffmpeg',parameters)
 comd=adr+"ffmpeg -f image2 -i "+parameters.out
-comd=comd+"_movie%03d.png -an -vcodec h264 -pix_fmt yuv420p -crf 22 "+parameters.out+"_movie.mp4"
+comd=comd+"_movie%03d.png -an -vcodec h264 -pix_fmt yuv420p -crf 22 "+filename_mp4
 spawn,comd
+
+; removing intermediate still PNG images
 comd="rm "+parameters.out+"_movie*.png"
 spawn,comd
-comd="chmod 777 "+parameters.out+"_movie.mp4"
+
+; fixing the rights to the movie file (TBC)
+comd="chmod 777 "+filename_mp4
 spawn,comd
+
 end
 
 
-;************************************************************** CB_MOVIE
+;************************************************************** 
+; Iteration step procedure (CB_MOVIE)
+;************************************************************** 
 pro cb_movie,obj,parameters
-set_plot,'Z'
+
+; continue only if the current time-step correspond to the sub-sampling rate selected for the movie output 
 if parameters.time.istep mod (*obj).sub ne 0 then return
+
+set_plot,'Z'
+
+; setting frame number (frame), time step (t)
 frame=fix(parameters.time.istep/(*obj).sub)
 t=parameters.time.istep
 sx=(*obj).xr[1]-(*obj).xr[0] & sy=(*obj).yr[1]-(*obj).zr[0] & sz=(*obj).zr[1]-(*obj).zr[0]
@@ -50,27 +74,32 @@ m=max([sx,sy,sz])
 sx=sx/m & sy=sy/m & sz=sz/m
 nobj=n_elements(parameters.objects)
 n0=1b
-for i=0,nobj-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'BODY' then begin
-ob2=(parameters.objects[i])
-rad=(*ob2).radius
-oOrb = OBJ_NEW('orb', COLOR=[0, 0, 255])
-oOrb->Scale, rad*sx, rad*sy, rad*sz
-oSymbol = OBJ_NEW('IDLgrSymbol', oOrb)
-;on dessine la trajectoire
-if (*ob2).motion and (*obj).traj then if n0 then begin
-plot_3d,(*((*ob2).trajectory_xyz))[0,*],(*((*ob2).trajectory_xyz))[1,*],(*((*ob2).trajectory_xyz))[2,*],$
- COLOR=[0,255,0],THICK=2,img=img,xr=(*obj).xr,yr=(*obj).yr,zr=(*obj).zr
-n0=0
-endif else plot_3d,(*((*ob2).trajectory_xyz))[0,*],(*((*ob2).trajectory_xyz))[1,*],(*((*ob2).trajectory_xyz))[2,*],$
- COLOR=[0,255,0],THICK=2, /OVERPLOT,img=img,xr=(*obj).xr,yr=(*obj).yr,zr=(*obj).zr
 
-if n0 then begin
-plot_3d,[(*((*ob2).trajectory_xyz))[0,t]],[(*((*ob2).trajectory_xyz))[1,t]],[(*((*ob2).trajectory_xyz))[2,t]],$
- COLOR=[0,255,0], SYMBOL=oSymbol,THICK=2,img=img,xr=(*obj).xr,yr=(*obj).yr,zr=(*obj).zr
-n0=0
-endif else plot_3d,[(*((*ob2).trajectory_xyz))[0,t]],[(*((*ob2).trajectory_xyz))[1,t]],[(*((*ob2).trajectory_xyz))[2,t]],$
- COLOR=[0,255,0], SYMBOL=oSymbol,THICK=2, /OVERPLOT,img=img,xr=(*obj).xr,yr=(*obj).yr,zr=(*obj).zr
-endif;BODY
+; <== BODY
+for i=0,nobj-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'BODY' then begin 
+
+  ob2=(parameters.objects[i])
+  rad=(*ob2).radius
+  oOrb = OBJ_NEW('orb', COLOR=[0, 0, 255])
+  oOrb->Scale, rad*sx, rad*sy, rad*sz
+  oSymbol = OBJ_NEW('IDLgrSymbol', oOrb)
+
+  ; plotting trajectory
+  if (*ob2).motion and (*obj).traj then if n0 then begin
+    plot_3d,(*((*ob2).trajectory_xyz))[0,*],(*((*ob2).trajectory_xyz))[1,*],(*((*ob2).trajectory_xyz))[2,*],$
+       COLOR=[0,255,0],THICK=2,img=img,xr=(*obj).xr,yr=(*obj).yr,zr=(*obj).zr
+    n0=0
+  endif else plot_3d,(*((*ob2).trajectory_xyz))[0,*],(*((*ob2).trajectory_xyz))[1,*],(*((*ob2).trajectory_xyz))[2,*],$
+       COLOR=[0,255,0],THICK=2, /OVERPLOT,img=img,xr=(*obj).xr,yr=(*obj).yr,zr=(*obj).zr
+
+  if n0 then begin
+    plot_3d,[(*((*ob2).trajectory_xyz))[0,t]],[(*((*ob2).trajectory_xyz))[1,t]],[(*((*ob2).trajectory_xyz))[2,t]],$
+       COLOR=[0,255,0], SYMBOL=oSymbol,THICK=2,img=img,xr=(*obj).xr,yr=(*obj).yr,zr=(*obj).zr
+    n0=0
+  endif else plot_3d,[(*((*ob2).trajectory_xyz))[0,t]],[(*((*ob2).trajectory_xyz))[1,t]],[(*((*ob2).trajectory_xyz))[2,t]],$
+       COLOR=[0,255,0], SYMBOL=oSymbol,THICK=2, /OVERPLOT,img=img,xr=(*obj).xr,yr=(*obj).yr,zr=(*obj).zr
+endif
+;BODY ==>
 
 rad=0.1
 oOrb = OBJ_NEW('orb', COLOR=[255, 0, 0])
@@ -78,23 +107,23 @@ oOrb->Scale, rad*sx, rad*sy, rad*sz
 oSymbol = OBJ_NEW('IDLgrSymbol', oOrb)
 
 for i=0,nobj-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SOURCE' then begin
-ob2=(parameters.objects[i])
-;on dessine la trajectoire
-if (*obj).mfl then begin
-w=where((*((*ob2).spdyn)) ne 0)
-if w[0] ne -1 then begin
-x=reform((*((*ob2).x)),3,parameters.freq.n_freq*((*ob2).nsrc)*2)
-xyz=x[*,w] & nx=n_elements(w)
-for j=0, nx-1 do xyz[*,j]=(transpose((*((*ob2).parent)).rot)#(xyz[*,j])+(*((*ob2).parent)).pos_xyz)
+  ob2=(parameters.objects[i])
+  ;on dessine la trajectoire
+  if (*obj).mfl then begin
+    w=where((*((*ob2).spdyn)) ne 0)
+    if w[0] ne -1 then begin 
+      x=reform((*((*ob2).x)),3,parameters.freq.n_freq*((*ob2).nsrc)*2)
+      xyz=x[*,w] & nx=n_elements(w)
+      for j=0, nx-1 do xyz[*,j]=(transpose((*((*ob2).parent)).rot)#(xyz[*,j])+(*((*ob2).parent)).pos_xyz)
 
-if n0 then begin
-for j=0, nx-1 do plot_3d,[xyz[0,j],xyz[0,j]],[xyz[1,j],xyz[1,j]],[xyz[2,j],xyz[2,j]],$
- COLOR=[0,255,0],THICK=2,xr=(*obj).xr,yr=(*obj).yr,zr=(*obj).zr, SYMBOL=oSymbol,img=img
-n0=0
-endif else for j=0, nx-1 do plot_3d,[xyz[0,j],xyz[0,j]],[xyz[1,j],xyz[1,j]],[xyz[2,j],xyz[2,j]],$
- COLOR=[0,255,0],THICK=2, /OVERPLOT,xr=(*obj).xr,yr=(*obj).yr,zr=(*obj).zr, SYMBOL=oSymbol,img=img
-endif
-endif
+      if n0 then begin
+        for j=0, nx-1 do plot_3d,[xyz[0,j],xyz[0,j]],[xyz[1,j],xyz[1,j]],[xyz[2,j],xyz[2,j]],$
+           COLOR=[0,255,0],THICK=2,xr=(*obj).xr,yr=(*obj).yr,zr=(*obj).zr, SYMBOL=oSymbol,img=img
+        n0=0
+      endif else for j=0, nx-1 do plot_3d,[xyz[0,j],xyz[0,j]],[xyz[1,j],xyz[1,j]],[xyz[2,j],xyz[2,j]],$
+           COLOR=[0,255,0],THICK=2, /OVERPLOT,xr=(*obj).xr,yr=(*obj).yr,zr=(*obj).zr, SYMBOL=oSymbol,img=img
+    endif
+  endif
 endif;SOURCE
 
 

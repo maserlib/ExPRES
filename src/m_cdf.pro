@@ -6,10 +6,10 @@
 ;***                                                     ***
 ;***       MODULE: M_CDF                                 ***
 ;***                                                     ***
-;***     function: INIT_cdf						 		 ***
+;***     function: INIT_cdf				 ***
 ;***     INIT   [INIT_CDF]    	                         ***
-;***     CALLBACK [CB_CDF]		                         ***
-;***     FINALIZE [FZ_CDF]		                         ***
+;***     CALLBACK [CB_CDF]		                 ***
+;***     FINALIZE [FZ_CDF]		                 ***
 ;***                                                     ***
 ;***     Version history                                 ***
 ;***     [CL] V6.1: First release                        ***
@@ -31,7 +31,7 @@ nfreq = parameters.freq.n_freq
 
 
 ; =============================================================================
-; A faire une fois au debut, donc dans la partie _INIT
+; To be executed once, so it goes into the `_INIT`
 ; =============================================================================
 
 ; Defining ID and Labels
@@ -77,9 +77,7 @@ for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i
 		
 		if (*(parameters.objects[i])).refract then refr(h)='_refr' $
 		else refr(h)=''
-		
-	
-		
+
 		if (*(*parameters.objects(i)).parent).sat then originsrc(h)=(*(*(*parameters.objects(i)).parent).parent).name $
 			else originsrc(h)=strtrim(lon,2)+'d-'+strtrim(lat,2)+'R'
 		
@@ -103,8 +101,8 @@ Src_ID_Label = originsrc+' '+hemisphere
 
 
 for i=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'OBSERVER' then begin
-	CML=*(*parameters.objects[i]).lg
-	obslatitude(*)=(*parameters.objects(i)).apoapsis_declination
+	CML=360.-((*(*parameters.objects(i)).trajectory_rtp)[2,*]/!pi*180.)
+	obslatitude=90.-((*(*parameters.objects(i)).trajectory_rtp)[1,*]/!pi*180.)
 	obsdistance=sqrt(total(((*(*parameters.objects(i)).trajectory_xyz)(*,*))^2,1))
 	planet=(*(*parameters.objects(i)).parent).name
 	if (*parameters.objects(i)).name then $
@@ -156,20 +154,18 @@ spawn,adresse_cdf+'bin/skeletoncdf '+skt_file+' -cdf '+master_file
 filename=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc[0])+'_'+b_model+'_'+strlowcase(sourcetype[0])+'-'+strlowcase(wid[0])+'_'+strlowcase(ener[0])+strlowcase(refr[0])+'_'+strlowcase(datefilename)+'_v01'
 
 
-
-data = {Epoch:epoch,$
-		CML:reform(cml),$
-		ObsLatitude:reform(obslatitude),$
-		;ObsLocalTime:reform(obslocaltime),$
-		ObsDistance:reform(ObsDistance)$
-		}
+data = {Epoch:epoch}
 
 		
 make_cdf,master_file,filename+'.cdf',data
 id = cdf_open(filename+'.cdf')
 basename=strsplit(filename,'/',/extract)
 cdf_attput,id,'Logical_file_id',0,basename[n_elements(basename)-1]
+
 if opt.obsdistance then CDF_ATTPUT, id, 'SCALEMAX', 'ObsDistance', max(ObsDistance)
+if opt.CML then	cdf_varput,id,'CML',reform(CML)
+if opt.ObsLatitude then	cdf_varput,id,'ObsLatitude',reform(obslatitude)
+if opt.ObsDistance then	cdf_varput,id,'ObsDistance',reform(obsdistance)
 
 (*obj).id=id
 end
@@ -178,8 +174,8 @@ end
 ; =============================================================================
 pro cb_cdf,obj,parameters
 ; =============================================================================
-; A faire a chaque pas de la boucle temporelle
-; =============================================================================  
+; To be executed at each temporal step
+; =============================================================================
 h=0
 i=parameters.time.istep
 ndat=parameters.time.n_step
@@ -193,6 +189,8 @@ for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]
 
 polarization = intarr(ndat,nfreq)
 polarization(*,*)=32767
+
+if opt.CML then CML=fltarr(ndat)
 if opt.theta then theta = fltarr(nsrc,ndat,nfreq)
 if opt.srcvis then begin
 	polarizationSUM = intarr(2,ndat,nfreq)
@@ -255,6 +253,10 @@ endif
 
 
 
+	
+for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]),/str) eq 'OBSERVER' then obs=*(parameters.objects[j])			
+
+
 
 
 
@@ -262,6 +264,10 @@ endif
 id=(*obj).id
 
 cdf_varput,id,'Polarization',reform(polarization[i,*],nfreq),REC_START=i
+if (obs.motion+obs.predef) eq 0 then begin
+	CML[i]=(*obs.lg)[i]
+	if opt.CML then cdf_varput,id,'CML',reform(CML[i]),REC_START=i
+endif
 if opt.srcvis then cdf_varput,id,'VisibleSources',reform(polarizationSUM[*,i,*],2,nfreq),REC_START=i
 if opt.theta then	cdf_varput,id,'Theta',reform(theta[*,i,*],nsrc,nfreq),REC_START=i
 if opt.azimuth then	cdf_varput,id,'Azimuth',reform(azimuth[*,i,*],nsrc,nfreq),REC_START=i
@@ -281,7 +287,7 @@ end
 
 pro fz_cdf,obj,parameters
 ; =============================================================================
-; Fermeture fichier cdf
+; Closing CDF file
 ; =============================================================================
 
 

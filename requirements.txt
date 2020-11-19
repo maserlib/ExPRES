@@ -1,3 +1,7 @@
 idlpy
 numpy
 lxml
+jsonschema
+sphinx
+sphinx-rtd-theme
+sphinxcontrib-bibtex

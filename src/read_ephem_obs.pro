@@ -21,12 +21,12 @@ if tmp[-1] eq 'csv' then begin
 	lat=dblarr(n)
 	distance=dblarr(n)
 	if n_tags(result) ge 10 then begin
-		date=strmid(result.field01[0:n-1],0,4)+strmid(result.field01[0:n-1],5,2)+strmid(result.field01[0:n-1],8,2)+strmid(result.field01[0:n-1],11,2)+strmid(result.field01[0:n-1],14,2)
+		date=strmid(result.field01[0:n-1],0,4)+strmid(result.field01[0:n-1],5,2)+strmid(result.field01[0:n-1],8,2)+strmid(result.field01[0:n-1],11,2)+strmid(result.field01[0:n-1],14,2)+strmid(result.field01[0:n-1],17,2)
 		longitude=(360+(-1.)*result.field02[0:n-1]+360.) mod 360d
 		lat=result.field03[0:n-1]
 		distance=result.field04[0:n-1]/71492d
 	endif else begin
-		date=strmid(result.field1[0:n-1],0,4)+strmid(result.field1[0:n-1],5,2)+strmid(result.field1[0:n-1],8,2)+strmid(result.field1[0:n-1],11,2)+strmid(result.field1[0:n-1],14,2)
+		date=strmid(result.field1[0:n-1],0,4)+strmid(result.field1[0:n-1],5,2)+strmid(result.field1[0:n-1],8,2)+strmid(result.field1[0:n-1],11,2)+strmid(result.field1[0:n-1],14,2)+strmid(result.field1[0:n-1],17,2)
 		longitude=(360+(-1.)*result.field2[0:n-1]+360.) mod 360d
 		lat=result.field3[0:n-1]
 		distance=result.field4[0:n-1]/71492d
@@ -86,22 +86,21 @@ error=0
 
 ; # Set SCTIME
 time0=date[0]
-
 ; # Set simulation Time
-Y1=fix(strmid(time0,0,4))
-Mo1=fix(strmid(time0,4,2))
-D1=fix(strmid(time0,6,2))
-H1=fix(strmid(time0,8,2))
-Mi1=fix(strmid(time0,10,2))
-S1=fix(strmid(time0,12,2))
+Y1=double(strmid(time0,0,4))
+Mo1=double(strmid(time0,4,2))
+D1=double(strmid(time0,6,2))
+H1=double(strmid(time0,8,2))
+Mi1=double(strmid(time0,10,2))
+S1=double(strmid(time0,12,2))
 julday1=JULDAY(Mo1, D1, Y1, H1, Mi1, S1)     
 
-Y2=fix(strmid(date[-1],0,4))
-Mo2=fix(strmid(date[-1],4,2))
-D2=fix(strmid(date[-1],6,2))
-H2=fix(strmid(date[-1],8,2))
-Mi2=fix(strmid(date[-1],10,2))
-S2=fix(strmid(date[-1],12,2))
+Y2=double(strmid(date[-1],0,4))
+Mo2=double(strmid(date[-1],4,2))
+D2=double(strmid(date[-1],6,2))
+H2=double(strmid(date[-1],8,2))
+Mi2=double(strmid(date[-1],10,2))
+S2=double(strmid(date[-1],12,2))
 julday2=JULDAY(Mo2, D2, Y2, H2, Mi2, S2)     
 
 
