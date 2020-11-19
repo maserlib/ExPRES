@@ -1252,7 +1252,7 @@ observer.start=(serpe_save['OBSERVER'])['SCTIME']
 if (serpe_save['OBSERVER'])['EPHEM'] eq "@wgc" then begin
 
     if observer.name eq 'Earth' then begin
-        py = Python.Import('read_ephem_obs')
+        py = Python.Import('ephem_wgc')
         result = py.get_ephem_from_wgc(observer, serpe_save['TIME'])
         observer.start=result['time0']
         time.mini=(result['time'])['MINI']
