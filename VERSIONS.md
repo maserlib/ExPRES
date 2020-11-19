@@ -1,6 +1,10 @@
 # Version History
 
-## Latest Release - Version  1.0.0 (2019)
+## Latest Release - 1.1.0 (2020)
+
+TBD 
+
+## Version  1.0.0 (2019)
 In this version, the code is called ExPRES (Exoplanetary and Planetary Radio Emissions Simulator)
 
 Contributors: C. Louis, S. L. G. Hess, P. Zarka, B. Cecconi, L. Lamy 
