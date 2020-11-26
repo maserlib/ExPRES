@@ -290,10 +290,15 @@ pro fz_cdf,obj,parameters
 ; =============================================================================
 ; Closing CDF file
 ; =============================================================================
-
-
-
 cdf_close,(*obj).id
+
+adresse_save_tmp=loadpath('adresse_save',parameters)
+version="v11"
+cmdskt='rm '+adresse_save_tmp+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_'+version+'.skt'
+cmdcdf='rm '+adresse_save_tmp+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_'+version+'.cdf'
+spawn,cmdskt
+spawn,cmdcdf
+
 end
 ; =============================================================================
 
