@@ -66,7 +66,7 @@
 ;-
 
 PRO BUILD_SERPE_SKT,frequency,Freq_Label,Flog,Src_ID_Label,originsrc,hemisphere,b_model,sourcetype,$
-    observer,planet,wid,ener,refr,sourcedescr,dt,dated,datef,file,option
+    observer,planet,wid,ener,refr,sourcedescr,dt,dated,datef,file,option,version
 ; Check if input parameters 'file' is set. Create new file name, if not set; remove previous one (if it exist) if set. 
 if ~keyword_set(file) then begin
 	file=string(format='(I12.12)',long(systime(1)))+'.skt'
@@ -85,14 +85,14 @@ nhemis=max(strlen(hemisphere))
 ; Open file in write mode and output ASCII lines
 openw,lun,file,/get_lun
 
-printf,lun,"! Skeleton table for the ""expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_v01"" CDF."
+printf,lun,"! Skeleton table for the ""expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_"+version+""" CDF."
 printf,lun,"! Generated: "+systime()
 printf,lun,"! CDF created/modified by CDF V3.6.2"
 printf,lun,"! Skeleton table created by CDF V3.6.2_1"
 printf,lun,""
 printf,lun,"#header"
 printf,lun,""
-printf,lun,"                       CDF NAME: expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_v01"
+printf,lun,"                       CDF NAME: expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_"+version
 printf,lun,"                  DATA ENCODING: PPC"
 printf,lun,"                       MAJORITY: ROW"
 printf,lun,"                         FORMAT: SINGLE"
