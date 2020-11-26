@@ -9,6 +9,7 @@ Configuration File
 An ExPRES run is configured through a configuration file (in *JSON* format). Examples of configuration files
 (and the associated results files) are available from the `ExPRES section of the MASER data repository
 <http://maser.obspm.fr/data/expres/>`_ for Io-, Europa- and Ganymede-controlled emissions, and for various observers.
+
 These *routine simulation files* are configured for using the JRM09 :cite:`CKO18` magnetic field model (or ISaAC
 :cite:`HBZ11` for some of them), the CAN81 :cite:`CAN81` current sheet model, and an electron energy of 3 keV. The
 position of the *Active Flux Tube* (AFT) for Io is based on the (corrected) lead angle model of :cite:`hess_GRL_08`,
