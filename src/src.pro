@@ -225,8 +225,8 @@ xyz_obs=rebin(reform((*((*obj).parent)).rot#((*obs.trajectory_xyz)[*,t]-(*((*obj
 	3,parameters.freq.n_freq,nlg*nlat)
 	
 ;************** Calcul auto du lead angle pour Io *******
-if ((*obj).lgauto eq "on") then begin
-	(*((*obj).lg))[0,*,*]=calc_lag((*obj).north,(*((*obj).parent)).lg,satellite=(*(*(*obj).parent).parent).name)
+if ((*obj).lagauto eq "on") then begin
+	(*((*obj).lg))[0,*,*]=calc_lag((*obj).lagmodel,(*obj).north,(*((*obj).parent)).lg,satellite=(*(*(*obj).parent).parent).name)
 	i=1
 	while (i lt nlg) do begin
 		if i eq 1 then (*((*obj).lg))[0,1,*]=(*((*obj).lg))[0,1,*]-4.
@@ -234,11 +234,11 @@ if ((*obj).lgauto eq "on") then begin
 		i=i+1
 	endwhile
 endif
-if ((*obj).lgauto eq "on-3") then begin
-	(*((*obj).lg))[0,*,*]=calc_lag((*obj).north,(*((*obj).parent)).lg,satellite=(*(*(*obj).parent).parent).name)-3.
+if ((*obj).lagauto eq "on-3") then begin
+	(*((*obj).lg))[0,*,*]=calc_lag((*obj).lagmodel,(*obj).north,(*((*obj).parent)).lg,satellite=(*(*(*obj).parent).parent).name)-3.
 endif
-if ((*obj).lgauto eq "on+3") then begin
-	(*((*obj).lg))[0,*,*]=calc_lag((*obj).north,(*((*obj).parent)).lg,satellite=(*(*(*obj).parent).parent).name)+3.
+if ((*obj).lagauto eq "on+3") then begin
+	(*((*obj).lg))[0,*,*]=calc_lag((*obj).lagmodel,(*obj).north,(*((*obj).parent)).lg,satellite=(*(*(*obj).parent).parent).name)+3.
 endif
 ;********************************************************
 
@@ -267,6 +267,9 @@ d=fltarr(parameters.freq.n_freq,nlg*nlat)		;densite = wp^2/wc^2
 gb=fltarr(parameters.freq.n_freq,nlg*nlat)		;gradient angle
 f=fltarr(nlg*nlat);frequence max
 fCMI=fltarr(nlg*nlat);frequence max avec condition CMI wp/wc<0.1
+
+
+
 if (*obj).north then begin ; Magnetic north pole
 	var=0
 	for i=0,3 do begin
@@ -295,6 +298,7 @@ endif else begin if (*obj).south then begin				; Magnetic south pole
 	endfor
 endif
 endelse
+
 coef=0b
 
 (*(*obj).fmax)[*,var]=f
