@@ -311,10 +311,7 @@ cmdvot1='rm '+adresse_save+'_Source1.vot'
 cmdvot2='rm '+adresse_save+'_Source2.vot'
 spawn,cmdvot1
 spawn,cmdvot2
-cmdskt='rm '+adresse_save_tmp+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_v01.skt'
-cmdcdf='rm '+adresse_save_tmp+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_v01.cdf'
-spawn,cmdskt
-spawn,cmdcdf
+
 
 parameters=''
 HEAP_GC
