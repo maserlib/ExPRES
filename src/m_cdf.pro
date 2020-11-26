@@ -147,7 +147,7 @@ master_file = filename+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_
 
 
 for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]),/str) eq 'CDF' then opt=*parameters.objects[j]
-build_serpe_skt,*parameters.freq.freq_tab,Freq_Label,parameters.freq.log,Src_ID_Label,originsrc,hemisphere,b_model,sourcetype,observer,planet,wid,ener,refr,sourcedescr,dt,dated,datef,skt_file,opt
+build_serpe_skt,*parameters.freq.freq_tab,Freq_Label,parameters.freq.log,Src_ID_Label,originsrc,hemisphere,b_model,sourcetype,observer,planet,wid,ener,refr,sourcedescr,dt,dated,datef,skt_file,opt,version
 spawn,'rm -rf '+master_file
 adresse_cdf=loadpath('adresse_cdf',parameters)
 spawn,adresse_cdf+'bin/skeletoncdf '+skt_file+' -cdf '+master_file
