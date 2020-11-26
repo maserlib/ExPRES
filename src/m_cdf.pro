@@ -292,8 +292,9 @@ pro fz_cdf,obj,parameters
 ; =============================================================================
 
 adresse_save_tmp=loadpath('adresse_save',parameters)
-cmdskt='rm '+adresse_save_tmp+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_v01.skt'
-cmdcdf='rm '+adresse_save_tmp+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_v01.cdf'
+version="v11"
+cmdskt='rm '+adresse_save_tmp+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_'+version+'.skt'
+cmdcdf='rm '+adresse_save_tmp+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_'+version+'.cdf'
 spawn,cmdskt
 spawn,cmdcdf
 
