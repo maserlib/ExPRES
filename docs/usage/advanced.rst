@@ -344,7 +344,7 @@ using the ``EPHEM`` keyword.
 .. code-block::
 
   "OBSERVER": {
-    "TYPE": "Fixed",
+    "TYPE": "Pre-defined",
     "EPHEM": "",
     "FIXE_DIST": "auto",
     "FIXE_SUBL": "auto",
