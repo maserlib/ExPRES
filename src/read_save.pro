@@ -1337,8 +1337,8 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   	endelse
   endif else if (observer.predef eq 1b) then begin
   	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'juno' then begin
-  		if long64(strmid(date,0,8)) le 20151231 then stop,'ephemeris before DoY 2015 365 are not defined. A file with the corresponding ephemeris needs to be loading, please contact the ExPRES team - contact.maser@obspm.fr'
-      if long64(strmid(date,0,8)) ge 20210101 then stop,'ephemeris after DoY 2018 365 are not defined. A file with the corresponding ephemeris needs to be loading, please contact the ExPRES team - contact.maser@obspm.fr'
+  		if long64(strmid(date,0,8)) le 20151231 then stop,'ephemeris before DoY 2015 365 are not defined. A file with the corresponding ephemeris needs to be loaded, please contact the ExPRES team - contact.maser@obspm.fr'
+      if long64(strmid(date,0,8)) ge 20220101 then stop,'ephemeris after DoY 2021 365 are not defined. A file with the corresponding ephemeris needs to be loaded, please contact the ExPRES team - contact.maser@obspm.fr'
   		if (long64(strmid(observer.start,0,8)) ge 20160101) and (long64(strmid(observer.start,0,8)) lt 20170101) then $
   		restore,adresse_ephem+'Juno/2016_001-366.sav'
   		if (long64(strmid(observer.start,0,8)) ge 20170101) and (long64(strmid(observer.start,0,8)) lt 20180101) then $
@@ -1349,6 +1349,8 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
       restore,adresse_ephem+'Juno/2019.sav'
       if (strmid(strtrim(long64(observer.start),2),0,4) eq '2020') then $
       restore,adresse_ephem+'Juno/2020.sav'
+      if (strmid(strtrim(long64(observer.start),2),0,4) eq '2021') then $
+      restore,adresse_ephem+'Juno/2021.sav'
       
   	
   		w=where((long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. ge long(strmid(doy1,4,3))+long(H1)/24.+long(Mi1)/24./60.) and (long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. le (long(strmid(doy2,4,3))+long(H2)/24.+long(Mi2)/24./60.)))
