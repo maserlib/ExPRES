@@ -61,14 +61,11 @@ for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i
 			else begin
 				lon=long((*(*parameters.objects[i]).lg)[ilg])
 				lat=long((*(*parameters.objects[i]).lat)[ilg])
-	; *********************************
-	; probleme de longueur de phrase !!!!! ?????
-	; *********************************
-		print,'There may be a sentence length problem for the description of the sources - see m_cdf.pro file - line 53 if error'
+	;# *********************************
+	;# issue with the length of the sentence ?
+	;# *********************************
 				sourcedescr(h)='main oval at longitude='+strtrim(lon,2)+' degrees (with L_equateur='+strtrim(lat,2)+' R_'+(*(*(*parameters.objects(i)).parent).parent).name+')'
-	; *********************************
-	;			sourcedescr(h)=''
-	; *********************************
+
 			endelse
 	;# here we do a string(long(string(ener))) to avoid rounding problems
 		ener(h)=strtrim(long(string(((*(parameters.objects[i])).vmin)^2*255.5)),2)+'keV'
