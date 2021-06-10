@@ -1677,7 +1677,10 @@ for i=0,nsrc-1 do begin
 		sc[n].name=((serpe_save['SOURCE'])[i])['NAME']
 		sc[n].parent=((serpe_save['SOURCE'])[i])['PARENT']
 		sc[n].type=((serpe_save['SOURCE'])[i])['TYPE']
-		if size(((serpe_save['SOURCE'])[i])['LG_MIN'],/type) eq 7 then begin
+		;# old version for adding an automatic lead angle... 
+    ;# This will probably be obsolete in a future version
+    ;# Compatible with the new version
+    if size(((serpe_save['SOURCE'])[i])['LG_MIN'],/type) eq 7 then begin
 			if ((serpe_save['SOURCE'])[i])['LG_MIN'] eq 'auto' then $
         sc[n].lagauto='on'
       if ((serpe_save['SOURCE'])[i])['LG_MIN'] eq 'auto+3' then $
@@ -1685,19 +1688,22 @@ for i=0,nsrc-1 do begin
       if ((serpe_save['SOURCE'])[i])['LG_MIN'] eq 'auto-3' then $
         sc[n].lagauto='on-3'
       sc[n].lagmodel="Hess2011"
+
+      if find[0] eq -1 then cdf.srcpos=((serpe_save['SPDYN'])['CDF'])['SRCPOS']
+
 		endif else begin
 			sc[n].lagauto='off'
 			sc[n].lgmin=((serpe_save['SOURCE'])[i])['LG_MIN']
 			sc[n].lgmax=((serpe_save['SOURCE'])[i])['LG_MAX']
 		endelse
     
-    
-    test=where(((serpe_save['SOURCE'])[i]).keys() eq 'LAG',cnt)
-
+    ; # new version for adding an automatic lead angle, based on the lag_model entry
+    ; # line 'test = ' is to test if the LAG_MODEL entry is present - entry not mandatory to be compatible with old json file version
+    test=where(((serpe_save['SOURCE'])[i]).keys() eq 'LAG_MODEL',cnt)
     if cnt ne 0 then begin
-      if ((serpe_save['SOURCE'])[i])['LAG'] ne 'off' and  ((serpe_save['SOURCE'])[i])['LAG'] ne ''  then begin
+      if ((serpe_save['SOURCE'])[i])['LAG_MODEL'] ne 'off' and  ((serpe_save['SOURCE'])[i])['LAG_MODEL'] ne ''  then begin
         sc[n].lagauto='on'
-        sc[n].lagmodel=((serpe_save['SOURCE'])[i])['LAG']
+        sc[n].lagmodel=((serpe_save['SOURCE'])[i])['LAG_MODEL']
       endif
     endif
 
