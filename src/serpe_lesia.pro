@@ -274,10 +274,10 @@ if spdyn.save_out then begin
 		datefilename=string(format='(I04,I02,I02)',(*parameters.objects(i)).date(0:2))
 	endif
 
-	
+	version='v11'
 	outsplit=strsplit(parameters.out,'/',/EXTRACT)
 	filename=strmid(parameters.out,0,strlen(parameters.out)-strlen(outsplit(n_elements(outsplit)-1)))
-	file=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc)+lag+'_'+strlowcase(sourcetype)+'-'+strlowcase(wid)+'_'+strlowcase(ener)+strlowcase(refr)+'_'+strlowcase(datefilename)+'_v01.sav'
+	file=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc)+lag+'_'+strlowcase(sourcetype)+'-'+strlowcase(wid)+'_'+strlowcase(ener)+strlowcase(refr)+'_'+strlowcase(datefilename)+'_'+version+'.sav'
 
 	
 	
