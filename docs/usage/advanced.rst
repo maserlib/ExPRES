@@ -468,7 +468,7 @@ Radio Source Configuration
 - ``LG_MIN``: The lower bound value of the source longitude (in degrees)
 - ``LG_MAX``: The upper bound value of the source longitude (in degrees)
 - ``LG_NBR``: The number of steps for the source longitude.
-- ``LAG_MODEL``: Model of the lead angle for the Io active flux tube (choices are: ``hess2011`` (:cite:`hess_jgr_2011`), ``bonfond2009`` (:cite:`bonfond_2009_jgr`), ``bonfond2017`` (:cite:`bonfond_2017_icarus`), ``hinton2019`` (:cite:`hinton_2019_jgr`)).
+- ``LAG_MODEL``: Model of the lead angle for the Io active flux tube (choices are: ``hess2011`` (:cite:`HBZ11`), ``bonfond2009`` (:cite:`bonfond_2009_jgr`), ``bonfond2017`` (:cite:`bonfond_2017_icarus`), ``hinton2019`` (:cite:`hinton_2019_jgr`)).
 - ``LAT``: If ``Fixed in latitude``: Latitude in degree; else: apex distance in planetary radii.
 - ``SUB``: The subcorotation rate of the source (0 = no corotation)
 - ``AURORA_ALT``: The altitude of the aurora (in planetary radii)
