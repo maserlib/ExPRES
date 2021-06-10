@@ -205,8 +205,8 @@ per minute.
 
    "TIME": {
      "MIN": 0,
-     "MAX": 1440,
-     "NBR": 1441
+     "MAX": 1439,
+     "NBR": 1440
    }
 
 .. _FREQ:
@@ -468,6 +468,7 @@ Radio Source Configuration
 - ``LG_MIN``: The lower bound value of the source longitude (in degrees)
 - ``LG_MAX``: The upper bound value of the source longitude (in degrees)
 - ``LG_NBR``: The number of steps for the source longitude.
+- ``LAG_MODEL``: Model of the lead angle for the Io active flux tube (choices are: ``hess2011`` (:cite:`hess_jgr_2011`), ``bonfond2009`` (:cite:`bonfond_2009_jgr`), ``bonfond2017`` (:cite:`bonfond_2017_icarus`), ``hinton2019`` (:cite:`hinton_2019_jgr`)).
 - ``LAT``: If ``Fixed in latitude``: Latitude in degree; else: apex distance in planetary radii.
 - ``SUB``: The subcorotation rate of the source (0 = no corotation)
 - ``AURORA_ALT``: The altitude of the aurora (in planetary radii)
@@ -482,6 +483,58 @@ Radio Source Configuration
 - ``TEMP``: The value of the cold electron distribution temperature (in keV)
 - ``TEMPH``: The value of the halo electron distribution temperature (in keV)
 - ``REFRACTION``: Flag to activate refraction effects (**not implemented yet**)
+
+**Example:** We configure a simulation with emission induced by Io ("TYPE": "attached to a satellite", "SAT": "Io",), in the northern ("Source1",  "NORTH": true) and the southern ("Source2",  "SOUTH": true,) hemispheres. We use the lead angle model based on :cite:`hinton_JGR_20119` ("LAG_MODEL":"hinton2019") to determine the active magnetic field lines that will produce the emission. The electron have an energy of 3 keV ( "ACCEL": 3) and the distribution function is of the loss cone type ("CURRENT": "Transient (Alfvenic)")
+
+.. code-block::
+
+"SOURCE": [
+    {
+        "ON": true,
+        "NAME": "Source1",
+        "PARENT": "Jupiter",
+        "TYPE": "attached to a satellite",
+        "LG_MIN": 0,
+        "LG_MAX": 0,
+        "LG_NBR": 1,
+        "LAT": 0,
+        "LAG_MODEL":"hinton2019" ,
+        "SUB": 0,
+        "AURORA_ALT": 0.009091926738619804,
+        "SAT": "Io",
+        "NORTH": true,
+        "SOUTH": false,
+        "WIDTH": 1,
+        "CURRENT": "Transient (Alfvenic)",
+        "CONSTANT": 0.0,
+        "ACCEL": 3,
+        "TEMP": 0,
+        "TEMPH": 0,
+        "REFRACTION": false
+    },
+    {
+        "ON": true,
+        "NAME": "Source2",
+        "PARENT": "Jupiter",
+        "TYPE": "attached to a satellite",
+        "LG_MIN": 0, 
+        "LG_MAX": 0, 
+        "LG_NBR": 1,
+        "LAG_MODEL":"hinton2019", 
+        "LAT": 0, 
+        "SUB": 0, 
+        "AURORA_ALT": 0.009091926738619804, 
+        "SAT": "Io", 
+        "NORTH": false, 
+        "SOUTH": true, 
+        "WIDTH": 1, 
+        "CURRENT": "Transient (Alfvenic)", 
+        "CONSTANT": 0.0, 
+        "ACCEL": 3, "TEMP": 0, 
+        "TEMPH": 0, 
+        "REFRACTION": false
+    }]
+
 
 Output Configuration
 +++++++++++++++++++++
