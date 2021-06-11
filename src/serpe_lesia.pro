@@ -264,7 +264,7 @@ if spdyn.save_out then begin
 			if (*(parameters.objects[i])).refract then refr='_refr' $
 				else refr=''
 			
-			if (*(parameters.objects[i])).LGAUTO eq 'on' then lag='_lag' $
+			if (*(parameters.objects[i])).LAGAUTO eq 'on' then lag='_lag' $
 			else lag=''
 		endif
 		h=h+1
