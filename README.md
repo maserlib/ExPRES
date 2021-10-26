@@ -49,5 +49,5 @@ This compiles all the necessary routines in advance. Then the simulation can be 
 ```
 IDL> main,'file.json'
 ```
-where `file.json` is the input parameter file. This file must comply with the [ExPRES-v1.0 JSON-shema](https://voparis-ns.obspm.fr/maser/expres/v1.0/schema#)
+where `file.json` is the input parameter file. This file must comply with the [ExPRES-v1.1 JSON-shema](https://voparis-ns.obspm.fr/maser/expres/v1.1/schema#)
 
