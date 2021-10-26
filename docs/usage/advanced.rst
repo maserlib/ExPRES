@@ -318,9 +318,11 @@ format.
 Fixed Observer
 ..............
 
-A fixed observer is configured by its distance (``FIXE_DIST`` keyword) to the *central body*, its sub-longitude in
-degrees (``FIXE_SUBL`` keyword) and its declination in degrees (``FIXE_DECL`` keyword) in the reference body frame,
-and at the simulation time origin.
+A fixed observer is configured by a location at the start of the simulation: its distance (``FIXE_DIST`` keyword)
+to the *central body*, its sub-longitude in degrees (``FIXE_SUBL`` keyword) and its declination in degrees
+(``FIXE_DECL`` keyword) in the reference body frame. The location of such an the observer is fixed in an absolute
+frame centered on the *central body*. Hence it is not fixed in the *central body* frame, which is rotating with its
+sidereal period.
 
 Orbiter
 .......
