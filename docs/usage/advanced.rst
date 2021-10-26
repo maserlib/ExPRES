@@ -390,8 +390,8 @@ The ``BODY`` section contains the celestial bodies configuration.
 
 Two types of celestial bodies can be included in the simulations:
 
-- ``Fixed`` bodies, at least is one needed: the simulation run reference body;
-- ``Orbiting`` bodies, which can orbit both fixed and orbiting bodies.
+- Fixed bodies (at least is one needed): the simulation run reference body (``MOTION=false``);
+- Orbiting bodies, which can orbit both fixed and orbiting bodies (``MOTION=true``).
 
 Each body must be given a unique name within the configuration file, since the name is used internally by ExPRES to
 refer to them. Each body radius must be specified. All distances and scales units must be consistent throughout a
@@ -449,11 +449,11 @@ Orbital Parameters
 ..................
 
 .. figure:: /img/orbital-params.png
-  :width: 300
+  :width: 600
   :alt: Parameters for orbiting body
   :align: center
 
-  **Fig. 2:**
+  **Fig. 2:** Sketch illustrating the orbital parameters of celestial bodies.
 
 .. _SRC:
 
