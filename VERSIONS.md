@@ -2,7 +2,35 @@
 
 ## Latest Release - 1.1.0 (2020)
 
-TBD 
+Contributors: C. Louis, B. Cecconi
+
+Change Log for version 1.1.0:
+- Documentation: 
+  - Added readthedocs documentation, available at: https://expres.readthedocs.io/en/latest/ 
+- Configuration:
+  - `SIMU`.`NAME` and `SIMU`.`OUT` are not required anymore. `SIMU`.`NAME` is curently not used. The `SIMU`.`OUT` entry is given by the user in the `config.ini` file.
+  - Adding user-provided frequency list option
+  - New configuration option for output CDF: SRCPOS (position of the sources, in cartesian)
+  - New configuration option for output CDF: SRCVIS (for each hemisphere, sum of the visible sources)
+- Ephemeris:
+  - Adding support for use-provided WebGeoCalc ephemeris files in csv format
+  - Updated MIRIADE and WebGeoCalc ephemerides parsing methods (following undocumented webservice API changes)
+  - Modification on the User-defined ephemeris: the ephemerides given by the user can be defined to an accuracy of one second
+- Output CDF:
+  - Changing the polarization output in cdf file: `Polarization` variable indicates LH or RH polarization, `VisibleSources` provides the sum of visible sources for LH and RH polarization.
+  - Added Hemisphere_ID_Label variable in output CDF
+  - Modified the calculation of CDF output `SrcFreqMaxCMI`
+  - Modification of the CDF outputs if multiple sources
+  - Correction of an error on the CDF output time table
+- Other:
+  - Modify CDF file output version to: `...._v11.cdf`
+  - All CDF global attributes are now with type `CDF_CHAR`
+  - Modifying call to MFL (`lsh` vs. `msh`, depending on the planet)
+  - Added support for M-shell with JRM09 magnetic field model
+  
+Related Publication: 
+- Cecconi, B. C. K. Louis, C. Muñoz, C. Vallat. 2020. "Auroral Radio Source Occultation Modeling and Application to the JUICE Science Mission Planning." Astron. Astrophys., _Submitted_.
+    
 
 ## Version  1.0.0 (2019)
 In this version, the code is called ExPRES (Exoplanetary and Planetary Radio Emissions Simulator)
@@ -14,7 +42,7 @@ Main additions in this version:
 - better documentation
 
 Related Publications:
-- Louis CK, SLG Hess, B Cecconi, P Zarka, L Lamy, S Aicardi and A Loh. 2019, "ExPRES: an Exoplanetary and Planetary Radio Emissions Simulator." Astron. Astrophys. _Accepted_
+- Louis CK, SLG Hess, B Cecconi, P Zarka, L Lamy, S Aicardi and A Loh. 2019, "ExPRES: an Exoplanetary and Planetary Radio Emissions Simulator." Astronomy and Astrophysics 627: A30. [doi:10.1051/0004-6361/201935161](https://doi.org/10.1051/0004-6361/201935161).
 
 ## Version 0.6.1  (2018)
 In this version, the code is called SERPE (Simulation d'Emission Radio Planétaires et Exoplanétaires)

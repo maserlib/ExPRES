@@ -318,9 +318,11 @@ format.
 Fixed Observer
 ..............
 
-A fixed observer is configured by its distance (``FIXE_DIST`` keyword) to the *central body*, its sub-longitude in
-degrees (``FIXE_SUBL`` keyword) and its declination in degrees (``FIXE_DECL`` keyword) in the reference body frame,
-and at the simulation time origin.
+A fixed observer is configured by a location at the start of the simulation: its distance (``FIXE_DIST`` keyword)
+to the *central body*, its sub-longitude in degrees (``FIXE_SUBL`` keyword) and its declination in degrees
+(``FIXE_DECL`` keyword) in the reference body frame. The location of such an the observer is fixed in an absolute
+frame centered on the *central body*. Hence it is not fixed in the *central body* frame, which is rotating with its
+sidereal period.
 
 Orbiter
 .......
@@ -344,7 +346,7 @@ using the ``EPHEM`` keyword.
 .. code-block::
 
   "OBSERVER": {
-    "TYPE": "Fixed",
+    "TYPE": "Pre-defined",
     "EPHEM": "",
     "FIXE_DIST": "auto",
     "FIXE_SUBL": "auto",
@@ -390,8 +392,8 @@ The ``BODY`` section contains the celestial bodies configuration.
 
 Two types of celestial bodies can be included in the simulations:
 
-- ``Fixed`` bodies, at least is one needed: the simulation run reference body;
-- ``Orbiting`` bodies, which can orbit both fixed and orbiting bodies.
+- Fixed bodies (at least is one needed): the simulation run reference body (``MOTION=false``);
+- Orbiting bodies, which can orbit both fixed and orbiting bodies (``MOTION=true``).
 
 Each body must be given a unique name within the configuration file, since the name is used internally by ExPRES to
 refer to them. Each body radius must be specified. All distances and scales units must be consistent throughout a
@@ -449,11 +451,11 @@ Orbital Parameters
 ..................
 
 .. figure:: /img/orbital-params.png
-  :width: 300
+  :width: 600
   :alt: Parameters for orbiting body
   :align: center
 
-  **Fig. 2:**
+  **Fig. 2:** Sketch illustrating the orbital parameters of celestial bodies.
 
 .. _SRC:
 
