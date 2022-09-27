@@ -407,8 +407,8 @@ Celestial body definitions include the following keywords:
 - ``PERIOD``: The sidereal rotation period of the current body (in minutes)
 - ``FLAT``: The polar flatening ratio of the current body.
 - ``ORB_PER``: The orbital period according to 3rd Kepler's law at 1 radius (in minutes) 
-**Example:** For Io, :math:`M_{Io} = 8.931e22\textrm{kg}`, :math:`a = 1821e3\textrm{m}`, :math:`G = 6.674e-11\textrm{N.m^{2}.kg^{−2}}`,
-therefore :math:`T = \sqrt{\frac{a^{3} * 4 * \pi^{2}}{G * M_{\textrm{Io}}}}*\frac{1}{60} = 105.4 \textrm{min}`
+**Example:** For Io, :math:`M_{Io} = 8.931x10^{22}~\textrm{kg}`, :math:`a = 1821x10^{3}~\textrm{m}`, :math:`G = 6.674x10^{-11}~\textrm{N}.\textrm{m}^{2}.\textrm{kg}^{−2}}`,
+therefore :math:`T = \sqrt{\frac{a^{3} * 4 * \pi^{2}}{G * M_{\textrm{Io}}}}*\frac{1}{60} = 105.4~\textrm{min}`
 
 - ``INIT_AX``: The reference longitude (in degrees)
 - ``MAG``: The internal body magnetic field model (see the :ref:`Magnetic Field Model<MFL>` section below)
