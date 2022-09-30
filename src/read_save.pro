@@ -1046,12 +1046,18 @@ for i=0,n_elements(sc)-2 do begin
     (*((parameters.objects[n]))).parent=satel
 		a=(*satel).semi_major_axis
 		b=(*satel).semi_minor_axis
-		c=sqrt(a^2-b^2)
-		b=(fix(a-c))>2
-		a=(fix(a+c+1))<50
-		(*((parameters.objects[n]))).l_min=b
-		(*((parameters.objects[n]))).l_max=a
-		(*((parameters.objects[n]))).nlat=(a-b+1)
+		if (a eq b) and (a-fix(a) eq 0) then begin
+      (*((parameters.objects[n]))).l_min=a
+      (*((parameters.objects[n]))).l_max=b
+      (*((parameters.objects[n]))).nlat=1
+    endif else begin
+      c=sqrt(a^2-b^2)
+		  b=(fix(a-c))>2
+		  a=(fix(a+c+1))<100
+		  (*((parameters.objects[n]))).l_min=b
+		  (*((parameters.objects[n]))).l_max=a
+		  (*((parameters.objects[n]))).nlat=(a-b+1)
+    endelse
 	endif else (*((parameters.objects[n]))).parent=parent
 
 	case mfl of 
