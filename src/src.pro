@@ -354,13 +354,13 @@ if (*obj).loss ne 0 then th2=Loss_cone(rebin(reform((*((*obj).v)),1,nv*nlg*nlat)
 if (*obj).cavity ne 0 then th2=shell(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,(*obj).cold,w2)
 if (*obj).constant ne 0 then begin
 	;th2=Loss_cone(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),w2)
-	th2 = dblarr(parameters.freq.n_freq)
+	th2 = dblarr(parameters.freq.n_freq,nv*nlg*nlat)
 	th2[*] = (*obj).constant
 	w2=where(f gt 1.)
 	if w2[0] ne -1 then th2[w2] = -1e31
 endif
 if (*obj).ring ne 0 then begin
-	th2 = dblarr(parameters.freq.n_freq)
+	th2 = dblarr(parameters.freq.n_freq,nv*nlg*nlat)
 	th2[*] = 90.
 	w2=where(f gt 1.)
 	if w2[0] ne -1 then th2[w2] = -1e31
@@ -379,7 +379,6 @@ if (*obj).lossbornes ne 0 then begin
 	th2sup(wsup)=89.9
 	th2inf=Loss_cone(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),w2inf)-10.
 endif
-
 
 if (*obj).refract then $
 th2=refrac(th2,thz,gb,rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),(*obj).cavity)
