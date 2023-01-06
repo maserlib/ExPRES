@@ -352,15 +352,25 @@ endif
 ; ****** ici d=wp^2/wc^2 ***
 if (*obj).loss ne 0 then th2=Loss_cone(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),w2)
 if (*obj).cavity ne 0 then th2=shell(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,(*obj).cold,w2)
-if (*obj).constant ne 0 then th2=(*obj).constant
-if (*obj).ring ne 0 then th2=90.
+if (*obj).constant ne 0 then begin
+	;th2=Loss_cone(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),w2)
+	th2 = dblarr(parameters.freq.n_freq)
+	th2[*] = (*obj).constant
+	w2=where(f gt 1.)
+	if w2[0] ne -1 then th2[w2] = -1e31
+endif
+if (*obj).ring ne 0 then begin
+	th2 = dblarr(parameters.freq.n_freq)
+	th2[*] = 90.
+	w2=where(f gt 1.)
+	if w2[0] ne -1 then th2[w2] = -1e31
+endif
 
 ; *************
 ; rampe a tester
 ; *************
 if (*obj).rampe ne 0 then th2=f*((*obj).constant-(*obj).asymp)+(*obj).asymp 
 ; *************
-
 
 
 if (*obj).lossbornes ne 0 then begin 
@@ -391,7 +401,6 @@ if (*obj).lossbornes ne 0 then begin
 	if w2sup[0] ne -1 then thsup[w2sup]=1000.
 	if w2inf[0] ne -1 then thinf[w2inf]=1000.
 endif
-
 
 ;**** Th is already the difference between the angle of emission and the angle of observation
 ;**** We interpolate here for cases where th changes very quickly (e.g. ionosphere)
