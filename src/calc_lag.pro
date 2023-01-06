@@ -6,8 +6,8 @@
 ;***                                                     ***
 ;***       MODULE: calc_lag                              ***
 ;***        CL : 29/06/2015                              ***
-;***     function: calc_lag ; automatic calculation 
-;***     						of the lead angle 		 ***
+;***     function: calc_lag ; automatic calculation 	 ***
+;***    	of the lead angle	 		 ***
 ;***                                                     ***
 ;***********************************************************
 
@@ -249,26 +249,55 @@ if satellite eq 'Io' then begin
 			endelse
 			lag=-interpol(LEAD_ANGLE,LONG_IO_EQ_F,phase)
 		END
+		'hue2023': BEGIN
+		; # based on Juno/UVS images - doi to be added once paper is published
+			if north eq 1 then begin
+				lag =  4.6 + 2.9 * cos(0.9 * phase*!Dtor) - 0.6 * sin(0.9 * phase*!Dtor)
+			endif else begin
+				lag =  4.1 - 1.8 * cos(0.93* phase*!Dtor) - 0.004 * sin(0.93 * phase*!Dtor)
+			endelse
+			lag = -lag
+		END
 	ENDCASE
 	
 endif else if satellite eq 'Ganymede' then begin
-	if north eq 1 then begin
-		A=6.8
-		B=-6.2
+	if lag_model eq 'hue2023' then begin
+	; # based on Juno/UVS images - doi to be added once paper is published
+		if north eq 1 then begin
+			lag =  14.4 + 7.4 * cos(0.76 * phase*!Dtor) - 1.9 * sin(0.76 * phase*!Dtor)
+		endif else begin
+			lag =  12.5 - 6.8 * cos(0.92 * phase*!Dtor) - 2.6 * sin(0.92 * phase*!Dtor)
+		endelse
+		lag = -lag
 	endif else begin
-		A=6.8
-		B=6.2
+		if north eq 1 then begin
+			A=6.8
+			B=-6.2
+		endif else begin
+			A=6.8
+			B=6.2
+		endelse
+		lag =-(A+B*cos((phase-202)*!dtor))
 	endelse
-	lag =-(A+B*cos((phase-202)*!dtor))
 endif else if satellite eq 'Europa' then begin
-	if north eq 1 then begin
-		A=5.2
-		B=-4.8
+	if lag_model eq 'hue2023' then begin
+	; # based on Juno/UVS images - doi to be added once paper is published
+		if north eq 1 then begin
+			lag =  6.5 + 3.6 * cos(0.8 * phase*!Dtor) - 0.8 * sin(0.8 * phase*!Dtor) 
+		endif else begin
+			lag =  7.2 - 3.2 * cos(1.06 * phase*!Dtor) - 0.5 * sin(1.06 * phase*!Dtor)
+		endelse
+		lag = -lag
 	endif else begin
-		A=5.2
-		B=4.8
+		if north eq 1 then begin
+			A=5.2
+			B=-4.8
+		endif else begin
+			A=5.2
+			B=4.8
+		endelse
+		lag =-(A+B*cos((phase-202)*!dtor))
 	endelse
-	lag =-(A+B*cos((phase-202)*!dtor))
 endif else if satellite eq 'Callisto' then begin
 	lag=0.
 endif else lag=0.
