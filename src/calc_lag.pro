@@ -252,7 +252,7 @@ if satellite eq 'Io' then begin
 		'hue2023': BEGIN
 		; # based on Juno/UVS images - doi to be added once paper is published
 			if north eq 1 then begin
-				lag =  4.179 + 2.885 * cos(0.999 * phase*!Dtor) - 0.405 * sin(0.999 * phase*!Dtor)
+				lag =  4.179 + 2.885 * cos(0.999 * phase*!Dtor) + 0.405 * sin(0.999 * phase*!Dtor)
 			endif else begin
 				lag =  4.21 - 1.639 * cos(0.999* phase*!Dtor) - 0.406 * sin(0.999 * phase*!Dtor)
 			endelse
