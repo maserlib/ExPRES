@@ -100,7 +100,7 @@ The parameters are:
 
 - ``Constant``: if ``Current="Constant"`` then provide here the value in degree (80.0 for example)
 - ``Accel``: the energy of the resonant electrons (in keV)
-- ``Refraction``: to take into account refraction in the source’s vicinity (not implemented yet)
+- ``Refraction``: to take into account refraction in the source’s vicinity
 
 Running ExPRES Online
 ---------------------
