@@ -487,7 +487,7 @@ Radio Source Configuration
 - ``ACCEL``: The value of resonant electron beam energy in keV (not used when ``Constant`` is selected)
 - ``TEMP``: The value of the cold electron distribution temperature (in keV)
 - ``TEMPH``: The value of the halo electron distribution temperature (in keV)
-- ``REFRACTION``: Flag to activate refraction effects (**not implemented yet**)
+- ``REFRACTION``: Flag to activate refraction effects
 
 **Example:** We configure a simulation with emission induced by Io ("TYPE": "attached to a satellite", "SAT": "Io",), in the northern ("Source1",  "NORTH": true) and the southern ("Source2",  "SOUTH": true,) hemispheres. We use the lead angle model based on :cite:`hinton_JGR_20119` ("LAG_MODEL":"hinton2019") to determine the active magnetic field lines that will produce the emission. The electron have an energy of 3 keV ( "ACCEL": 3) and the distribution function is of the loss cone type ("CURRENT": "Transient (Alfvenic)")
 
