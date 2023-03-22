@@ -43,6 +43,14 @@
 
     "keywords": ["Radio Emissions", "Simulations", "Planetary"],
 
+    "related_identifiers": [
+        {
+            "scheme": "doi",
+            "identifier": "http://ascl.net/1902.009",
+            "relation": "isAlternateIdentifier",
+            "resource_type": "publication-software"
+        }
+    ],
     "communities": [
         {"identifier": "Europlanet-VESPA"},
         {"identifier": "Space Physics and Aeronomy"}
