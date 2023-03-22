@@ -45,10 +45,10 @@
 
     "related_identifiers": [
         {
-            "scheme": "doi",
+            "scheme": "ascl",
             "identifier": "http://ascl.net/1902.009",
             "relation": "isAlternateIdentifier",
-            "resource_type": "publication-software"
+            "upload_type": "software"
         }
     ],
     "communities": [
