@@ -1,7 +1,7 @@
-# Exoplanetary and Planetary Radio Emission Simulator (ExPRES) V1.1.0
+# Exoplanetary and Planetary Radio Emission Simulator (ExPRES) V1.2.0
 
 <a href="http://ascl.net/1902.009"><img src="https://img.shields.io/badge/ascl-1902.009-blue.svg?colorB=262255" alt="ascl:1902.009" /></a>
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4292002.svg)](https://doi.org/10.5281/zenodo.4292002)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4280546.svg)](https://doi.org/10.5281/zenodo.4280546)
 [![Documentation Status](https://readthedocs.org/projects/expres/badge/?version=latest)](https://expres.readthedocs.io/en/latest/?badge=latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -49,5 +49,5 @@ This compiles all the necessary routines in advance. Then the simulation can be 
 ```
 IDL> main,'file.json'
 ```
-where `file.json` is the input parameter file. This file must comply with the [ExPRES-v1.1 JSON-shema](https://voparis-ns.obspm.fr/maser/expres/v1.1/schema#)
+where `file.json` is the input parameter file. This file must comply with the [ExPRES-v1.2 JSON-shema](https://voparis-ns.obspm.fr/maser/expres/v1.2/schema#)
 
