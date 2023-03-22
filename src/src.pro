@@ -225,8 +225,8 @@ xyz_obs=rebin(reform((*((*obj).parent)).rot#((*obs.trajectory_xyz)[*,t]-(*((*obj
 	3,parameters.freq.n_freq,nlg*nlat)
 	
 ;************** Calcul auto du lead angle pour Io *******
-if ((*obj).lgauto eq "on") then begin
-	(*((*obj).lg))[0,*,*]=calc_lag((*obj).north,(*((*obj).parent)).lg,satellite=(*(*(*obj).parent).parent).name)
+if ((*obj).lagauto eq "on") then begin
+	(*((*obj).lg))[0,*,*]=calc_lag((*obj).lagmodel,(*obj).north,(*((*obj).parent)).lg,satellite=(*(*(*obj).parent).parent).name)
 	i=1
 	while (i lt nlg) do begin
 		if i eq 1 then (*((*obj).lg))[0,1,*]=(*((*obj).lg))[0,1,*]-4.
@@ -234,11 +234,11 @@ if ((*obj).lgauto eq "on") then begin
 		i=i+1
 	endwhile
 endif
-if ((*obj).lgauto eq "on-3") then begin
-	(*((*obj).lg))[0,*,*]=calc_lag((*obj).north,(*((*obj).parent)).lg,satellite=(*(*(*obj).parent).parent).name)-3.
+if ((*obj).lagauto eq "on-3") then begin
+	(*((*obj).lg))[0,*,*]=calc_lag((*obj).lagmodel,(*obj).north,(*((*obj).parent)).lg,satellite=(*(*(*obj).parent).parent).name)-3.
 endif
-if ((*obj).lgauto eq "on+3") then begin
-	(*((*obj).lg))[0,*,*]=calc_lag((*obj).north,(*((*obj).parent)).lg,satellite=(*(*(*obj).parent).parent).name)+3.
+if ((*obj).lagauto eq "on+3") then begin
+	(*((*obj).lg))[0,*,*]=calc_lag((*obj).lagmodel,(*obj).north,(*((*obj).parent)).lg,satellite=(*(*(*obj).parent).parent).name)+3.
 endif
 ;********************************************************
 
@@ -267,6 +267,9 @@ d=fltarr(parameters.freq.n_freq,nlg*nlat)		;densite = wp^2/wc^2
 gb=fltarr(parameters.freq.n_freq,nlg*nlat)		;gradient angle
 f=fltarr(nlg*nlat);frequence max
 fCMI=fltarr(nlg*nlat);frequence max avec condition CMI wp/wc<0.1
+
+
+
 if (*obj).north then begin ; Magnetic north pole
 	var=0
 	for i=0,3 do begin
@@ -295,6 +298,7 @@ endif else begin if (*obj).south then begin				; Magnetic south pole
 	endfor
 endif
 endelse
+
 coef=0b
 
 (*(*obj).fmax)[*,var]=f
@@ -348,8 +352,19 @@ endif
 ; ****** ici d=wp^2/wc^2 ***
 if (*obj).loss ne 0 then th2=Loss_cone(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),w2)
 if (*obj).cavity ne 0 then th2=shell(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,(*obj).cold,w2)
-if (*obj).constant ne 0 then th2=(*obj).constant
-if (*obj).ring ne 0 then th2=90.
+if (*obj).constant ne 0 then begin
+	;th2=Loss_cone(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),w2)
+	th2 = dblarr(parameters.freq.n_freq,nv*nlg*nlat)
+	th2[*] = (*obj).constant
+	w2=where(f gt 1.)
+	if w2[0] ne -1 then th2[w2] = -1e31
+endif
+if (*obj).ring ne 0 then begin
+	th2 = dblarr(parameters.freq.n_freq,nv*nlg*nlat)
+	th2[*] = 90.
+	w2=where(f gt 1.)
+	if w2[0] ne -1 then th2[w2] = -1e31
+endif
 
 ; *************
 ; rampe a tester
@@ -358,14 +373,12 @@ if (*obj).rampe ne 0 then th2=f*((*obj).constant-(*obj).asymp)+(*obj).asymp
 ; *************
 
 
-
 if (*obj).lossbornes ne 0 then begin 
 	th2sup=Loss_cone(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),w2sup)+10.
 	wsup=where(th2sup ge 90.)
 	th2sup(wsup)=89.9
 	th2inf=Loss_cone(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),w2inf)-10.
 endif
-
 
 if (*obj).refract then $
 th2=refrac(th2,thz,gb,rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),(*obj).cavity)
@@ -387,7 +400,6 @@ if (*obj).lossbornes ne 0 then begin
 	if w2sup[0] ne -1 then thsup[w2sup]=1000.
 	if w2inf[0] ne -1 then thinf[w2inf]=1000.
 endif
-
 
 ;**** Th is already the difference between the angle of emission and the angle of observation
 ;**** We interpolate here for cases where th changes very quickly (e.g. ionosphere)

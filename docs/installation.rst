@@ -48,7 +48,7 @@ The ExPRES code also uses some routines from the `IDLAstro <https://github.com/w
 Precomputed data
 ----------------
 
-Precomputed sets of data providing planetary magnetic field line models used by the ExPRES code must to download before
+Precomputed sets of data providing planetary magnetic field line models used by the ExPRES code must be downloaded before
 any operation. The data is available from the `ExPRES section of the MASER data server
 <http://maser.obspm.fr/support/expres/mfl>`_.
 

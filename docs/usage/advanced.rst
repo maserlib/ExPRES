@@ -80,7 +80,7 @@ Simulation Setup
 ----------------
 
 The simulation setup is configured via an ExPRES configuration file (in *JSON* format), following the `ExPRES
-JSON-Schema v1.1 <https://voparis-ns.pages.obspm.fr/maser/expres/v1.1/schema#>`_.
+JSON-Schema v1.2 <https://voparis-ns.pages.obspm.fr/maser/expres/v1.2/schema#>`_.
 
 
 
@@ -94,7 +94,7 @@ sections and structure are summarised below:
 .. code-block::
 
   {
-    "$schema": "https://voparis-ns.obspm.fr/maser/expres/v1.1/schema#",
+    "$schema": "https://voparis-ns.obspm.fr/maser/expres/v1.2/schema#",
     "SIMU": {...},
     "NUMBER": {...},
     "TIME": {...},
@@ -111,7 +111,7 @@ Each JSON entry shown here is described in the next sections. The *BODY* section
 elements, each of which containing a list of *DENS* elements.
 
 +------------------------+-------------------+--------------------------------------+
-| Section                | Mandatory in v1.1 | Description                          |
+| Section                | Mandatory in v1.2 | Description                          |
 +========================+===================+======================================+
 | :ref:`SIMU<SIM>`       | no                | Simulation run description           |
 +------------------------+-------------------+--------------------------------------+
@@ -205,8 +205,8 @@ per minute.
 
    "TIME": {
      "MIN": 0,
-     "MAX": 1440,
-     "NBR": 1441
+     "MAX": 1439,
+     "NBR": 1440
    }
 
 .. _FREQ:
@@ -407,7 +407,7 @@ Celestial body definitions include the following keywords:
 - ``PERIOD``: The sidereal rotation period of the current body (in minutes)
 - ``FLAT``: The polar flatening ratio of the current body.
 - ``ORB_PER``: The orbital period according to 3rd Kepler's law at 1 radius (in minutes) 
-**Example:** For Io, :math:`M_{Io} = 8.931x10^{22}~\textrm{kg}`, :math:`a = 1821x10^{3}~\textrm{m}`, :math:`G = 6.674x10^{-11}~\textrm{N}.\textrm{m}^{2}.\textrm{kg}^{−2}}`,
+**Example:** For Io, :math:`M_{Io} = 8.931x10^{22}~\textrm{kg}`, :math:`a = 1821x10^{3}~\textrm{m}`, :math:`G = 6.674x10^{-11}~\textrm{N}.\textrm{m}^{2}.\textrm{kg}^{-2}}`,
 therefore :math:`T = \sqrt{\frac{a^{3} * 4 * \pi^{2}}{G * M_{\textrm{Io}}}}*\frac{1}{60} = 105.4~\textrm{min}`
 
 - ``INIT_AX``: The reference longitude (in degrees)
@@ -473,6 +473,7 @@ Radio Source Configuration
 - ``LG_MIN``: The lower bound value of the source longitude (in degrees)
 - ``LG_MAX``: The upper bound value of the source longitude (in degrees)
 - ``LG_NBR``: The number of steps for the source longitude.
+- ``LAG_MODEL``: Model of the lead angle for the Io active flux tube (choices are: ``hess2011`` (:cite:HBZ11), ``bonfond2009`` (:cite:`bonfond_2009_jgr`), ``bonfond2017`` (:cite:`bonfond_2017_icarus`), ``hinton2019`` (:cite:`hinton_2019_jgr`), ``hue2023`` (:cite:`hue2023`)).
 - ``LAT``: If ``Fixed in latitude``: Latitude in degree; else: apex distance in planetary radii.
 - ``SUB``: The subcorotation rate of the source (0 = no corotation)
 - ``AURORA_ALT``: The altitude of the aurora (in planetary radii)
@@ -486,7 +487,59 @@ Radio Source Configuration
 - ``ACCEL``: The value of resonant electron beam energy in keV (not used when ``Constant`` is selected)
 - ``TEMP``: The value of the cold electron distribution temperature (in keV)
 - ``TEMPH``: The value of the halo electron distribution temperature (in keV)
-- ``REFRACTION``: Flag to activate refraction effects (**not implemented yet**)
+- ``REFRACTION``: Flag to activate refraction effects
+
+**Example:** We configure a simulation with emission induced by Io ("TYPE": "attached to a satellite", "SAT": "Io",), in the northern ("Source1",  "NORTH": true) and the southern ("Source2",  "SOUTH": true,) hemispheres. We use the lead angle model based on :cite:`hinton_JGR_20119` ("LAG_MODEL":"hinton2019") to determine the active magnetic field lines that will produce the emission. The electron have an energy of 3 keV ( "ACCEL": 3) and the distribution function is of the loss cone type ("CURRENT": "Transient (Alfvenic)")
+
+.. code-block::
+
+"SOURCE": [
+    {
+        "ON": true,
+        "NAME": "Source1",
+        "PARENT": "Jupiter",
+        "TYPE": "attached to a satellite",
+        "LG_MIN": 0,
+        "LG_MAX": 0,
+        "LG_NBR": 1,
+        "LAT": 0,
+        "LAG_MODEL":"hinton2019" ,
+        "SUB": 0,
+        "AURORA_ALT": 0.009091926738619804,
+        "SAT": "Io",
+        "NORTH": true,
+        "SOUTH": false,
+        "WIDTH": 1,
+        "CURRENT": "Transient (Alfvenic)",
+        "CONSTANT": 0.0,
+        "ACCEL": 3,
+        "TEMP": 0,
+        "TEMPH": 0,
+        "REFRACTION": false
+    },
+    {
+        "ON": true,
+        "NAME": "Source2",
+        "PARENT": "Jupiter",
+        "TYPE": "attached to a satellite",
+        "LG_MIN": 0, 
+        "LG_MAX": 0, 
+        "LG_NBR": 1,
+        "LAG_MODEL":"hinton2019", 
+        "LAT": 0, 
+        "SUB": 0, 
+        "AURORA_ALT": 0.009091926738619804, 
+        "SAT": "Io", 
+        "NORTH": false, 
+        "SOUTH": true, 
+        "WIDTH": 1, 
+        "CURRENT": "Transient (Alfvenic)", 
+        "CONSTANT": 0.0, 
+        "ACCEL": 3, "TEMP": 0, 
+        "TEMPH": 0, 
+        "REFRACTION": false
+    }]
+
 
 Output Configuration
 +++++++++++++++++++++
@@ -495,17 +548,54 @@ Output Configuration
 
 Dynamic Spectrum Output
 .......................
+Dynamic Spectra ouput setup:
+
+- ``INTENSITY``: Flag to ouput 'Intensity' plots (``true`` or ``false``)
+- ``POLAR``: Flag to ouput 'Polar' plots (``true`` or ``false``)
+- ``FREQ``: Flags to setup output plot spectral axes
+- ``LONG``: Flags to setup output plot longitude axes
+- ``LAT``: Flags to setup output plot latitude axes
+- ``DRANGE``: Distance range for plot setup (number, min and max)
+- ``LGRANGE``: Longitude range for plot setup (number, min and max)
+- ``LARANGE``: Latitude range for plot setup (number, min and max)
+- ``LTRANGE``: Local-Time range for plot setup (number, min and max)
+- ``KHZ``: Flag for spectral axis output in kHz (``true`` or ``false``, default is MHz)
+- ``LOG``: Flag for spectral axis output in log scale (``true`` or ``false``)
+- ``PDF``: Flag for PDF file output (``true`` or ``false``)
+- ``CDF``: Configuration of CDF file output
+   - ``THETA``: Flag for THETA parameter output in the CDF file (``true`` or ``false``)
+   - ``FP``: Flag for FP parameter output in the CDF file (``true`` or ``false``)
+   - ``FC``: Flag for FC parameter output in the CDF file (``true`` or ``false``)
+   - ``"AZIMUTH``: Flag for AZIMUTH parameter output in the CDF file (``true`` or ``false``)
+   - ``OBSLATITUDE``: Flag for OBSLATITUDE parameter output in the CDF file (``true`` or ``false``)
+   - ``SRCLONGITUDE``: Flag for SRCLONGITUDE parameter output in the CDF file (``true`` or ``false``)
+   - ``SRCFREQMAX``: Flag for SRCFREQMAX parameter output in the CDF file (``true`` or ``false``)
+   - ``OBSDISTANCE``: Flag for OBSDISTANCE parameter output in the CDF file (``true`` or ``false``)
+   - ``OBSLOCALTIME``: Flag for OBSLOCALTIME parameter output in the CDF file (``true`` or ``false``)
+   - ``CML``: Flag for CML parameter output in the CDF file (``true`` or ``false``)
+   - ``SRCPOS``: Flag for SRCPOS parameter output in the CDF file (``true`` or ``false``)
+   - ``SRCVIS``: Flag for SRCVIS parameter output in the CDF file (``true`` or ``false``)
+- ``INFOS``: IDL Saveset output (for debugging) (``true`` or ``false``)
 
 .. _M2D:
 
 2D Movie Output
-...............
+.......................
+- ``ON``: Flag to activate Movie2D generation (``true`` or ``false``)
+- ``SUBCYCLE``: Subsampling rate of movie images (1=all temporal steps)
+- ``RANGE``: Size of Field of view (in central body planetary radii)
 
 .. _M3D:
 
 3D Movie Output
 ...............
-
+- ``ON`` Flag to activate Movie3D generation (``true`` or ``false``)
+- ``SUBCYCLE``: Subsampling rate of movie images (1=all temporal steps)
+- ``XRANGE``: Plotting Range in X axis (in central planet radius units)
+- ``YRANGE``: Plotting Range in Y axis (in central planet radius units)
+- ``ZRANGE``: Plotting Range in Z axis (in central planet radius units)
+- ``OBS``: Flag to activate plotting the location of the observer
+- ``TRAJ``: Flag to activate plotting the trajectories of the objects
 
 .. _DENS:
 
@@ -676,7 +766,9 @@ related references.
 +=========+============+===============+============+===============+========================+
 | Mercury | A12        | :cite:`And12` |                            | ``A12``                |
 +---------+------------+---------------+------------+---------------+------------------------+
-| Jupiter | ISaAC      | :cite:`HBZ11` | CAN81      | :cite:`CAN81` | ``ISaAC+Connerney CS`` |
+| Jupiter | JRM33      | :cite:`CTO21` | CON20      | :cite:`CON20` | ``JRM33``              |
+|         +------------+---------------+------------+---------------+------------------------+
+|         | ISaAC      | :cite:`HBZ11` | CAN81      | :cite:`CAN81` | ``ISaAC+Connerney CS`` |
 |         +------------+---------------+            |               +------------------------+
 |         | JRM09      | :cite:`CKO18` |            |               | ``JRM09+Connerney CS`` |
 |         +------------+---------------+            |               +------------------------+

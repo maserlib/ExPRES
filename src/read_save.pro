@@ -805,7 +805,8 @@ if cnt ne 0 then begin
 	    	if cnt eq 0 then begin 
 	    	  nerr +=1 
 	   		  error = [error,'Missing SOURCE.LG_NBR Element.']
-		    endif  
+		    endif
+
 
 	    	test = where(key_list_lev1 eq 'LAT',cnt)
 	    	if cnt eq 0 then begin 
@@ -916,7 +917,7 @@ freq={FR,mini:0.,maxi:0.,nbr:0l,df:0.,name:'',log:0b,predef:0b,freq_tab:PTR_NEW(
 observer={OB,motion:0b,smaj:0.,smin:0.,decl:0.,alg:0.,incl:0.,phs:0.,predef:0b,name:'',parent:'',start:''}
 body={BO,on:0b,name:'',rad:0.,per:0.,flat:0.,orb1:0.,lg0:0.,sat:0b,smaj:0.,smin:0.,decl:0.,alg:0.,incl:0.,phs:0.,parent:'', mfl:'',dens:intarr(4),ipar:0}
 dens={DE,on:0b,name:'',type:'',rho0:0.,height:0.,perp:0.}
-src={SO,on:0b,name:'',parent:'',sat:'',type:'',loss:0b,lossbornes:0b,ring:0b,cavity:0b,constant:0.,width:0.,temp:0d,cold:0d,v:0d,lgauto:'',lgmin:0.,lgmax:0.,lgnbr:1,lgstep:1.,latmin:0.,latmax:0.,latstep:1.,north:0b,south:0b,subcor:0.,aurora_alt:0d,refract:0b}
+src={SO,on:0b,name:'',parent:'',sat:'',type:'',loss:0b,lossbornes:0b,ring:0b,cavity:0b,constant:0.,width:0.,temp:0d,cold:0d,v:0d,lagauto:'off',lagmodel:'',lgmin:0.,lgmax:0.,lgnbr:1,lgstep:1.,latmin:0.,latmax:0.,latstep:1.,north:0b,south:0b,subcor:0.,aurora_alt:0d,refract:0b}
 spdyn={SP,intensity:0b,polar:0b,f_t:0b,lg_t:0b,lat_t:0b,f_r:0b,lg_r:0b,lat_r:0b,f_lg:0b,lg_lg:0b,lat_lg:0b,f_lat:0b,lg_lat:0b,lat_lat:0b,f_lt:0b,lg_lt:0b,lat_lt:0b,$
 khz:0b,pdf:0b,log:0b,xrange:[0.,0.],lgrange:[0.,0.],larange:[0.,0.],ltrange:[0.,0.],nr:0,dr:0.,nlg:0,dlg:0.,nlat:0,dlat:0.,nlt:0,dlt:0.,infos:0b}
 cdf={CD,srcvis:0b,theta:0b,fp:0b,fc:0b,azimuth:0b,obslatitude:0b,srclongitude:0b,srcfreqmax:0b,srcfreqmaxCMI:0b,obsdistance:0b,obslocaltime:0b,cml:0b,srcpos:0b}
@@ -1045,12 +1046,18 @@ for i=0,n_elements(sc)-2 do begin
     (*((parameters.objects[n]))).parent=satel
 		a=(*satel).semi_major_axis
 		b=(*satel).semi_minor_axis
-		c=sqrt(a^2-b^2)
-		b=(fix(a-c))>2
-		a=(fix(a+c+1))<50
-		(*((parameters.objects[n]))).l_min=b
-		(*((parameters.objects[n]))).l_max=a
-		(*((parameters.objects[n]))).nlat=(a-b+1)
+		if (a eq b) and (a-fix(a) eq 0) then begin
+      (*((parameters.objects[n]))).l_min=a
+      (*((parameters.objects[n]))).l_max=b
+      (*((parameters.objects[n]))).nlat=1
+    endif else begin
+      c=sqrt(a^2-b^2)
+		  b=(fix(a-c))>2
+		  a=(fix(a+c+1))<100
+		  (*((parameters.objects[n]))).l_min=b
+		  (*((parameters.objects[n]))).l_max=a
+		  (*((parameters.objects[n]))).nlat=(a-b+1)
+    endelse
 	endif else (*((parameters.objects[n]))).parent=parent
 
 	case mfl of 
@@ -1092,7 +1099,7 @@ for i=0,n_elements(sc)-2 do begin
 
 	n=n+1
 	(parameters.objects[n])=PTR_NEW({SOURCE,name:(sc[i+1]).name,parent:PTR_NEW(/ALLOCATE_HEAP),loss:(sc[i+1]).loss,lossbornes:(sc[i+1]).lossbornes,ring:(sc[i+1]).ring,cavity:(sc[i+1]).cavity,rampe:0b,constant:(sc[i+1]).constant,asymp:0.,width:(sc[i+1]).width,$
-				temp:(sc[i+1]).temp,cold:(sc[i+1]).cold,vmin:(sc[i+1]).v,vmax:(sc[i+1]).v,vstep:1.,lgauto:(sc[i+1]).lgauto,lgmin:(sc[i+1]).lgmin,lgmax:(sc[i+1]).lgmax,$
+				temp:(sc[i+1]).temp,cold:(sc[i+1]).cold,vmin:(sc[i+1]).v,vmax:(sc[i+1]).v,vstep:1.,lagauto:(sc[i+1]).lagauto,lagmodel:(sc[i+1]).lagmodel,lgmin:(sc[i+1]).lgmin,lgmax:(sc[i+1]).lgmax,$
 				lgnbr:(sc[i+1]).lgnbr,lgstep:(sc[i+1]).lgstep,latmin:(sc[i+1]).latmin,latmax:(sc[i+1]).latmax,latstep:(sc[i+1]).latstep,$
 				lgtov:0.,north:(sc[i+1]).north,south:(sc[i+1]).south,refract:(sc[i+1]).refract,grad_eq:0,grad_in:0,shield:0b,$
 				nsrc:1,spdyn:PTR_NEW(/ALLOCATE_HEAP),th:PTR_NEW(/ALLOCATE_HEAP),azimuth:PTR_NEW(/ALLOCATE_HEAP),fp:PTR_NEW(/ALLOCATE_HEAP),f:PTR_NEW(/ALLOCATE_HEAP),fmax:PTR_NEW(/ALLOCATE_HEAP),fmaxCMI:PTR_NEW(/ALLOCATE_HEAP),v:PTR_NEW(/ALLOCATE_HEAP),$
@@ -1164,11 +1171,12 @@ serpe_save = json_parse(file_name)
 ; ***** checking JSON input *****
 check = check_save_json(serpe_save,error=error_messages)
 if check ne 0 then begin
-	message,/info,'Something wrong happened with JSON file... Aborting.'
-	print, 'In JSON file: '+error_messages
 	find=strpos(error_messages,'CDF.',/reverse_search) 
-  for ierror=0,n_elements(find)-1 do if find[ierror] eq -1 then stop $
-    else for ierrorcdf=0,n_elements(find)-1 do begin
+  if min(find) eq -1 then begin 
+    message,/info,'Something wrong happened with JSON file... Aborting.'
+    print, 'In JSON file: '
+    for ierror=0,n_elements(error_messages)-1 do print, error_messages[ierror]
+  endif else for ierrorcdf=0,n_elements(find)-1 do begin
       print, error_messages[ierrorcdf]+': this element will not be in the CDF file'
     endfor
 endif
@@ -1252,7 +1260,7 @@ observer.start=(serpe_save['OBSERVER'])['SCTIME']
 if (serpe_save['OBSERVER'])['EPHEM'] eq "@wgc" then begin
 
     if observer.name eq 'Earth' then begin
-        py = Python.Import('ephem_wgc')
+        py = Python.Import('read_ephem_obs')
         result = py.get_ephem_from_wgc(observer, serpe_save['TIME'])
         observer.start=result['time0']
         time.mini=(result['time'])['MINI']
@@ -1335,8 +1343,8 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   	endelse
   endif else if (observer.predef eq 1b) then begin
   	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'juno' then begin
-  		if long64(strmid(date,0,8)) le 20151231 then stop,'ephemeris before DoY 2015 365 are not defined. A file with the corresponding ephemeris needs to be loading, please contact the ExPRES team - contact.maser@obspm.fr'
-      if long64(strmid(date,0,8)) ge 20210101 then stop,'ephemeris after DoY 2018 365 are not defined. A file with the corresponding ephemeris needs to be loading, please contact the ExPRES team - contact.maser@obspm.fr'
+  		if long64(strmid(date,0,8)) le 20151231 then stop,'ephemeris before DoY 2015 365 are not defined. A file with the corresponding ephemeris needs to be loaded, please contact the ExPRES team - contact.maser@obspm.fr'
+      if long64(strmid(date,0,8)) ge 20220101 then stop,'ephemeris after DoY 2021 365 are not defined. A file with the corresponding ephemeris needs to be loaded, please contact the ExPRES team - contact.maser@obspm.fr'
   		if (long64(strmid(observer.start,0,8)) ge 20160101) and (long64(strmid(observer.start,0,8)) lt 20170101) then $
   		restore,adresse_ephem+'Juno/2016_001-366.sav'
   		if (long64(strmid(observer.start,0,8)) ge 20170101) and (long64(strmid(observer.start,0,8)) lt 20180101) then $
@@ -1347,6 +1355,8 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
       restore,adresse_ephem+'Juno/2019.sav'
       if (strmid(strtrim(long64(observer.start),2),0,4) eq '2020') then $
       restore,adresse_ephem+'Juno/2020.sav'
+      if (strmid(strtrim(long64(observer.start),2),0,4) eq '2021') then $
+      restore,adresse_ephem+'Juno/2021.sav'
       
   	
   		w=where((long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. ge long(strmid(doy1,4,3))+long(H1)/24.+long(Mi1)/24./60.) and (long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. le (long(strmid(doy2,4,3))+long(H2)/24.+long(Mi2)/24./60.)))
@@ -1673,19 +1683,38 @@ for i=0,nsrc-1 do begin
 		sc[n].name=((serpe_save['SOURCE'])[i])['NAME']
 		sc[n].parent=((serpe_save['SOURCE'])[i])['PARENT']
 		sc[n].type=((serpe_save['SOURCE'])[i])['TYPE']
-		if size(((serpe_save['SOURCE'])[i])['LG_MIN'],/type) eq 7 then begin
+		;# old version for adding an automatic lead angle... 
+    ;# This will probably be obsolete in a future version
+    ;# Compatible with the new version
+    if size(((serpe_save['SOURCE'])[i])['LG_MIN'],/type) eq 7 then begin
 			if ((serpe_save['SOURCE'])[i])['LG_MIN'] eq 'auto' then $
-        sc[n].lgauto='on'
+        sc[n].lagauto='on'
       if ((serpe_save['SOURCE'])[i])['LG_MIN'] eq 'auto+3' then $
-        sc[n].lgauto='on+3'
+        sc[n].lagauto='on+3'
       if ((serpe_save['SOURCE'])[i])['LG_MIN'] eq 'auto-3' then $
-        sc[n].lgauto='on-3'
+        sc[n].lagauto='on-3'
+      sc[n].lagmodel="Hess2011"
+
+      if find[0] eq -1 then cdf.srcpos=((serpe_save['SPDYN'])['CDF'])['SRCPOS']
+
 		endif else begin
-			sc[n].lgauto='off'
+			sc[n].lagauto='off'
 			sc[n].lgmin=((serpe_save['SOURCE'])[i])['LG_MIN']
 			sc[n].lgmax=((serpe_save['SOURCE'])[i])['LG_MAX']
 		endelse
-		sc[n].lgnbr=((serpe_save['SOURCE'])[i])['LG_NBR']
+    
+    ; # new version for adding an automatic lead angle, based on the lag_model entry
+    ; # line 'test = ' is to test if the LAG_MODEL entry is present - entry not mandatory to be compatible with old json file version
+    test=where(((serpe_save['SOURCE'])[i]).keys() eq 'LAG_MODEL',cnt)
+    if cnt ne 0 then begin
+      if ((serpe_save['SOURCE'])[i])['LAG_MODEL'] ne 'off' and  ((serpe_save['SOURCE'])[i])['LAG_MODEL'] ne ''  then begin
+        sc[n].lagauto='on'
+        sc[n].lagmodel=((serpe_save['SOURCE'])[i])['LAG_MODEL']
+      endif
+    endif
+
+
+    sc[n].lgnbr=((serpe_save['SOURCE'])[i])['LG_NBR']
 		sc[n].lgstep=(sc[n].lgmax-sc[n].lgmin)/float((fix(((serpe_save['SOURCE'])[i])['LG_NBR'])-1)>1)
 		if sc[n].lgstep eq 0 then sc[n].lgstep=1
 		sc[n].latmin=((serpe_save['SOURCE'])[i])['LAT']
