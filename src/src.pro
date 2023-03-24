@@ -149,7 +149,7 @@ c=s*khi2^2
 d=acos(sqrt(khi2))*!radeg
 
 if mode eq 'RX' then $
-	f=acos(sqrt((b+sqrt(abs(b^2-4.*a*c)))/(2.*a)))*!radeg ;# Solution for the RX mode $
+	f=acos(sqrt((b+sqrt(abs(b^2-4.*a*c)))/(2.*a)))*!radeg $ ;# Solution for the RX mode
 else if mode eq 'LO' then $
 	f=acos(sqrt((b-sqrt(abs(b^2-4.*a*c)))/(2.*a)))*!radeg ;# Solution for the LO mode
 
