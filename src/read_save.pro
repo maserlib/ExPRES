@@ -1744,14 +1744,14 @@ for i=0,nsrc-1 do begin
      			'Shell': sc[n].ring=1b
 		 else:
 		endcase
-		##################
+		;##################
 		; # line 'test = ' is to test if the MODE entry is present - entry not mandatory to be compatible with old json file version
     		test=where(((serpe_save['SOURCE'])[i]).keys() eq 'MODE',cnt)
 	    	if cnt ne 0 then begin
       			if ((serpe_save['SOURCE'])[i])['MODE'] ne '' and sc[n].loss eq 1b  then $
         			sc[n].mode=STRUPCASE((serpe_save['SOURCE'])[i])['MODE']
     		endif
-		##################
+		;##################
 		sc[n].v=sqrt(double(((serpe_save['SOURCE'])[i])['ACCEL'])/255.5)
 		sc[n].cold=double(((serpe_save['SOURCE'])[i])['TEMP'])/255.5
 		sc[n].temp=double(((serpe_save['SOURCE'])[i])['TEMPH'])/255.5
