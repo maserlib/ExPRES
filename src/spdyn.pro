@@ -206,7 +206,7 @@ if (*obj).pol then begin
 			if (*(parameters.objects[i])).mode eq 'RX' then begin
 				if ((*parameters.objects[i]).north eq 1) then image=image-fix(transpose(*((*((*obj).out))[ntab+1]))) $
 				else if ((*parameters.objects[i]).south eq 1) then image=image+fix(transpose(*((*((*obj).out))[ntab+1])))
-			endif else
+			endif else begin
 				if ((*parameters.objects[i]).north eq 1) then image=image+fix(transpose(*((*((*obj).out))[ntab+1]))) $
 				else if ((*parameters.objects[i]).south eq 1) then image=image-fix(transpose(*((*((*obj).out))[ntab+1])))
 			endelse
