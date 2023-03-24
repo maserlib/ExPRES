@@ -917,7 +917,7 @@ freq={FR,mini:0.,maxi:0.,nbr:0l,df:0.,name:'',log:0b,predef:0b,freq_tab:PTR_NEW(
 observer={OB,motion:0b,smaj:0.,smin:0.,decl:0.,alg:0.,incl:0.,phs:0.,predef:0b,name:'',parent:'',start:''}
 body={BO,on:0b,name:'',rad:0.,per:0.,flat:0.,orb1:0.,lg0:0.,sat:0b,smaj:0.,smin:0.,decl:0.,alg:0.,incl:0.,phs:0.,parent:'', mfl:'',dens:intarr(4),ipar:0}
 dens={DE,on:0b,name:'',type:'',rho0:0.,height:0.,perp:0.}
-src={SO,on:0b,name:'',parent:'',sat:'',type:'',loss:0b,lossbornes:0b,ring:0b,cavity:0b,constant:0.,width:0.,temp:0d,cold:0d,v:0d,lagauto:'off',lagmodel:'',lgmin:0.,lgmax:0.,lgnbr:1,lgstep:1.,latmin:0.,latmax:0.,latstep:1.,north:0b,south:0b,subcor:0.,aurora_alt:0d,refract:0b}
+src={SO,on:0b,name:'',parent:'',sat:'',type:'',loss:0b,mode:'RX',lossbornes:0b,ring:0b,cavity:0b,constant:0.,width:0.,temp:0d,cold:0d,v:0d,lagauto:'off',lagmodel:'',lgmin:0.,lgmax:0.,lgnbr:1,lgstep:1.,latmin:0.,latmax:0.,latstep:1.,north:0b,south:0b,subcor:0.,aurora_alt:0d,refract:0b}
 spdyn={SP,intensity:0b,polar:0b,f_t:0b,lg_t:0b,lat_t:0b,f_r:0b,lg_r:0b,lat_r:0b,f_lg:0b,lg_lg:0b,lat_lg:0b,f_lat:0b,lg_lat:0b,lat_lat:0b,f_lt:0b,lg_lt:0b,lat_lt:0b,$
 khz:0b,pdf:0b,log:0b,xrange:[0.,0.],lgrange:[0.,0.],larange:[0.,0.],ltrange:[0.,0.],nr:0,dr:0.,nlg:0,dlg:0.,nlat:0,dlat:0.,nlt:0,dlt:0.,infos:0b}
 cdf={CD,srcvis:0b,theta:0b,fp:0b,fc:0b,azimuth:0b,obslatitude:0b,srclongitude:0b,srcfreqmax:0b,srcfreqmaxCMI:0b,obsdistance:0b,obslocaltime:0b,cml:0b,srcpos:0b}
@@ -1098,7 +1098,7 @@ for i=0,n_elements(sc)-2 do begin
   
 
 	n=n+1
-	(parameters.objects[n])=PTR_NEW({SOURCE,name:(sc[i+1]).name,parent:PTR_NEW(/ALLOCATE_HEAP),loss:(sc[i+1]).loss,lossbornes:(sc[i+1]).lossbornes,ring:(sc[i+1]).ring,cavity:(sc[i+1]).cavity,rampe:0b,constant:(sc[i+1]).constant,asymp:0.,width:(sc[i+1]).width,$
+	(parameters.objects[n])=PTR_NEW({SOURCE,name:(sc[i+1]).name,parent:PTR_NEW(/ALLOCATE_HEAP),loss:(sc[i+1]).loss,mode:(sc[i+1].mode,lossbornes:(sc[i+1]).lossbornes,ring:(sc[i+1]).ring,cavity:(sc[i+1]).cavity,rampe:0b,constant:(sc[i+1]).constant,asymp:0.,width:(sc[i+1]).width,$
 				temp:(sc[i+1]).temp,cold:(sc[i+1]).cold,vmin:(sc[i+1]).v,vmax:(sc[i+1]).v,vstep:1.,lagauto:(sc[i+1]).lagauto,lagmodel:(sc[i+1]).lagmodel,lgmin:(sc[i+1]).lgmin,lgmax:(sc[i+1]).lgmax,$
 				lgnbr:(sc[i+1]).lgnbr,lgstep:(sc[i+1]).lgstep,latmin:(sc[i+1]).latmin,latmax:(sc[i+1]).latmax,latstep:(sc[i+1]).latstep,$
 				lgtov:0.,north:(sc[i+1]).north,south:(sc[i+1]).south,refract:(sc[i+1]).refract,grad_eq:0,grad_in:0,shield:0b,$
@@ -1687,13 +1687,13 @@ for i=0,nsrc-1 do begin
     ;# This will probably be obsolete in a future version
     ;# Compatible with the new version
     if size(((serpe_save['SOURCE'])[i])['LG_MIN'],/type) eq 7 then begin
-			if ((serpe_save['SOURCE'])[i])['LG_MIN'] eq 'auto' then $
-        sc[n].lagauto='on'
-      if ((serpe_save['SOURCE'])[i])['LG_MIN'] eq 'auto+3' then $
-        sc[n].lagauto='on+3'
-      if ((serpe_save['SOURCE'])[i])['LG_MIN'] eq 'auto-3' then $
-        sc[n].lagauto='on-3'
-      sc[n].lagmodel="Hess2011"
+        if ((serpe_save['SOURCE'])[i])['LG_MIN'] eq 'auto' then $
+        	sc[n].lagauto='on'
+     	if ((serpe_save['SOURCE'])[i])['LG_MIN'] eq 'auto+3' then $
+        	sc[n].lagauto='on+3'
+        if ((serpe_save['SOURCE'])[i])['LG_MIN'] eq 'auto-3' then $
+        	sc[n].lagauto='on-3'
+      	sc[n].lagmodel="Hess2011"
 
       if find[0] eq -1 then cdf.srcpos=((serpe_save['SPDYN'])['CDF'])['SRCPOS']
 
@@ -1731,19 +1731,27 @@ for i=0,nsrc-1 do begin
 		sc[n].width=((serpe_save['SOURCE'])[i])['WIDTH']
 
 		case ((serpe_save['SOURCE'])[i])['CURRENT'] of
-		 'Transient (Alfvénic)': sc[n].loss=1b
-     'Transient (Alfvenic)': sc[n].loss=1b
-     'Transient (Aflvénic)': sc[n].loss=1b
-     'Transient (Aflvenic)': sc[n].loss=1b
-		 'Transient (Aflvenic)+bornes': BEGIN
-		 	sc[n].loss=1b
-		 	sc[n].lossbornes=1b
-		 END
-		 'Steady-State': sc[n].cavity=1b
-		 'Constant': sc[n].constant=((serpe_save['SOURCE'])[i])['CONSTANT']
-     'Shell': sc[n].ring=1b
+			'Transient (Alfvénic)': sc[n].loss=1b
+     			'Transient (Alfvenic)': sc[n].loss=1b
+     			'Transient (Aflvénic)': sc[n].loss=1b
+			'Transient (Aflvenic)': sc[n].loss=1b
+			'Transient (Aflvenic)+bornes': BEGIN
+		 		sc[n].loss=1b
+		 		sc[n].lossbornes=1b
+		 	END
+		 	'Steady-State': sc[n].cavity=1b
+		 	'Constant': sc[n].constant=((serpe_save['SOURCE'])[i])['CONSTANT']
+     			'Shell': sc[n].ring=1b
 		 else:
 		endcase
+		##################
+		; # line 'test = ' is to test if the MODE entry is present - entry not mandatory to be compatible with old json file version
+    		test=where(((serpe_save['SOURCE'])[i]).keys() eq 'MODE',cnt)
+	    	if cnt ne 0 then begin
+      			if ((serpe_save['SOURCE'])[i])['MODE'] ne '' and sc[n].loss eq 1b  then $
+        			sc[n].mode=STRUPCASE((serpe_save['SOURCE'])[i])['MODE']
+    		endif
+		##################
 		sc[n].v=sqrt(double(((serpe_save['SOURCE'])[i])['ACCEL'])/255.5)
 		sc[n].cold=double(((serpe_save['SOURCE'])[i])['TEMP'])/255.5
 		sc[n].temp=double(((serpe_save['SOURCE'])[i])['TEMPH'])/255.5
