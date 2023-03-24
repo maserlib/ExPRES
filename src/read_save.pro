@@ -1098,7 +1098,7 @@ for i=0,n_elements(sc)-2 do begin
   
 
 	n=n+1
-	(parameters.objects[n])=PTR_NEW({SOURCE,name:(sc[i+1]).name,parent:PTR_NEW(/ALLOCATE_HEAP),loss:(sc[i+1]).loss,mode:(sc[i+1].mode,lossbornes:(sc[i+1]).lossbornes,ring:(sc[i+1]).ring,cavity:(sc[i+1]).cavity,rampe:0b,constant:(sc[i+1]).constant,asymp:0.,width:(sc[i+1]).width,$
+	(parameters.objects[n])=PTR_NEW({SOURCE,name:(sc[i+1]).name,parent:PTR_NEW(/ALLOCATE_HEAP),loss:(sc[i+1]).loss,mode:(sc[i+1]).mode,lossbornes:(sc[i+1]).lossbornes,ring:(sc[i+1]).ring,cavity:(sc[i+1]).cavity,rampe:0b,constant:(sc[i+1]).constant,asymp:0.,width:(sc[i+1]).width,$
 				temp:(sc[i+1]).temp,cold:(sc[i+1]).cold,vmin:(sc[i+1]).v,vmax:(sc[i+1]).v,vstep:1.,lagauto:(sc[i+1]).lagauto,lagmodel:(sc[i+1]).lagmodel,lgmin:(sc[i+1]).lgmin,lgmax:(sc[i+1]).lgmax,$
 				lgnbr:(sc[i+1]).lgnbr,lgstep:(sc[i+1]).lgstep,latmin:(sc[i+1]).latmin,latmax:(sc[i+1]).latmax,latstep:(sc[i+1]).latstep,$
 				lgtov:0.,north:(sc[i+1]).north,south:(sc[i+1]).south,refract:(sc[i+1]).refract,grad_eq:0,grad_in:0,shield:0b,$
@@ -1749,7 +1749,7 @@ for i=0,nsrc-1 do begin
     		test=where(((serpe_save['SOURCE'])[i]).keys() eq 'MODE',cnt)
 	    	if cnt ne 0 then begin
       			if ((serpe_save['SOURCE'])[i])['MODE'] ne '' and sc[n].loss eq 1b  then $
-        			sc[n].mode=STRUPCASE((serpe_save['SOURCE'])[i])['MODE']
+        			sc[n].mode=STRUPCASE(((serpe_save['SOURCE'])[i])['MODE'])
     		endif
 		;##################
 		sc[n].v=sqrt(double(((serpe_save['SOURCE'])[i])['ACCEL'])/255.5)
