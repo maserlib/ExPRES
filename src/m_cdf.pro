@@ -221,20 +221,35 @@ for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]
 		if opt.theta then theta(h,i,*)=(*(*parameters.objects[j]).th)(*,ilg,var)	
 		wn0=where((*(*parameters.objects[j]).th)(*,ilg,var) ne -1.0e+31)
 		if wn0(0) ne -1 then begin
-			if (*parameters.objects[j]).north eq 1 then polarization(i,wn0)=-1 $
+			if ((*parameters.objects[j]).north eq 1) then begin
+				if ((*parameters.objects[j]).mode eq 'RX') then polarization(i,wn0)=-1 $
 				else polarization(i,wn0)=+1
+			endif else begin
+				if ((*parameters.objects[j]).mode eq 'RX') then polarization(i,wn0)=+1 $
+				else polarization(i,wn0)=-1
+			endelse
 			if opt.azimuth then azimuth(h,i,wn0)=(*(*parameters.objects[j]).azimuth)(wn0,ilg,var)*!radeg
 			if opt.fp then fp2(h,i,wn0)=(*(*parameters.objects[j]).fp)(wn0,ilg,var)
 			if opt.fc then fx(h,i,wn0)=(*(*parameters.objects[j]).f)(wn0,ilg,var)
 			
 			if opt.srcvis then $
 			for ipolar=0,n_elements(wn0)-1 do begin
-				if var eq 0 then begin
-					if polarizationSUM[0,i,wn0[ipolar]] eq 32767 then polarizationSUM[0,i,wn0[ipolar]]=polarizationSUM[0,i,wn0[ipolar]]-32767-1 $
-						else polarizationSUM[0,i,wn0[ipolar]]=polarizationSUM[0,i,wn0[ipolar]]-1 
-				endif else begin
-					if polarizationSUM[1,i,wn0[ipolar]] eq 32767 then polarizationSUM[1,i,wn0[ipolar]]=polarizationSUM[1,i,wn0[ipolar]]-32767+1 $
-						else polarizationSUM[1,i,wn0[ipolar]]=polarizationSUM[1,i,wn0[ipolar]]+1 
+				if var eq 0 then begin ;# var eq 0 means North
+					if ((*parameters.objects[j]).mode eq 'RX') then begin
+						if polarizationSUM[0,i,wn0[ipolar]] eq 32767 then polarizationSUM[0,i,wn0[ipolar]]=polarizationSUM[0,i,wn0[ipolar]]-32767-1 $
+							else polarizationSUM[0,i,wn0[ipolar]]=polarizationSUM[0,i,wn0[ipolar]]-1 
+					endif else begin
+						if polarizationSUM[0,i,wn0[ipolar]] eq 32767 then polarizationSUM[0,i,wn0[ipolar]]=polarizationSUM[0,i,wn0[ipolar]]-32767+1 $
+							else polarizationSUM[0,i,wn0[ipolar]]=polarizationSUM[0,i,wn0[ipolar]]+1 
+					endelse
+				endif else begin ;# var eq 1 means South
+					if ((*parameters.objects[j]).mode eq 'RX') then begin
+						if polarizationSUM[1,i,wn0[ipolar]] eq 32767 then polarizationSUM[1,i,wn0[ipolar]]=polarizationSUM[1,i,wn0[ipolar]]-32767+1 $
+							else polarizationSUM[1,i,wn0[ipolar]]=polarizationSUM[1,i,wn0[ipolar]]+1 
+					endif else begin
+						if polarizationSUM[1,i,wn0[ipolar]] eq 32767 then polarizationSUM[1,i,wn0[ipolar]]=polarizationSUM[1,i,wn0[ipolar]]-32767-1 $
+							else polarizationSUM[1,i,wn0[ipolar]]=polarizationSUM[1,i,wn0[ipolar]]-1 
+					endelse 
 				endelse
 			endfor
 			if opt.SrcPos then $
