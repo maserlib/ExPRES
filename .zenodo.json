@@ -1,0 +1,66 @@
+{
+    "creators": [
+        {
+            "orcid": "0000-0002-9552-8822",
+            "affiliation": "DIAS, Dublin, Ireland",
+            "name": "Louis, Corentin K."
+        },
+        {
+            "orcid": "0000-0001-5753-0991",
+            "affiliation": "ONERA, Toulouse, France",
+            "name": "Hess, Sébastien L. G"
+        },
+        {
+            "orcid": "0000-0001-7915-5571",
+            "affiliation": "LESIA, Observatoire de Paris-PSL, CRNS, SU, UPC",
+            "name": "Cecconi, Baptiste"
+        },
+        {
+            "orcid": "0000-0003-1672-9878",
+            "affiliation": "LESIA, Observatoire de Paris-PSL, CRNS, SU, UPC",
+            "name": "Zarka, Philippe"
+        },
+        {
+            "orcid": "0000-0002-8428-1369",
+            "affiliation": "LESIA, Observatoire de Paris-PSL, CRNS, SU, UPC",
+            "name": "Lamy, Laurent"
+        },
+        {
+            "orcid": "0000-0003-4475-0930",
+            "affiliation": "DIO, Observatoire de Paris-PSL",
+            "name": "Aicardi, Stéphane"
+        },
+        {
+            "orcid": "0000-0002-4698-9542",
+            "affiliation": "LESIA, Observatoire de Paris-PSL, CRNS, SU, UPC",
+            "name": "Loh, Alan"
+        }
+    ],
+
+    "license": "MIT",
+
+    "title": "maserlib/ExPRES",
+
+    "keywords": ["Radio Emissions", "Simulations", "Planetary"],
+
+    "related_identifiers": [
+        {
+            "scheme": "ascl",
+            "identifier": "http://ascl.net/1902.009",
+            "relation": "isAlternateIdentifier",
+            "upload_type": "software"
+        },
+        {
+            "scheme": "doi",
+            "identifier": "10.1051/0004-6361/201935161",
+            "relation": "documents",
+            "upload_type": "journal-article"
+        }
+    ],
+    "communities": [
+        {"identifier": "Europlanet-VESPA"},
+        {"identifier": "Space Physics and Aeronomy"}
+    ],
+
+    "grants": [{"id":"871149"}]
+}
