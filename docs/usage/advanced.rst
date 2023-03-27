@@ -407,7 +407,9 @@ Celestial body definitions include the following keywords:
 - ``PERIOD``: The sidereal rotation period of the current body (in minutes)
 - ``FLAT``: The polar flatening ratio of the current body.
 - ``ORB_PER``: The orbital period according to 3rd Kepler's law at 1 radius (in minutes) 
-**Example:** For Io, :math:`M_{Io} = 8.931x10^{22}~\textrm{kg}`, :math:`a = 1821x10^{3}~\textrm{m}`, :math:`G = 6.674x10^{-11}~\textrm{N}.\textrm{m}^{2}.\textrm{kg}^{-2}}`,
+**Example:** For Io, :math:`M_{Io} = 8.931 \times 10^{22}~\textrm{kg}`,
+:math:`a = 1821 \times 10^{3}~\textrm{m}`,
+:math:`G = 6.674 \times 10^{-11}~\textrm{N}.\textrm{m}^{2}.\textrm{kg}^{-2}`,
 therefore :math:`T = \sqrt{\frac{a^{3} * 4 * \pi^{2}}{G * M_{\textrm{Io}}}}*\frac{1}{60} = 105.4~\textrm{min}`
 
 - ``INIT_AX``: The reference longitude (in degrees)
@@ -489,56 +491,62 @@ Radio Source Configuration
 - ``TEMPH``: The value of the halo electron distribution temperature (in keV)
 - ``REFRACTION``: Flag to activate refraction effects
 
-**Example:** We configure a simulation with emission induced by Io ("TYPE": "attached to a satellite", "SAT": "Io",), in the northern ("Source1",  "NORTH": true) and the southern ("Source2",  "SOUTH": true,) hemispheres. We use the lead angle model based on :cite:`hinton_JGR_20119` ("LAG_MODEL":"hinton2019") to determine the active magnetic field lines that will produce the emission. The electron have an energy of 3 keV ( "ACCEL": 3) and the distribution function is of the loss cone type ("CURRENT": "Transient (Alfvenic)")
+**Example:** We configure a simulation with emission induced by Io (``"TYPE": "attached to a satellite"``,
+``"SAT": "Io"``), in the northern (``"NAME": "Source1"``, ``"NORTH": true``) and the southern (``"NAME"="Source2"``,
+``"SOUTH": true``) hemispheres. We use the lead angle model based on :cite:`hinton_JGR_20119` (``"LAG_MODEL":
+"hinton2019"``) to determine the active magnetic field lines that will produce the emission. The electron have an
+energy of 3 keV (``"ACCEL": 3``) and the distribution function is of the loss cone type (``"CURRENT": "Transient
+(Alfvenic)"``).
 
 .. code-block::
 
-"SOURCE": [
+  "SOURCE": [
     {
-        "ON": true,
-        "NAME": "Source1",
-        "PARENT": "Jupiter",
-        "TYPE": "attached to a satellite",
-        "LG_MIN": 0,
-        "LG_MAX": 0,
-        "LG_NBR": 1,
-        "LAT": 0,
-        "LAG_MODEL":"hinton2019" ,
-        "SUB": 0,
-        "AURORA_ALT": 0.009091926738619804,
-        "SAT": "Io",
-        "NORTH": true,
-        "SOUTH": false,
-        "WIDTH": 1,
-        "CURRENT": "Transient (Alfvenic)",
-        "CONSTANT": 0.0,
-        "ACCEL": 3,
-        "TEMP": 0,
-        "TEMPH": 0,
-        "REFRACTION": false
+      "ON": true,
+      "NAME": "Source1",
+      "PARENT": "Jupiter",
+      "TYPE": "attached to a satellite",
+      "LG_MIN": 0,
+      "LG_MAX": 0,
+      "LG_NBR": 1,
+      "LAT": 0,
+      "LAG_MODEL":"hinton2019" ,
+      "SUB": 0,
+      "AURORA_ALT": 0.009091926738619804,
+      "SAT": "Io",
+      "NORTH": true,
+      "SOUTH": false,
+      "WIDTH": 1,
+      "CURRENT": "Transient (Alfvenic)",
+      "CONSTANT": 0.0,
+      "ACCEL": 3,
+      "TEMP": 0,
+      "TEMPH": 0,
+      "REFRACTION": false
     },
     {
-        "ON": true,
-        "NAME": "Source2",
-        "PARENT": "Jupiter",
-        "TYPE": "attached to a satellite",
-        "LG_MIN": 0, 
-        "LG_MAX": 0, 
-        "LG_NBR": 1,
-        "LAG_MODEL":"hinton2019", 
-        "LAT": 0, 
-        "SUB": 0, 
-        "AURORA_ALT": 0.009091926738619804, 
-        "SAT": "Io", 
-        "NORTH": false, 
-        "SOUTH": true, 
-        "WIDTH": 1, 
-        "CURRENT": "Transient (Alfvenic)", 
-        "CONSTANT": 0.0, 
-        "ACCEL": 3, "TEMP": 0, 
-        "TEMPH": 0, 
-        "REFRACTION": false
-    }]
+      "ON": true,
+      "NAME": "Source2",
+      "PARENT": "Jupiter",
+      "TYPE": "attached to a satellite",
+      "LG_MIN": 0,
+      "LG_MAX": 0,
+      "LG_NBR": 1,
+      "LAG_MODEL":"hinton2019",
+      "LAT": 0,
+      "SUB": 0,
+      "AURORA_ALT": 0.009091926738619804,
+      "SAT": "Io",
+      "NORTH": false,
+      "SOUTH": true,
+      "WIDTH": 1,
+      "CURRENT": "Transient (Alfvenic)",
+      "CONSTANT": 0.0,
+      "ACCEL": 3, "TEMP": 0,
+      "TEMPH": 0,
+      "REFRACTION": false
+    }
+  ]
 
 
 Output Configuration
