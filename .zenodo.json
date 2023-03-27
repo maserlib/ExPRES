@@ -49,6 +49,12 @@
             "identifier": "http://ascl.net/1902.009",
             "relation": "isAlternateIdentifier",
             "upload_type": "software"
+        },
+        {
+            "scheme": "doi",
+            "identifier": "10.1051/0004-6361/201935161",
+            "relation": "documents",
+            "upload_type": "journal-article"
         }
     ],
     "communities": [
