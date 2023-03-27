@@ -2,15 +2,20 @@ import urllib.request
 import json
 import datetime
 import numpy
+import os
+
+os.environ["HTTP_PROXY"] = "http://localhost:3128"
 
 wgc_esa_api_url = 'http://spice.esac.esa.int/webgeocalc/api'
 wgc_nasa_api_url = 'https://wgc2.jpl.nasa.gov:8443/webgeocalc/api'
+wgc_op_api_url = 'http://voparis-webgeocalc2.obspm.fr:8080/geocalc/api'
 
 wgc_api_observer_mapping = {
     'JUICE': wgc_esa_api_url,
     'MarsExpress': wgc_esa_api_url,
-    'Earth': wgc_nasa_api_url,
+    'Earth': wgc_op_api_url,
     'Galileo': wgc_nasa_api_url,
+    'Juno': wgc_nasa_api_url,
 }
 
 wgc_observer_api_config = {
@@ -18,10 +23,12 @@ wgc_observer_api_config = {
         'JUICE': 11,  # CREMA-3.2 of JUICE @ ESA
         'MarsExpress': 5,  # Mars-Express @ ESA
         'Earth': 1,  # Solar System Kernels @ NASA
-        'Galileo': None
+        'Galileo': None,
+        'JUNO': 15,
     },
     'target': {
         'JUICE': 'JUICE_SC',
+        'JUNO': 'JUNO',
     },
     'referenceFrame': {
         'JUICE': 'IAU_JUPITER'
@@ -42,7 +49,7 @@ def get_ephem_from_wgc(observer, time):
 
     time_start = datetime.datetime.strptime(observer['START'], '%Y%m%d%H%M')
     time_end = time_start + datetime.timedelta(minutes=int(time['MAX']))
-    time_step = time['MAX']/time['NBR']  # in Minutes
+    time_step = time['MAX']/(time['NBR']-1)  # in Minutes
 
     # get API url, and defaults to NASA
     wgc_api_url = wgc_api_observer_mapping.get(observer['NAME'], wgc_nasa_api_url)
@@ -107,7 +114,42 @@ def get_ephem_from_wgc(observer, time):
             'NBR': time['NBR'],
             'DT': time_step,
         },
-        'longitude': longitude,
-        'lat': latitude,
-        'distance': distance,
+        'longitude': list(longitude),
+        'latitude': list(latitude),
+        'distance': list(distance),
     }
+
+
+if __name__ == "__main__":
+    """
+    % python read_ephem_obs obs_start=202001020000 obs_name=Earth obs_parent=Jupiter time_max=1439 time_nbr=1440
+    """
+    import sys
+    args = sys.argv[1:]
+
+    observer = {}
+    time = {}
+    file_out = "wgc.json"
+
+    kv_mapping = {
+        'obs_start': (observer, 'START', str),
+        'obs_name': (observer, 'NAME', str),
+        'obs_parent': (observer, 'PARENT', str),
+        'time_max': (time, 'MAX', int),
+        'time_nbr': (time, 'NBR', int),
+    }
+
+    for item in args:
+        arg_key, arg_val = item.split("=")
+        if arg_key == "file":
+            file_out = arg_val
+        else:
+            map_var, map_key, map_typ = kv_mapping[arg_key]
+            map_var[map_key] = map_typ(arg_val)
+
+    print(observer)
+    print(time)
+
+    data = get_ephem_from_wgc(observer, time)
+    with open(file_out, 'w') as f:
+        json.dump(data, f)
