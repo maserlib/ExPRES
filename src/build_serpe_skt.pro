@@ -66,7 +66,7 @@
 ;-
 
 PRO BUILD_SERPE_SKT,frequency,Freq_Label,Flog,Src_ID_Label,originsrc,hemisphere,b_model,sourcetype,$
-    observer,planet,wid,ener,refr,sourcedescr,dt,dated,datef,file,option,version
+    observer,planet,wid,ener,mode,refr,sourcedescr,dt,dated,datef,file,option,version
 ; Check if input parameters 'file' is set. Create new file name, if not set; remove previous one (if it exist) if set. 
 if ~keyword_set(file) then begin
 	file=string(format='(I12.12)',long(systime(1)))+'.skt'
@@ -126,7 +126,7 @@ printf,lun,"                                             ""Science"" } ."
 printf,lun,""
 printf,lun,"  ""Data_type""           1:    CDF_CHAR     { """+strlowcase(observer[0])+"_"+strlowcase(planet[0])+"_"+strlowcase(originsrc[0])+""" } ."
 printf,lun,""
-printf,lun,"  ""Descriptor""          1:    CDF_CHAR     { """+strlowcase(b_model[0])+"_"+sourcetype[0]+"-"+wid[0]+"_"+strlowcase(ener[0])+refr[0]+""" } ."
+printf,lun,"  ""Descriptor""          1:    CDF_CHAR     { """+strlowcase(b_model[0])+"_"+sourcetype[0]+"-"+wid[0]+"_"+strlowcase(ener[0])+strlowcase(mode[0])+refr[0]+""" } ."
 printf,lun,""
 printf,lun,"  ""File_naming_convention"""
 printf,lun,"                        1:    CDF_CHAR     { "" source_datatype_descriptor_yyyyMMdd"" } ."
@@ -297,6 +297,19 @@ endif else begin
 			printf,lun,"                             "+string(i+1)+":    CDF_CHAR     { """+ener[i]+""" } ."
 		endif else begin
 			printf,lun,"                             "+string(i+1)+":    CDF_CHAR     { """+ener[i]+""" } "
+		endelse
+	endfor
+endelse
+printf,lun,""
+if ns eq 1 then begin
+	printf,lun,"  ""SRP_Source_Mode""      1:    CDF_CHAR     { """+mode[0]+""" } ."
+endif else begin
+	printf,lun,"  ""SRP_Source_Mode""      1:    CDF_CHAR     { """+mode[0]+""" } "
+	for i=1,ns-1 do begin 
+		if i eq ns-1 then begin 
+			printf,lun,"                             "+string(i+1)+":    CDF_CHAR     { """+mode[i]+""" } ."
+		endif else begin
+			printf,lun,"                             "+string(i+1)+":    CDF_CHAR     { """+mode[i]+""" } "
 		endelse
 	endfor
 endelse
