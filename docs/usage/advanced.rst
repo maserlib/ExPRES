@@ -80,7 +80,7 @@ Simulation Setup
 ----------------
 
 The simulation setup is configured via an ExPRES configuration file (in *JSON* format), following the `ExPRES
-JSON-Schema v1.2 <https://voparis-ns.pages.obspm.fr/maser/expres/v1.2/schema#>`_.
+JSON-Schema v1.3 <https://voparis-ns.pages.obspm.fr/maser/expres/v1.3/schema#>`_.
 
 
 
