@@ -484,6 +484,8 @@ Radio Source Configuration
 - ``CURRENT``: The type of electron distribution in the source (see documentation). Allowed values:
   ``Transient (Alfvenic)``, ``Constant``, ``Steady-State``, ``Shell``
 - ``CONSTANT``: The value of beaming pattern half-cone opening angle (if ``Constant`` is selected), in degrees
+- ``MODE``: The type of the wave mode. Allowed values: 
+  ``RX``, ``LO`` (default is ``RX``)
 - ``ACCEL``: The value of resonant electron beam energy in keV (not used when ``Constant`` is selected)
 - ``TEMP``: The value of the cold electron distribution temperature (in keV)
 - ``TEMPH``: The value of the halo electron distribution temperature (in keV)
@@ -512,6 +514,7 @@ Radio Source Configuration
         "WIDTH": 1,
         "CURRENT": "Transient (Alfvenic)",
         "CONSTANT": 0.0,
+        "MODE": "",
         "ACCEL": 3,
         "TEMP": 0,
         "TEMPH": 0,
@@ -534,7 +537,8 @@ Radio Source Configuration
         "SOUTH": true, 
         "WIDTH": 1, 
         "CURRENT": "Transient (Alfvenic)", 
-        "CONSTANT": 0.0, 
+        "CONSTANT": 0.0,
+        "MODE": "",
         "ACCEL": 3, "TEMP": 0, 
         "TEMPH": 0, 
         "REFRACTION": false
