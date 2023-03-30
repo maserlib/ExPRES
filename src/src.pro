@@ -124,7 +124,7 @@ return,th
 end
 
 ;************************************************************** LOSS_CONE
-function Loss_cone,v,vp,temp,cosa,error
+function Loss_cone,v,vp,temp,cosa,mode,error
 ; Analytically calculates beaming for loss-cone
 v=double(v)
 vp=double(vp);=wp^2/wc^2 
@@ -147,7 +147,11 @@ b=-(khi2^2*(p-s)-khi2*(p*s+s^2-d^2))
 c=s*khi2^2
 
 d=acos(sqrt(khi2))*!radeg
-f=acos(sqrt((b+sqrt(abs(b^2-4.*a*c)))/(2.*a)))*!radeg
+
+if mode eq 'RX' then $
+	f=acos(sqrt((b+sqrt(abs(b^2-4.*a*c)))/(2.*a)))*!radeg $ ;# Solution for the RX mode
+else if mode eq 'LO' then $
+	f=acos(sqrt((b-sqrt(abs(b^2-4.*a*c)))/(2.*a)))*!radeg ;# Solution for the LO mode
 
 rt=-1.0e+31+dblarr(n_elements(d[*,0]),n_elements(d[0,*]))
 w1=where(FINITE(d)and FINITE(f) and ((b^2-4.*a*c)/b^2 ge (-0.0001)) and (sqrt(khi2)/cos(f*!dtor) lt 1.001) and (s gt 0))
@@ -350,7 +354,7 @@ if (*obj).lossbornes ne 0 then begin
 endif
 
 ; ****** ici d=wp^2/wc^2 ***
-if (*obj).loss ne 0 then th2=Loss_cone(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),w2)
+if (*obj).loss ne 0 then th2=Loss_cone(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),(*obj).mode,w2)
 if (*obj).cavity ne 0 then th2=shell(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,(*obj).cold,w2)
 if (*obj).constant ne 0 then begin
 	;th2=Loss_cone(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),w2)
@@ -374,10 +378,10 @@ if (*obj).rampe ne 0 then th2=f*((*obj).constant-(*obj).asymp)+(*obj).asymp
 
 
 if (*obj).lossbornes ne 0 then begin 
-	th2sup=Loss_cone(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),w2sup)+10.
+	th2sup=Loss_cone(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),(*obj).mode,w2sup)+10.
 	wsup=where(th2sup ge 90.)
 	th2sup(wsup)=89.9
-	th2inf=Loss_cone(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),w2inf)-10.
+	th2inf=Loss_cone(rebin(reform((*((*obj).v)),1,nv*nlg*nlat),parameters.freq.n_freq,nv*nlg*nlat),d,(*obj).temp,sqrt(1.-f),(*obj).mode,w2inf)-10.
 endif
 
 if (*obj).refract then $

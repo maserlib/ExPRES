@@ -43,6 +43,7 @@ sourcetype = strarr(nsrc)
 sourcedescr = strarr(nsrc)
 ener = strarr(nsrc)
 refr = strarr(nsrc)
+mode = strarr(nsrc)
 wid = strarr(nsrc)
 cml = fltarr(ndat)
 
@@ -74,6 +75,9 @@ for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i
 		
 		if (*(parameters.objects[i])).refract then refr(h)='_refr' $
 		else refr(h)=''
+
+
+		mode(h) = '_'+(*(parameters.objects[i])).mode
 
 		if (*(*parameters.objects(i)).parent).sat then originsrc(h)=(*(*(*parameters.objects(i)).parent).parent).name $
 			else originsrc(h)=strtrim(lon,2)+'d-'+strtrim(lat,2)+'R'
@@ -144,12 +148,12 @@ master_file = filename+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_
 
 
 for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]),/str) eq 'CDF' then opt=*parameters.objects[j]
-build_serpe_skt,*parameters.freq.freq_tab,Freq_Label,parameters.freq.log,Src_ID_Label,originsrc,hemisphere,b_model,sourcetype,observer,planet,wid,ener,refr,sourcedescr,dt,dated,datef,skt_file,opt,version
+build_serpe_skt,*parameters.freq.freq_tab,Freq_Label,parameters.freq.log,Src_ID_Label,originsrc,hemisphere,b_model,sourcetype,observer,planet,wid,ener,mode,refr,sourcedescr,dt,dated,datef,skt_file,opt,version
 spawn,'rm -rf '+master_file
 adresse_cdf=loadpath('adresse_cdf',parameters)
 spawn,adresse_cdf+'bin/skeletoncdf '+skt_file+' -cdf '+master_file
 
-filename=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc[0])+'_'+b_model+'_'+strlowcase(sourcetype[0])+'-'+strlowcase(wid[0])+'_'+strlowcase(ener[0])+strlowcase(refr[0])+'_'+strlowcase(datefilename)+'_'+version
+filename=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc[0])+'_'+b_model+'_'+strlowcase(sourcetype[0])+'-'+strlowcase(wid[0])+'_'+strlowcase(ener[0])+strlowcase(mode[0])+strlowcase(refr[0])+'_'+strlowcase(datefilename)+'_'+version
 
 
 data = {Epoch:epoch}
@@ -221,20 +225,35 @@ for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]
 		if opt.theta then theta(h,i,*)=(*(*parameters.objects[j]).th)(*,ilg,var)	
 		wn0=where((*(*parameters.objects[j]).th)(*,ilg,var) ne -1.0e+31)
 		if wn0(0) ne -1 then begin
-			if (*parameters.objects[j]).north eq 1 then polarization(i,wn0)=-1 $
+			if ((*parameters.objects[j]).north eq 1) then begin
+				if ((*parameters.objects[j]).mode eq 'RX') then polarization(i,wn0)=-1 $
 				else polarization(i,wn0)=+1
+			endif else begin
+				if ((*parameters.objects[j]).mode eq 'RX') then polarization(i,wn0)=+1 $
+				else polarization(i,wn0)=-1
+			endelse
 			if opt.azimuth then azimuth(h,i,wn0)=(*(*parameters.objects[j]).azimuth)(wn0,ilg,var)*!radeg
 			if opt.fp then fp2(h,i,wn0)=(*(*parameters.objects[j]).fp)(wn0,ilg,var)
 			if opt.fc then fx(h,i,wn0)=(*(*parameters.objects[j]).f)(wn0,ilg,var)
 			
 			if opt.srcvis then $
 			for ipolar=0,n_elements(wn0)-1 do begin
-				if var eq 0 then begin
-					if polarizationSUM[0,i,wn0[ipolar]] eq 32767 then polarizationSUM[0,i,wn0[ipolar]]=polarizationSUM[0,i,wn0[ipolar]]-32767-1 $
-						else polarizationSUM[0,i,wn0[ipolar]]=polarizationSUM[0,i,wn0[ipolar]]-1 
-				endif else begin
-					if polarizationSUM[1,i,wn0[ipolar]] eq 32767 then polarizationSUM[1,i,wn0[ipolar]]=polarizationSUM[1,i,wn0[ipolar]]-32767+1 $
-						else polarizationSUM[1,i,wn0[ipolar]]=polarizationSUM[1,i,wn0[ipolar]]+1 
+				if var eq 0 then begin ;# var eq 0 means North
+					if ((*parameters.objects[j]).mode eq 'RX') then begin
+						if polarizationSUM[0,i,wn0[ipolar]] eq 32767 then polarizationSUM[0,i,wn0[ipolar]]=polarizationSUM[0,i,wn0[ipolar]]-32767-1 $
+							else polarizationSUM[0,i,wn0[ipolar]]=polarizationSUM[0,i,wn0[ipolar]]-1 
+					endif else begin
+						if polarizationSUM[0,i,wn0[ipolar]] eq 32767 then polarizationSUM[0,i,wn0[ipolar]]=polarizationSUM[0,i,wn0[ipolar]]-32767+1 $
+							else polarizationSUM[0,i,wn0[ipolar]]=polarizationSUM[0,i,wn0[ipolar]]+1 
+					endelse
+				endif else begin ;# var eq 1 means South
+					if ((*parameters.objects[j]).mode eq 'RX') then begin
+						if polarizationSUM[1,i,wn0[ipolar]] eq 32767 then polarizationSUM[1,i,wn0[ipolar]]=polarizationSUM[1,i,wn0[ipolar]]-32767+1 $
+							else polarizationSUM[1,i,wn0[ipolar]]=polarizationSUM[1,i,wn0[ipolar]]+1 
+					endif else begin
+						if polarizationSUM[1,i,wn0[ipolar]] eq 32767 then polarizationSUM[1,i,wn0[ipolar]]=polarizationSUM[1,i,wn0[ipolar]]-32767-1 $
+							else polarizationSUM[1,i,wn0[ipolar]]=polarizationSUM[1,i,wn0[ipolar]]-1 
+					endelse 
 				endelse
 			endfor
 			if opt.SrcPos then $

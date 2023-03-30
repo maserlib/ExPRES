@@ -80,7 +80,7 @@ Simulation Setup
 ----------------
 
 The simulation setup is configured via an ExPRES configuration file (in *JSON* format), following the `ExPRES
-JSON-Schema v1.2 <https://voparis-ns.pages.obspm.fr/maser/expres/v1.2/schema#>`_.
+JSON-Schema v1.3 <https://voparis-ns.pages.obspm.fr/maser/expres/v1.3/schema#>`_.
 
 
 
@@ -488,6 +488,8 @@ Radio Source Configuration
 - ``CURRENT``: The type of electron distribution in the source (see documentation). Allowed values:
   ``Transient (Alfvenic)``, ``Constant``, ``Steady-State``, ``Shell``
 - ``CONSTANT``: The value of beaming pattern half-cone opening angle (if ``Constant`` is selected), in degrees
+- ``MODE``: The type of the wave mode. Allowed values: 
+  ``RX``, ``LO`` (default is ``RX``)
 - ``ACCEL``: The value of resonant electron beam energy in keV (not used when ``Constant`` is selected)
 - ``TEMP``: The value of the cold electron distribution temperature (in keV)
 - ``TEMPH``: The value of the halo electron distribution temperature (in keV)
@@ -504,52 +506,55 @@ energy of 3 keV (``"ACCEL": 3``) and the distribution function is of the loss co
 
   "SOURCE": [
     {
-      "ON": true,
-      "NAME": "Source1",
-      "PARENT": "Jupiter",
-      "TYPE": "attached to a satellite",
-      "LG_MIN": 0,
-      "LG_MAX": 0,
-      "LG_NBR": 1,
-      "LAT": 0,
-      "LAG_MODEL":"hinton2019" ,
-      "SUB": 0,
-      "AURORA_ALT": 0.009091926738619804,
-      "SAT": "Io",
-      "NORTH": true,
-      "SOUTH": false,
-      "WIDTH": 1,
-      "CURRENT": "Transient (Alfvenic)",
-      "CONSTANT": 0.0,
-      "ACCEL": 3,
-      "TEMP": 0,
-      "TEMPH": 0,
-      "REFRACTION": false
+
+        "ON": true,
+        "NAME": "Source1",
+        "PARENT": "Jupiter",
+        "TYPE": "attached to a satellite",
+        "LG_MIN": 0,
+        "LG_MAX": 0,
+        "LG_NBR": 1,
+        "LAT": 0,
+        "LAG_MODEL":"hinton2019" ,
+        "SUB": 0,
+        "AURORA_ALT": 0.009091926738619804,
+        "SAT": "Io",
+        "NORTH": true,
+        "SOUTH": false,
+        "WIDTH": 1,
+        "CURRENT": "Transient (Alfvenic)",
+        "CONSTANT": 0.0,
+        "MODE": "",
+        "ACCEL": 3,
+        "TEMP": 0,
+        "TEMPH": 0,
+        "REFRACTION": false
     },
     {
-      "ON": true,
-      "NAME": "Source2",
-      "PARENT": "Jupiter",
-      "TYPE": "attached to a satellite",
-      "LG_MIN": 0,
-      "LG_MAX": 0,
-      "LG_NBR": 1,
-      "LAG_MODEL":"hinton2019",
-      "LAT": 0,
-      "SUB": 0,
-      "AURORA_ALT": 0.009091926738619804,
-      "SAT": "Io",
-      "NORTH": false,
-      "SOUTH": true,
-      "WIDTH": 1,
-      "CURRENT": "Transient (Alfvenic)",
-      "CONSTANT": 0.0,
-      "ACCEL": 3, "TEMP": 0,
-      "TEMPH": 0,
-      "REFRACTION": false
+        "ON": true,
+        "NAME": "Source2",
+        "PARENT": "Jupiter",
+        "TYPE": "attached to a satellite",
+        "LG_MIN": 0, 
+        "LG_MAX": 0, 
+        "LG_NBR": 1,
+        "LAG_MODEL":"hinton2019", 
+        "LAT": 0, 
+        "SUB": 0, 
+        "AURORA_ALT": 0.009091926738619804, 
+        "SAT": "Io", 
+        "NORTH": false, 
+        "SOUTH": true, 
+        "WIDTH": 1, 
+        "CURRENT": "Transient (Alfvenic)", 
+        "CONSTANT": 0.0,
+        "MODE": "",
+        "ACCEL": 3, 
+        "TEMP": 0, 
+        "TEMPH": 0, 
+        "REFRACTION": false
     }
   ]
-
 
 Output Configuration
 +++++++++++++++++++++
