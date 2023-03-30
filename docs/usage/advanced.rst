@@ -407,7 +407,9 @@ Celestial body definitions include the following keywords:
 - ``PERIOD``: The sidereal rotation period of the current body (in minutes)
 - ``FLAT``: The polar flatening ratio of the current body.
 - ``ORB_PER``: The orbital period according to 3rd Kepler's law at 1 radius (in minutes) 
-**Example:** For Io, :math:`M_{Io} = 8.931x10^{22}~\textrm{kg}`, :math:`a = 1821x10^{3}~\textrm{m}`, :math:`G = 6.674x10^{-11}~\textrm{N}.\textrm{m}^{2}.\textrm{kg}^{-2}}`,
+**Example:** For Io, we have :math:`M_{Io} = 8.931 \times 10^{22}~\textrm{kg}`,
+:math:`a = 1821 \times 10^{3}~\textrm{m}` and
+:math:`G = 6.674 \times 10^{-11}~\textrm{N}.\textrm{m}^{2}.\textrm{kg}^{-2}`,
 therefore :math:`T = \sqrt{\frac{a^{3} * 4 * \pi^{2}}{G * M_{\textrm{Io}}}}*\frac{1}{60} = 105.4~\textrm{min}`
 
 - ``INIT_AX``: The reference longitude (in degrees)
@@ -473,7 +475,9 @@ Radio Source Configuration
 - ``LG_MIN``: The lower bound value of the source longitude (in degrees)
 - ``LG_MAX``: The upper bound value of the source longitude (in degrees)
 - ``LG_NBR``: The number of steps for the source longitude.
-- ``LAG_MODEL``: Model of the lead angle for the Io active flux tube (choices are: ``hess2011`` (:cite:HBZ11), ``bonfond2009`` (:cite:`bonfond_2009_jgr`), ``bonfond2017`` (:cite:`bonfond_2017_icarus`), ``hinton2019`` (:cite:`hinton_2019_jgr`), ``hue2023`` (:cite:`hue2023`)).
+- ``LAG_MODEL``: Model of the lead angle for the Io active flux tube; choices are: ``hess2011`` :cite:`HBZ11`,
+  ``bonfond2009`` :cite:`bonfond_2009_jgr`, ``bonfond2017`` :cite:`bonfond_2017_icarus`, ``hinton2019``
+  :cite:`hinton_2019_jgr`, ``Hue2023`` :cite:`Hue2023`.
 - ``LAT``: If ``Fixed in latitude``: Latitude in degree; else: apex distance in planetary radii.
 - ``SUB``: The subcorotation rate of the source (0 = no corotation)
 - ``AURORA_ALT``: The altitude of the aurora (in planetary radii)
@@ -491,12 +495,18 @@ Radio Source Configuration
 - ``TEMPH``: The value of the halo electron distribution temperature (in keV)
 - ``REFRACTION``: Flag to activate refraction effects
 
-**Example:** We configure a simulation with emission induced by Io ("TYPE": "attached to a satellite", "SAT": "Io",), in the northern ("Source1",  "NORTH": true) and the southern ("Source2",  "SOUTH": true,) hemispheres. We use the lead angle model based on :cite:`hinton_JGR_20119` ("LAG_MODEL":"hinton2019") to determine the active magnetic field lines that will produce the emission. The electron have an energy of 3 keV ( "ACCEL": 3) and the distribution function is of the loss cone type ("CURRENT": "Transient (Alfvenic)")
+**Example:** We configure a simulation with emission induced by Io (``"TYPE": "attached to a satellite"``,
+``"SAT": "Io"``), in the northern (``"NAME": "Source1"``, ``"NORTH": true``) and the southern (``"NAME"="Source2"``,
+``"SOUTH": true``) hemispheres. We use the lead angle model based on :cite:`hinton_JGR_20119` (``"LAG_MODEL":
+"hinton2019"``) to determine the active magnetic field lines that will produce the emission. The electron have an
+energy of 3 keV (``"ACCEL": 3``) and the distribution function is of the loss cone type (``"CURRENT": "Transient
+(Alfvenic)"``).
 
 .. code-block::
 
-"SOURCE": [
+  "SOURCE": [
     {
+
         "ON": true,
         "NAME": "Source1",
         "PARENT": "Jupiter",
@@ -539,11 +549,12 @@ Radio Source Configuration
         "CURRENT": "Transient (Alfvenic)", 
         "CONSTANT": 0.0,
         "MODE": "",
-        "ACCEL": 3, "TEMP": 0, 
+        "ACCEL": 3, 
+        "TEMP": 0, 
         "TEMPH": 0, 
         "REFRACTION": false
-    }]
-
+    }
+  ]
 
 Output Configuration
 +++++++++++++++++++++
