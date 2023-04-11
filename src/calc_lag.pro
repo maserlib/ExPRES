@@ -251,10 +251,11 @@ if satellite eq 'Io' then begin
 		END
 		'hue2023': BEGIN
 		; # based on Juno/UVS images - doi to be added once paper is published
+		; 2nd Order Fourier Series
 			if north eq 1 then begin
-				lag =  4.179 + 2.885 * cos(0.999 * phase*!Dtor) + 0.405 * sin(0.999 * phase*!Dtor)
+				lag = 4.256 + 2.637 * cos(1.000 * phase*!Dtor) + 0.496 * sin(1.000 * phase*!Dtor) + 0.197 * cos(2.* 1.000 * phase*!Dtor) + 0.126 * sin(2.* 1.000 * phase*!Dtor)
 			endif else begin
-				lag =  4.21 - 1.639 * cos(0.999* phase*!Dtor) - 0.406 * sin(0.999 * phase*!Dtor)
+				lag =  4.138 - 1.891 * cos(1.002 * phase*!Dtor) - 0.698 * sin(1.002 * phase*!Dtor) + 0.218 * cos(2.* 1.002 * phase*!Dtor) - 0.116 * sin(2.* 1.002 * phase*!Dtor)
 			endelse
 			lag = -lag
 		END
@@ -263,6 +264,7 @@ if satellite eq 'Io' then begin
 endif else if satellite eq 'Ganymede' then begin
 	if lag_model eq 'hue2023' then begin
 	; # based on Juno/UVS images - doi to be added once paper is published
+	; 1st Order Fourier Series
 		if north eq 1 then begin
 			lag =  12.452 + 6.162 * cos(0.980 * phase*!Dtor) + 3.641 * sin(0.980 * phase*!Dtor)
 		endif else begin
@@ -282,6 +284,7 @@ endif else if satellite eq 'Ganymede' then begin
 endif else if satellite eq 'Europa' then begin
 	if lag_model eq 'hue2023' then begin
 	; # based on Juno/UVS images - doi to be added once paper is published
+	; 1st Order Fourier Series
 		if north eq 1 then begin
 			lag =  5.784 + 3.294 * cos(0.997 * phase*!Dtor) + 1.406 * sin(0.997 * phase*!Dtor) 
 		endif else begin
