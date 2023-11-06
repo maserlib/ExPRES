@@ -1748,7 +1748,7 @@ for i=0,nsrc-1 do begin
 		; # line 'test = ' is to test if the MODE entry is present - entry not mandatory to be compatible with old json file version
     		test=where(((serpe_save['SOURCE'])[i]).keys() eq 'MODE',cnt)
 	    	if cnt ne 0 then begin
-      			if ((serpe_save['SOURCE'])[i])['MODE'] ne '' and sc[n].loss eq 1b  then $
+      			if ((serpe_save['SOURCE'])[i])['MODE'] ne '' then $ ;and sc[n].loss eq 1b  then $
         			sc[n].mode=STRUPCASE(((serpe_save['SOURCE'])[i])['MODE'])
     		endif
 		;##################
