@@ -195,11 +195,21 @@ if (*obj).pol then begin
 	k=0
 	for i=0,nobj-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SOURCE' then begin
 		if k eq 0 then begin
-			if ((*parameters.objects[i]).north eq 1) then image=-fix(transpose(*((*((*obj).out))[ntab]))) $
-			else if ((*parameters.objects[i]).south eq 1) then image=fix(transpose(*((*((*obj).out))[ntab])))
+			if (*(parameters.objects[i])).mode eq 'RX' then begin
+				if ((*parameters.objects[i]).north eq 1) then image=-fix(transpose(*((*((*obj).out))[ntab]))) $
+				else if ((*parameters.objects[i]).south eq 1) then image=fix(transpose(*((*((*obj).out))[ntab])))
+			endif else  begin ;#LO mode
+				if ((*parameters.objects[i]).north eq 1) then image=+fix(transpose(*((*((*obj).out))[ntab]))) $
+				else if ((*parameters.objects[i]).south eq 1) then image=-fix(transpose(*((*((*obj).out))[ntab])))
+			endelse
 		endif else begin
-			if ((*parameters.objects[i]).north eq 1) then image=image-fix(transpose(*((*((*obj).out))[ntab+1]))) $
-			else if ((*parameters.objects[i]).south eq 1) then image=image+fix(transpose(*((*((*obj).out))[ntab+1])))
+			if (*(parameters.objects[i])).mode eq 'RX' then begin
+				if ((*parameters.objects[i]).north eq 1) then image=image-fix(transpose(*((*((*obj).out))[ntab+1]))) $
+				else if ((*parameters.objects[i]).south eq 1) then image=image+fix(transpose(*((*((*obj).out))[ntab+1])))
+			endif else begin
+				if ((*parameters.objects[i]).north eq 1) then image=image+fix(transpose(*((*((*obj).out))[ntab+1]))) $
+				else if ((*parameters.objects[i]).south eq 1) then image=image-fix(transpose(*((*((*obj).out))[ntab+1])))
+			endelse
 		endelse
 		k=k+1
 	endif
