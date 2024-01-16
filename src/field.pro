@@ -64,6 +64,79 @@ stop
 end
 
 
+; **************************************************************
+; READ_BFIELD_AND_DENSITY_FROM_USER
+; This function reads Magnetic Field information from a CSV field given by the user. It returns for each (x,y,z), (bx,by,bz), (fce), bz_read, gb_read, f_read and the density
+;
+; : Returns:
+;    x_read: positions on the magnetic field line
+;    b_read: corresponding (bx,by,bn) values 
+;    bz_read: corresponding direction vector normal to the L-shell
+;    gb_read: corresponding direction of the gradient of B
+;    f_read: corresponding electron cyclotron frequency (in MHz)
+;    density: corresponding density (in cm^{-3})
+;
+; :Params:
+;    obj: in, required, type=pointer
+;    ilat: in, required, type= int
+;    ilongitude: in, required, type= int
+;
+pro read_Bfield_and_density_from_user, ilat, ilongitude
+    if (*obj).nlat gt 1 then ilat_name = '' else ilat_name = '_'+strtrim(ilat,2)
+    ilon_name = string(format='(I03)', ilon)
+
+    if (*obj).north then ihemisphere='north' else if (*obj).south then ihemisphere='south'
+    csv_file = (*obj).folder+'*'+ihemisphere+"*"+ilat_name+"*"+ilon_name+"*.csv"
+
+    data = READ_CSV(csv_file, header=header, count = n)
+    fieldNames_data = TAG_NAMES(data)
+
+    newHeader = strarr(n_elements(header))
+    for iheader = 0,n_elements(header)-1 do newHeader[iheader] = STRMID(header[iheader], 0, STRPOS(header[iheader], '[') - 1)
+
+    newStruct = HASH(newHeader)
+
+
+    for i = 0, N_ELEMENTS(newHeader) - 1 do begin
+        fieldNames_newstruc = STRMID(newHeader[i], 0, STRPOS(header[i], '[')-1)
+        fieldName_data = fieldNames_data[i]                  
+        newStruct[fieldNames_newstruc] = data.(fieldName_data)
+    endfor
+    
+    b_read  = dblarr(3,n)
+    f_read  = dblarr(n)
+    x_read  = dblarr(3,n)
+    gb_read = dblarr(n)
+    bz_read = dblarr(3,n)
+    density = dblarr(n)
+    
+
+    x_read [0,*] = newStruct["X"]
+    x_read [1,*] = newStruct["Y"]
+    x_read [2,*] = newStruct["Z"]
+    b_read [0,*] = newStruct["BX"]
+    b_read [1,*] = newStruct["BY"]
+    b_read [2,*] = newStruct["BZ"]
+    
+    if STRMATCH(newheader, "BZenith*",/FOLD_CASE) then begin
+        bz_read [0,*] = newStruct["BZenithX"]
+        bz_read [1,*] = newStruct["BZenithY"]
+        bz_read [2,*] = newStruct["BZenithZ"]
+    endif
+
+    if STRMATCH(newheader, "GradB*",/FOLD_CASE) then $
+        gb_read = newStruct["GradB"]
+
+    if STRMATCH(newheader, "Rho", /FOLD_case) then $
+        density = newStruct["Rho"]
+
+
+    fsb = 2.79924835996 ; # electon cyclotron frequency [MHz] to B [Gauss] = (e*15.345970*1e-4)/(2*!pi*m_e)/1e6 with e = 1.602e-19 and  m_e = 9.109e-31. Should be fsb = 2.79906 to be more precise...
+
+    f_read = total(b_read^2,1) * fsb
+
+
+return x_read, b_read, bz_read, gb_read, f_read, density
 
 
 ; **************************************************************
@@ -141,21 +214,15 @@ pro fmaxcmi_calculation, obj
 end
 
 ; **************************************************************
-; DENSITY_CALCULATION, obj, parameters
+; DENSITY_CALCULATION, obj, parameters, dens
 ; This procedure determines the density along the magnetic field lines
 ;
 ; :Params:
 ;    obj: in, required, type=pointer
 ;    parameters: in, required, type=array
+;    dens: in, required, type=string
 
-pro density_calculation, obj, parameters
-    if (*obj).sat then begin
-        nd=n_elements((*((*((*((*obj).parent)).parent)).density)))
-        if nd ne 0 then dens=(*((*((*((*obj).parent)).parent)).density))
-    endif else begin
-        nd=n_elements((*((*((*obj).parent)).density)))
-        if nd ne 0 then dens=(*((*((*obj).parent)).density))
-    endelse
+pro density_calculation, obj, parameters, dens
 
     ; if the object is a satellite, take the flatenning of the central body
     if (*obj).sat then flat = (*(*(*obj).parent).parent).flat $
@@ -253,15 +320,48 @@ if (*obj).north then begin
     (*((*obj).dens_n))=dblarr(parameters.freq.n_freq,360,(*obj).nlat)
     ff=(*(parameters.freq.freq_tab))
 
-    for i=0,(*obj).nlat-1 do begin
-        for j=0,359 do begin
-            if strmid((*obj).folder,0,6) eq 'Dipole' then begin 
-                dipolar_field_N,(*obj).folder,obj,ff,fix(i+(*obj).l_min-(*obj).loffset),axisym,i,j 
-                alt_min=1.
-            endif else begin
-                if STRMATCH((*obj).folder, '*.csv', /FOLD_CASE) then begin
-                    read_Bfield_from_user, obj
-                else begin
+    if STRMATCH((*obj).folder, '*.csv', /FOLD_CASE) then begin
+        for ilat=0,(*obj).nlat-1 do begin
+            for ilongitude=0,359 do begin
+                x_read, b_read, bz_read, gb_read, f_read, density = read_Bfield_and_density_from_user(obj, ilat, ilongitude)
+
+                ; # *******************************************
+                ;# if density is included in the file and asked to be used by the user, we deal with the density here instead of later:
+                if (*obj).sat then begin
+                    nd=n_elements((*((*((*((*obj).parent)).parent)).density)))
+                    if nd ne 0 then dens=(*((*((*((*obj).parent)).parent)).density))
+                endif else begin
+                    nd=n_elements((*((*((*obj).parent)).density)))
+                    if nd ne 0 then dens=(*((*((*obj).parent)).density))
+                endelse
+                if STRMATCH((*(dens[ilat])).type, '*.csv', /FOLD_CASE) then begin
+                    (*((*obj).dens_n))[*,ilongitude,ilat] = interpol(density, f_read, ff)
+                ; # *******************************************
+                
+                for k=0,2 do begin
+                    (*((*obj).b_n))[k,*,ilongitude,ilat] = interpol(b_read(k,*),f_read,ff)
+                    (*((*obj).x_n))[k,*,ilongitude,ilat] = interpol(x_read(k,*),f_read,ff)
+                    (*((*obj).bz_n))[k,*,ilongitude,ilat] = interpol(bz_read(k,*),f_read,ff)
+                    if (*obj).sat then (*((*obj).x_n))[k,*,ilongitude,ilat]=(*((*obj).x_n))[k,*,ilongitude,ilat]*(*((*((*obj).parent)).parent)).radius $
+                        else (*((*obj).x_n))[k,*,ilongitude,ilat]=(*((*obj).x_n))[k,*,ilongitude,ilat]*(*((*obj).parent)).radius
+                endfor
+                (*((*obj).gb_n))[*,ilongitude,ilat] = interpol(gb_read,f_read,ff)
+
+                ;*********************
+                ;calculion of fmax
+                ;*********************
+                fmax_calcuation, obj, x_read, f_read, ilongitude, ilat
+            endfor
+            ; # **** smoothing value of fmax                        
+            (*((*obj).fmax))[0,*,i]=smooth(smooth(smooth(smooth((*((*obj).fmax))[0,*,i],5),5),5),5)
+        endfor
+    endif else begin
+        for i=0,(*obj).nlat-1 do begin
+            for j=0,359 do begin
+                if strmid((*obj).folder,0,6) eq 'Dipole' then begin 
+                    dipolar_field_N,(*obj).folder,obj,ff,fix(i+(*obj).l_min-(*obj).loffset),axisym,i,j 
+                    alt_min=1.
+                endif else begin
                     axisym=INTEROGATE_FIELD((*obj).folder,STRTRIM(STRING(fix(i+(*obj).l_min-(*obj).loffset)),2),'')
                     if (axisym and (j eq 0)) or ~axisym then begin
                         ;*************************************
@@ -300,35 +400,33 @@ if (*obj).north then begin
                             if (*obj).sat then (*((*obj).x_n))[k,*,j,i]=(*((*obj).x_n))[k,*,j,i]*(*((*((*obj).parent)).parent)).radius $
                                 else (*((*obj).x_n))[k,*,j,i]=(*((*obj).x_n))[k,*,j,i]*(*((*obj).parent)).radius
                         endfor
-                    (*((*obj).gb_n))[*,j,i] = interpol(gb_read,f_read,ff)
-                endif
+                        (*((*obj).gb_n))[*,j,i] = interpol(gb_read,f_read,ff)
+                    endif
 
-                if axisym then begin
-                    rot=[[cos(!pi/180.*j),-sin(!pi/180.*j),0.],[sin(!pi/180.*j),cos(!pi/180.*j),0.],[0.,0.,1.]]
-                    for k=0,parameters.freq.n_freq-1 do begin
-                        (*((*obj).b_n))[*,k,j,i] =rot#(*((*obj).b_n))[*,k,0,i]
-                        (*((*obj).bz_n))[*,k,j,i] =rot#(*((*obj).bz_n))[*,k,0,i]
-                        (*((*obj).x_n))[*,k,j,i] =rot#(*((*obj).x_n))[*,k,0,i]
-                    endfor
-                endif
+                    if axisym then begin
+                        rot=[[cos(!pi/180.*j),-sin(!pi/180.*j),0.],[sin(!pi/180.*j),cos(!pi/180.*j),0.],[0.,0.,1.]]
+                        for k=0,parameters.freq.n_freq-1 do begin
+                            (*((*obj).b_n))[*,k,j,i] =rot#(*((*obj).b_n))[*,k,0,i]
+                            (*((*obj).bz_n))[*,k,j,i] =rot#(*((*obj).bz_n))[*,k,0,i]
+                            (*((*obj).x_n))[*,k,j,i] =rot#(*((*obj).x_n))[*,k,0,i]
+                        endfor
+                    endif
 						
-			
-                ;*********************
-                ;calculion of fmax
-                ;*********************
-                fmax_calcuation, obj, x_read, f_read, j, i
+    			
+                    ;*********************
+                    ;calculion of fmax
+                    ;*********************
+                    fmax_calcuation, obj, x_read, f_read, j, i
+                endelse
+            ; end loop on longitude
+            endfor
+            ; # **** smoothing value of fmax						
+            (*((*obj).fmax))[0,*,i]=smooth(smooth(smooth(smooth((*((*obj).fmax))[0,*,i],5),5),5),5)
 
-            endelse
-
-        ; en loop on longitude
-        endfor
-        ; # **** smoothing value of fmax						
-        (*((*obj).fmax))[0,*,i]=smooth(smooth(smooth(smooth((*((*obj).fmax))[0,*,i],5),5),5),5)
-
-    ; fin boucle sur les latitudes
-    endfor			
-
-; fin boucle sur hemisphere nord
+        ; end loop on latitude
+        endfor			
+    endelse
+; #*** end if loop on northern hemisphere
 endif			
 
 if (*obj).south then begin
@@ -338,77 +436,120 @@ if (*obj).south then begin
     (*((*obj).gb_s))=fltarr(parameters.freq.n_freq,360,(*obj).nlat)
     (*((*obj).dens_s))=fltarr(parameters.freq.n_freq,360,(*obj).nlat)
     ff=(*(parameters.freq.freq_tab))
-    for i=0,(*obj).nlat-1 do begin
-        for j=0,359 do begin
-            if strmid((*obj).folder,0,6) eq 'Dipole' then begin
-                dipolar_field_S,(*obj).folder,obj,ff,fix(i+(*obj).l_min-(*obj).loffset),axisym,i,j 
-                alt_min=1.
-            endif else begin
-                axisym=INTEROGATE_FIELD((*obj).folder,STRTRIM(STRING(fix(i+(*obj).l_min-(*obj).loffset)),2),'-')
-                if (axisym and (j eq 0)) or ~axisym then begin
-                    if axisym then file=(*obj).folder+'-'+STRTRIM(STRING(fix(i+(*obj).l_min-(*obj).loffset)),2)+'.lsr' $
-                        else file=(*obj).folder+STRTRIM(STRING(fix(i+(*obj).l_min-(*obj).loffset)),2)+'/-'+STRTRIM(STRING(j),2)+'.lsr'
-                    n=0L
-                    openr,unit, file,/get_lun,/swap_if_little_endian
-                    readu,unit,n
-                    b_read      = fltarr(3,n)
-                    f_read      = fltarr(n)
-                    gb_read     = fltarr(n) 
-                    bz_read      = fltarr(3,n)
-                    sc_gb_read  = fltarr(n)
-                    x_read      = fltarr(3,n)
-                    xt          = fltarr(n)
-                    readu,unit, xt
-                    x_read(0,*) = xt
-                    readu,unit, xt
-                    x_read(1,*) = xt
-                    readu,unit, xt
-                    x_read(2,*) = xt
-                    xt          = 0
-                    readu,unit, b_read
-                    readu,unit, f_read
-                    readu,unit,sc_gb_read
-                    readu,unit,bz_read
-                    readu,unit,gb_read
-                    close, unit & free_lun, unit
+    if STRMATCH((*obj).folder, '*.csv', /FOLD_CASE) then begin
+        for ilat=0,(*obj).nlat-1 do begin
+            for ilongitude=0,359 do begin
+                x_read, b_read, bz_read, gb_read, f_read, density = read_Bfield_and_density_from_user(obj, ilat, ilongitude)
 
-                    for k=0,2 do begin
-                        (*((*obj).b_s))[k,*,j,i] = interpol(b_read(k,*),f_read,ff)
-                        (*((*obj).x_s))[k,*,j,i] = interpol(x_read(k,*),f_read,ff)
-                        (*((*obj).bz_s))[k,*,j,i] = interpol(bz_read(k,*),f_read,ff)
-                        if (*obj).sat then (*((*obj).x_s))[k,*,j,i]=(*((*obj).x_s))[k,*,j,i]*(*((*((*obj).parent)).parent)).radius $
-                            else (*((*obj).x_s))[k,*,j,i]=(*((*obj).x_s))[k,*,j,i]*(*((*obj).parent)).radius
-                    endfor
-                    (*((*obj).gb_s))[*,j,i] = interpol(gb_read,f_read,ff)
-                endif
+                ; # *******************************************
+                ;# if density is included in the file and asked to be used by the user, we deal with the density here instead of later:
+                if (*obj).sat then begin
+                    nd=n_elements((*((*((*((*obj).parent)).parent)).density)))
+                    if nd ne 0 then dens=(*((*((*((*obj).parent)).parent)).density))
+                endif else begin
+                    nd=n_elements((*((*((*obj).parent)).density)))
+                    if nd ne 0 then dens=(*((*((*obj).parent)).density))
+                endelse
+                if STRMATCH((*(dens[ilat])).type, '*.csv', /FOLD_CASE) then begin
+                    (*((*obj).dens_s))[*,ilongitude,ilat] = interpol(density, f_read, ff)
+                ; # *******************************************
+                
+                for k=0,2 do begin
+                    (*((*obj).b_s))[k,*,ilongitude,ilat] = interpol(b_read(k,*),f_read,ff)
+                    (*((*obj).x_s))[k,*,ilongitude,ilat] = interpol(x_read(k,*),f_read,ff)
+                    (*((*obj).bz_s))[k,*,ilongitude,ilat] = interpol(bz_read(k,*),f_read,ff)
+                    if (*obj).sat then (*((*obj).x_s))[k,*,ilongitude,ilat]=(*((*obj).x_s))[k,*,ilongitude,ilat]*(*((*((*obj).parent)).parent)).radius $
+                        else (*((*obj).x_s))[k,*,ilongitude,ilat]=(*((*obj).x_s))[k,*,ilongitude,ilat]*(*((*obj).parent)).radius
+                endfor
+                (*((*obj).gb_s))[*,ilongitude,ilat] = interpol(gb_read,f_read,ff)
 
-                if axisym then begin
-                    rot=[[cos(!pi/180.*j),-sin(!pi/180.*j),0.],[sin(!pi/180.*j),cos(!pi/180.*j),0.],[0.,0.,1.]]
-                    for k=0,parameters.freq.n_freq-1 do begin
-                        (*((*obj).b_s))[*,k,j,i] =rot#(*((*obj).b_s))[*,k,0,i]
-                        (*((*obj).bz_s))[*,k,j,i] =rot#(*((*obj).bz_s))[*,k,0,i]
-                        (*((*obj).x_s))[*,k,j,i] =rot#(*((*obj).x_s))[*,k,0,i]
-                    endfor
-                endif
                 ;*********************
-                ;calculion of fmax (partie SUD)
+                ;calculion of fmax
                 ;*********************
-                pro fmax_calcuation, obj, x_read, f_read, j, i
-            endelse
-        ; en loop on longitude
+                fmax_calcuation, obj, x_read, f_read, ilongitude, ilat
+            endfor
+            ; # **** smoothing value of fmax                        
+            (*((*obj).fmax))[1,*,i]=smooth(smooth(smooth(smooth((*((*obj).fmax))[1,*,i],5),5),5),5)
         endfor
-        ; # **** smoothing value of fmax
-        (*((*obj).fmax))[1,*,i]=smooth(smooth(smooth(smooth((*((*obj).fmax))[1,*,i],5),5),5),5)
-    ; end loop on latitude
-    endfor 						
+    endif else begin
+        for i=0,(*obj).nlat-1 do begin
+            for j=0,359 do begin
+                if strmid((*obj).folder,0,6) eq 'Dipole' then begin
+                    dipolar_field_S,(*obj).folder,obj,ff,fix(i+(*obj).l_min-(*obj).loffset),axisym,i,j 
+                    alt_min=1.
+                endif else begin
+                    axisym=INTEROGATE_FIELD((*obj).folder,STRTRIM(STRING(fix(i+(*obj).l_min-(*obj).loffset)),2),'-')
+                    if (axisym and (j eq 0)) or ~axisym then begin
+                        if axisym then file=(*obj).folder+'-'+STRTRIM(STRING(fix(i+(*obj).l_min-(*obj).loffset)),2)+'.lsr' $
+                            else file=(*obj).folder+STRTRIM(STRING(fix(i+(*obj).l_min-(*obj).loffset)),2)+'/-'+STRTRIM(STRING(j),2)+'.lsr'
+                        n=0L
+                        openr,unit, file,/get_lun,/swap_if_little_endian
+                        readu,unit,n
+                        b_read      = fltarr(3,n)
+                        f_read      = fltarr(n)
+                        gb_read     = fltarr(n) 
+                        bz_read      = fltarr(3,n)
+                        sc_gb_read  = fltarr(n)
+                        x_read      = fltarr(3,n)
+                        xt          = fltarr(n)
+                        readu,unit, xt
+                        x_read(0,*) = xt
+                        readu,unit, xt
+                        x_read(1,*) = xt
+                        readu,unit, xt
+                        x_read(2,*) = xt
+                        xt          = 0
+                        readu,unit, b_read
+                        readu,unit, f_read
+                        readu,unit,sc_gb_read
+                        readu,unit,bz_read
+                        readu,unit,gb_read
+                        close, unit & free_lun, unit
 
-    density_calculation, obj, parameters
+                        for k=0,2 do begin
+                            (*((*obj).b_s))[k,*,j,i] = interpol(b_read(k,*),f_read,ff)
+                            (*((*obj).x_s))[k,*,j,i] = interpol(x_read(k,*),f_read,ff)
+                            (*((*obj).bz_s))[k,*,j,i] = interpol(bz_read(k,*),f_read,ff)
+                            if (*obj).sat then (*((*obj).x_s))[k,*,j,i]=(*((*obj).x_s))[k,*,j,i]*(*((*((*obj).parent)).parent)).radius $
+                                else (*((*obj).x_s))[k,*,j,i]=(*((*obj).x_s))[k,*,j,i]*(*((*obj).parent)).radius
+                        endfor
+                        (*((*obj).gb_s))[*,j,i] = interpol(gb_read,f_read,ff)
+                    endif
 
+                    if axisym then begin
+                        rot=[[cos(!pi/180.*j),-sin(!pi/180.*j),0.],[sin(!pi/180.*j),cos(!pi/180.*j),0.],[0.,0.,1.]]
+                        for k=0,parameters.freq.n_freq-1 do begin
+                            (*((*obj).b_s))[*,k,j,i] =rot#(*((*obj).b_s))[*,k,0,i]
+                            (*((*obj).bz_s))[*,k,j,i] =rot#(*((*obj).bz_s))[*,k,0,i]
+                            (*((*obj).x_s))[*,k,j,i] =rot#(*((*obj).x_s))[*,k,0,i]
+                        endfor
+                    endif
+                    ;*********************
+                    ;calculion of fmax (partie SUD)
+                    ;*********************
+                    pro fmax_calcuation, obj, x_read, f_read, j, i
+                endelse
+            ; end loop on longitude
+            endfor
+            ; # **** smoothing value of fmax
+            (*((*obj).fmax))[1,*,i]=smooth(smooth(smooth(smooth((*((*obj).fmax))[1,*,i],5),5),5),5)
+        ; end loop on latitude
+        endfor 						
+    endelse
 ; fin boucle hemisphere sud
 endif
 
 ; # *** Calculation of the density along the magnetic field lines
-density_calculation, obj, parameters
+if (*obj).sat then begin
+        nd=n_elements((*((*((*((*obj).parent)).parent)).density)))
+        if nd ne 0 then dens=(*((*((*((*obj).parent)).parent)).density))
+    endif else begin
+        nd=n_elements((*((*((*obj).parent)).density)))
+        if nd ne 0 then dens=(*((*((*obj).parent)).density))
+    endelse
+if STRMATCH((*(dens[i])).type, '*.csv', /FOLD_CASE) eq 0 then $
+    density_calculation, obj, parameters
+
 
 ; # *** Calculation of the maximal frequency at the footprint of the magnetic field lines, based on the w_p/w_c ratio
 fmaxcmi_calculation, obj, parameters
