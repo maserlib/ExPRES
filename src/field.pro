@@ -320,7 +320,10 @@ if (*obj).north then begin
     (*((*obj).dens_n))=dblarr(parameters.freq.n_freq,360,(*obj).nlat)
     ff=(*(parameters.freq.freq_tab))
 
-    if STRMATCH((*obj).folder, '*.csv', /FOLD_CASE) then begin
+    if (*obj).sat then mfl_auto=(*((*((*obj).parent)).parent)).mfl $
+        else mfl_auto=(*((*obj).parent)).mfl
+
+    if STRMATCH(mfl_auto, 'auto', /FOLD_CASE) then begin
         for ilat=0,(*obj).nlat-1 do begin
             for ilongitude=0,359 do begin
                 x_read, b_read, bz_read, gb_read, f_read, density = read_Bfield_and_density_from_user(obj, ilat, ilongitude)
@@ -334,7 +337,7 @@ if (*obj).north then begin
                     nd=n_elements((*((*((*obj).parent)).density)))
                     if nd ne 0 then dens=(*((*((*obj).parent)).density))
                 endelse
-                if STRMATCH((*(dens[ilat])).type, '*.csv', /FOLD_CASE) then begin
+                if STRMATCH((*(dens[ilat])).type, 'auto', /FOLD_CASE) then begin
                     (*((*obj).dens_n))[*,ilongitude,ilat] = interpol(density, f_read, ff)
                 ; # *******************************************
                 
@@ -436,7 +439,10 @@ if (*obj).south then begin
     (*((*obj).gb_s))=fltarr(parameters.freq.n_freq,360,(*obj).nlat)
     (*((*obj).dens_s))=fltarr(parameters.freq.n_freq,360,(*obj).nlat)
     ff=(*(parameters.freq.freq_tab))
-    if STRMATCH((*obj).folder, '*.csv', /FOLD_CASE) then begin
+
+    if (*obj).sat then mfl_auto=(*((*((*obj).parent)).parent)).mfl $
+        else mfl_auto=(*((*obj).parent)).mfl
+    if STRMATCH(mfl_auto, 'auto', /FOLD_CASE) then begin
         for ilat=0,(*obj).nlat-1 do begin
             for ilongitude=0,359 do begin
                 x_read, b_read, bz_read, gb_read, f_read, density = read_Bfield_and_density_from_user(obj, ilat, ilongitude)
@@ -450,7 +456,7 @@ if (*obj).south then begin
                     nd=n_elements((*((*((*obj).parent)).density)))
                     if nd ne 0 then dens=(*((*((*obj).parent)).density))
                 endelse
-                if STRMATCH((*(dens[ilat])).type, '*.csv', /FOLD_CASE) then begin
+                if STRMATCH((*(dens[ilat])).type, 'auto', /FOLD_CASE) then begin
                     (*((*obj).dens_s))[*,ilongitude,ilat] = interpol(density, f_read, ff)
                 ; # *******************************************
                 
@@ -547,7 +553,7 @@ if (*obj).sat then begin
         nd=n_elements((*((*((*obj).parent)).density)))
         if nd ne 0 then dens=(*((*((*obj).parent)).density))
     endelse
-if STRMATCH((*(dens[i])).type, '*.csv', /FOLD_CASE) eq 0 then $
+if STRMATCH((*(dens[i])).type, 'auto', /FOLD_CASE) eq 0 then $
     density_calculation, obj, parameters
 
 

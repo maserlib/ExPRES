@@ -915,7 +915,7 @@ PRO init_serpe_structures,time,freq,observer,body,dens,src,spdyn,cdf,mov2d,mov3d
 time={TI,mini:0d,maxi:0d,nbr:0l,dt:0.}
 freq={FR,mini:0.,maxi:0.,nbr:0l,df:0.,name:'',log:0b,predef:0b,freq_tab:PTR_NEW(/ALLOCATE_HEAP)}
 observer={OB,motion:0b,smaj:0.,smin:0.,decl:0.,alg:0.,incl:0.,phs:0.,predef:0b,name:'',parent:'',start:''}
-body={BO,on:0b,name:'',rad:0.,per:0.,flat:0.,orb1:0.,lg0:0.,sat:0b,smaj:0.,smin:0.,decl:0.,alg:0.,incl:0.,phs:0.,parent:'', mfl:'',dens:intarr(4),ipar:0}
+body={BO,on:0b,name:'',rad:0.,per:0.,flat:0.,orb1:0.,lg0:0.,sat:0b,smaj:0.,smin:0.,decl:0.,alg:0.,incl:0.,phs:0.,parent:'', mfl:'', folder:'',dens:intarr(4),ipar:0}
 dens={DE,on:0b,name:'',type:'',rho0:0.,height:0.,perp:0.}
 src={SO,on:0b,name:'',parent:'',sat:'',type:'',loss:0b,mode:'RX',lossbornes:0b,ring:0b,cavity:0b,constant:0.,width:0.,temp:0d,cold:0d,v:0d,lagauto:'off',lagmodel:'',lgmin:0.,lgmax:0.,lgnbr:1,lgstep:1.,latmin:0.,latmax:0.,latstep:1.,north:0b,south:0b,subcor:0.,aurora_alt:0d,refract:0b}
 spdyn={SP,intensity:0b,polar:0b,f_t:0b,lg_t:0b,lat_t:0b,f_r:0b,lg_r:0b,lat_r:0b,f_lg:0b,lg_lg:0b,lat_lg:0b,f_lat:0b,lg_lat:0b,lat_lat:0b,f_lt:0b,lg_lt:0b,lat_lt:0b,$
@@ -949,6 +949,7 @@ for i=0,n_elements(ds)-2 do begin
 		'Ionospheric': typ='ionospheric'
 		'Torus': typ='torus'
 		'Disk': typ='disk'
+    'auto': typ='auto'
 	endcase
 
 	(parameters.objects[n])=PTR_NEW({DENSITY,name:(ds[i+1]).name,type:typ,rho0:(ds[i+1]).rho0,height:(ds[i+1]).height,perp:(ds[i+1]).perp,it:[''],cb:[''],fz:['']})
@@ -1077,14 +1078,17 @@ for i=0,n_elements(sc)-2 do begin
 		'Z3': fld='Z3'
     'Q3': fld ='Q3'
     'AH5': fld ='AH5'
+    'auto': BEGIN
+        fld = bd[wpar[0]].folder
+    END
 		else: BEGIN
       fld=mfl
-      print,'Is your magnetic field model name correct? If you have entered a filename containing the pre-defined magnetic field lines, please ignore this warning.'
+      print,'Is your magnetic field model name correct?'
 	   END
   endcase
-	if strmid(mfl,0,6) eq 'Dipole' then fld=mfl else fld=adresse_mfl+fld
+	if (strmid(mfl,0,6) eq 'Dipole') or (mfl eq 'auto') then fld=mfl else fld=adresse_mfl+fld
   
-  if STRMATCH(fld, '*.csv', /FOLD_CASE) then begin
+  if STRMATCH(mfl, 'auto', /FOLD_CASE) then begin
     (*((parameters.objects[n]))).folder=fld
   else if ((sc[i+1]).type eq 'fixed in latitude') then (*((parameters.objects[n]))).folder=fld+'_lat' else begin
     if strlowcase((*parent).name) eq 'jupiter' then begin
@@ -1232,13 +1236,6 @@ endif else begin
     freq.name='Linear'
   endelse
 endelse
-
-
-
-
-
-
-
 
 
 ; ***** loading OBSERVER section *****
@@ -1597,6 +1594,13 @@ for i=0,nbody-1 do begin
 		bd[n].orb1=((serpe_save['BODY'])[i])['ORB_PER']    ; # orb_per=(2*pi*sqrt(a^3/(GM))/60 (in minutes) with a the radius of the body, G=6.67430e-11 and M the mass of thd body ; Third law of Kepler  
 		bd[n].lg0=((serpe_save['BODY'])[i])['INIT_AX']
 		bd[n].mfl=((serpe_save['BODY'])[i])['MAG']
+    if bd[n].mfl eq 'auto' then begin
+      test=where(((serpe_save['BODY'])[i]).keys() eq 'MAG_FOLDER',cnt)
+      if cnt ne 0 then begin
+        if ((serpe_save['BODY'])[i])['MAG_FOLDER'] ne '' then $
+          bd[n].folder=STRUPCASE(((serpe_save['BODY'])[i])['MAG_FOLDER'])
+    endif
+
 		bd[n].sat=((serpe_save['BODY'])[i])['MOTION']
 		bd[n].parent=((serpe_save['BODY'])[i])['PARENT']
 		bd[n].smaj=((serpe_save['BODY'])[i])['SEMI_MAJ']
@@ -1621,7 +1625,7 @@ for i=0,nbody-1 do begin
     	
       ; # updating the date to take into account the light travel time
       ; # The longitude of a secondary body (a moon) is taken from the moon pov
-      ; # It's necessary to go back in time, corresponding to the distance main body-observer
+      ; # It s necessary to go back in time, corresponding to the distance main body-observer
 
       case ((serpe_save['BODY'])[i])['PARENT'] of 
         'Jupiter': Rayon=71492.00
