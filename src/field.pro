@@ -238,7 +238,7 @@ pro density_calculation, obj, parameters, dens
     ;Calcul du alt_min entrant dans la determination de la densite dans le cas du modele 'ionospheric'
     ;*********************
     angle_n=atan((*(*obj).x_n)[2,*,*,*],sqrt((*(*obj).x_n)[0,*,*,*]^2+(*(*obj).x_n)[1,*,*,*]^2))
-    alt_min_n=sqrt(1./(cos(angle_n)^2+sin(angle)^2/(1-flat)^2))
+    alt_min_n=sqrt(1./(cos(angle_n)^2+sin(angle_n)^2/(1-flat)^2))
 
     angle_s=atan((*(*obj).x_s)[2,*,*,*],sqrt((*(*obj).x_s)[0,*,*,*]^2+(*(*obj).x_s)[1,*,*,*]^2))
     alt_min_s=sqrt(1./(cos(angle_s)^2+sin(angle_s)^2/(1-flat)^2))
