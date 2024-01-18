@@ -184,8 +184,9 @@ end
 ; :Params:
 ;    obj: in, required, type=pointer
 
-pro fmaxcmi_calculation, obj
-
+pro fmaxcmi_calculation, obj, parameters
+    
+    ff=(*(parameters.freq.freq_tab))
     ; # NORTHERN HEMISPHERE
     for ilat=0,(*obj).nlat-1 do begin
         for ilong=0,359 do begin
@@ -589,7 +590,7 @@ if (*obj).sat then begin
 
 
 ; # *** Calculation of the maximal frequency at the footprint of the magnetic field lines, based on the w_p/w_c ratio
-fmaxcmi_calculation, obj
+fmaxcmi_calculation, obj, parameters
 
 
 return;plot,sqrt(total((*((*obj).x_s))^2,1)),alog((*((*obj).dens_s))[*,90,*])
