@@ -343,8 +343,9 @@ if (*obj).north then begin
                     nd=n_elements((*((*((*obj).parent)).density)))
                     if nd ne 0 then dens=(*((*((*obj).parent)).density))
                 endelse
-                if STRMATCH((*(dens[ilat])).type, 'auto', /FOLD_CASE) then $
-                    (*((*obj).dens_n))[*,ilongitude,ilat] = interpol(density, f_read, ff)
+                if nd eq 1 then $
+                    if STRMATCH((*(dens)).type, 'auto', /FOLD_CASE) then $
+                        (*((*obj).dens_n))[*,ilongitude,ilat] = interpol(density, f_read, ff)
                 ; # *******************************************
                 
                 for k=0,2 do begin
@@ -462,7 +463,8 @@ if (*obj).south then begin
                     nd=n_elements((*((*((*obj).parent)).density)))
                     if nd ne 0 then dens=(*((*((*obj).parent)).density))
                 endelse
-                if STRMATCH((*(dens[ilat])).type, 'auto', /FOLD_CASE) then $
+                if nd eq 1 then $
+                    if STRMATCH((*(dens)).type, 'auto', /FOLD_CASE) then $
                     (*((*obj).dens_s))[*,ilongitude,ilat] = interpol(density, f_read, ff)
                 ; # *******************************************
                 
@@ -559,8 +561,9 @@ if (*obj).sat then begin
         nd=n_elements((*((*((*obj).parent)).density)))
         if nd ne 0 then dens=(*((*((*obj).parent)).density))
     endelse
-if STRMATCH((*(dens[i])).type, 'auto', /FOLD_CASE) eq 0 then $
-    density_calculation, obj, parameters
+ for idens=0,nd-1 do $
+    begin if STRMATCH((*(dens[idens])).type, 'auto', /FOLD_CASE) eq 0 then $
+        density_calculation, obj, parameters
 
 
 ; # *** Calculation of the maximal frequency at the footprint of the magnetic field lines, based on the w_p/w_c ratio
