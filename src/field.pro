@@ -170,7 +170,7 @@ pro fmax_calcuation, obj, x_read, f_read, ilongitude, ilatitude
 
 end
 
- **************************************************************
+; **************************************************************
 ; FMAXCMI_CALCULATION
 ; This procedure determines the maximal frequency reachable by the cycltron maser instability due to the ratio w_p/w_c
 ;
