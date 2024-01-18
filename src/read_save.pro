@@ -1598,6 +1598,7 @@ for i=0,nbody-1 do begin
       if cnt ne 0 then begin
         if ((serpe_save['BODY'])[i])['MAG_FOLDER'] ne '' then $
           bd[n].folder=STRUPCASE(((serpe_save['BODY'])[i])['MAG_FOLDER'])
+      endif
     endif
 
 		bd[n].sat=((serpe_save['BODY'])[i])['MOTION']
