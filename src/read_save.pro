@@ -962,7 +962,7 @@ rank_bodies,bd
 start_bodies=n
 
 for i=0,n_elements(bd)-2 do begin
-	(parameters.objects[n])=PTR_NEW({BODY,name:(bd[i+1]).name,radius:(bd[i+1]).rad,period:(bd[i+1]).per,flat:(bd[i+1]).flat,orb_1r:(bd[i+1]).orb1,lg0:(bd[i+1]).lg0,motion:(bd[i+1]).sat,$
+	(parameters.objects[n])=PTR_NEW({BODY,name:(bd[i+1]).name, mfl:(bd[i+1]).mfl, radius:(bd[i+1]).rad,period:(bd[i+1]).per,flat:(bd[i+1]).flat,orb_1r:(bd[i+1]).orb1,lg0:(bd[i+1]).lg0,motion:(bd[i+1]).sat,$
 				parent:PTR_NEW(/ALLOCATE_HEAP),initial_phase:(bd[i+1]).phs,semi_major_axis:(bd[i+1]).smaj,semi_minor_axis:(bd[i+1]).smin,apoapsis_declination:(bd[i+1]).decl,$
 				apoapsis_longitude:(bd[i+1]).alg,orbit_inclination:(bd[i+1]).incl,traj_file:'',density:PTR_NEW(/ALLOCATE_HEAP),$
 				lg:PTR_NEW(/ALLOCATE_HEAP),lct:PTR_NEW(/ALLOCATE_HEAP),trajectory_xyz:PTR_NEW(/ALLOCATE_HEAP),trajectory_rtp:PTR_NEW(/ALLOCATE_HEAP),$
