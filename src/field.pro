@@ -231,8 +231,15 @@ end
 pro density_calculation, obj, parameters, dens
 
     ; if the object is a satellite, take the flatenning of the central body
-    if (*obj).sat then flat = (*(*(*obj).parent).parent).flat $
-        else flat = (*(*obj).parent).flat  
+    if (*obj).sat then begin
+        flat = (*(*(*obj).parent).parent).flat $
+        nd=n_elements((*((*((*((*obj).parent)).parent)).density)))
+        if nd ne 0 then dens=(*((*((*((*obj).parent)).parent)).density))
+    endif else begin
+        flat = (*(*obj).parent).flat
+        nd=n_elements((*((*((*obj).parent)).density)))
+        if nd ne 0 then dens=(*((*((*obj).parent)).density))
+    endelse
 
     ;*********************
     ;Calcul du alt_min entrant dans la determination de la densite dans le cas du modele 'ionospheric'
@@ -245,6 +252,7 @@ pro density_calculation, obj, parameters, dens
         alt_min_s=sqrt(1./(cos(angle_s)^2+sin(angle_s)^2/(1-flat)^2))
     endif
     ;*********************
+
     for i=0,nd-1 do begin
         case (*(dens[i])).type of
             'stellar': BEGIN
