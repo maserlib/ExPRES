@@ -337,7 +337,7 @@ if (*obj).north then begin
                     nd=n_elements((*((*((*obj).parent)).density)))
                     if nd ne 0 then dens=(*((*((*obj).parent)).density))
                 endelse
-                if STRMATCH((*(dens[ilat])).type, 'auto', /FOLD_CASE) then begin
+                if STRMATCH((*(dens[ilat])).type, 'auto', /FOLD_CASE) then $
                     (*((*obj).dens_n))[*,ilongitude,ilat] = interpol(density, f_read, ff)
                 ; # *******************************************
                 
@@ -456,7 +456,7 @@ if (*obj).south then begin
                     nd=n_elements((*((*((*obj).parent)).density)))
                     if nd ne 0 then dens=(*((*((*obj).parent)).density))
                 endelse
-                if STRMATCH((*(dens[ilat])).type, 'auto', /FOLD_CASE) then begin
+                if STRMATCH((*(dens[ilat])).type, 'auto', /FOLD_CASE) then $
                     (*((*obj).dens_s))[*,ilongitude,ilat] = interpol(density, f_read, ff)
                 ; # *******************************************
                 
