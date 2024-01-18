@@ -81,7 +81,7 @@ end
 ;    ilat: in, required, type= int
 ;    ilongitude: in, required, type= int
 ;
-pro read_Bfield_and_density_from_user, ilat, ilongitude
+pro read_Bfield_and_density_from_user, ilat, ilongitude, x_read, b_read, bz_read, gb_read, f_read, density
     if (*obj).nlat gt 1 then ilat_name = '' else ilat_name = '_'+strtrim(ilat,2)
     ilon_name = string(format='(I03)', ilon)
 
@@ -136,7 +136,7 @@ pro read_Bfield_and_density_from_user, ilat, ilongitude
     f_read = total(b_read^2,1) * fsb
 
 
-return(x_read, b_read, bz_read, gb_read, f_read, density)
+return
 
 
 ; **************************************************************
@@ -326,7 +326,7 @@ if (*obj).north then begin
     if STRMATCH(mfl_auto, 'auto', /FOLD_CASE) then begin
         for ilat=0,(*obj).nlat-1 do begin
             for ilongitude=0,359 do begin
-                x_read, b_read, bz_read, gb_read, f_read, density = read_Bfield_and_density_from_user(obj, ilat, ilongitude)
+                read_Bfield_and_density_from_user, obj, ilat, ilongitude, x_read, b_read, bz_read, gb_read, f_read, density
 
                 ; # *******************************************
                 ;# if density is included in the file and asked to be used by the user, we deal with the density here instead of later:
@@ -445,7 +445,7 @@ if (*obj).south then begin
     if STRMATCH(mfl_auto, 'auto', /FOLD_CASE) then begin
         for ilat=0,(*obj).nlat-1 do begin
             for ilongitude=0,359 do begin
-                x_read, b_read, bz_read, gb_read, f_read, density = read_Bfield_and_density_from_user(obj, ilat, ilongitude)
+                read_Bfield_and_density_from_user, obj, ilat, ilongitude, x_read, b_read, bz_read, gb_read, f_read, density
 
                 ; # *******************************************
                 ;# if density is included in the file and asked to be used by the user, we deal with the density here instead of later:
