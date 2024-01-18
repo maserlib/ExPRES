@@ -927,7 +927,7 @@ mov3d={M3D,on:0b,sub:0,xrange:[0.,0.],yrange:[0.,0.],zrange:[0.,0.],obs:0b,traj:
 end
 
 ;************************************************************** BUILD_SERPE_OBJ
-FUNCTION build_serpe_obj,adresse_mfl,file_name,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d
+FUNCTION build_serpe_obj,version,adresse_mfl,file_name,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d
 
 ; ***** number of objects to build *****
 nobj=n_elements(bd)-1+n_elements(ds)-1+2*(n_elements(sc)-1)+2+mov2d.on+mov3d.on+2;sacred&cdf
@@ -937,7 +937,7 @@ TEMPS={TIME,debut:time.mini,fin:time.maxi,step:time.dt,n_step:time.nbr,time:0d,t
 FREQUE={FREQ,fmin:freq.mini,fmax:freq.maxi,n_freq:freq.nbr,step:freq.df,file:freq.name,log:freq.log,freq_tab:freq.freq_tab}
 simu_name_tmp=strsplit(file_name,'/',/extract)
 simu_name_tmp=strsplit(simu_name_tmp[-1],'.',/extract)
-parameters={PARAMETERS,ticket:ticket,time:temps,freq:freque,name:simu_name_tmp[0],objects:PTRARR(nobj,/ALLOCATE_HEAP),out:''}
+parameters={PARAMETERS,version:version,ticket:ticket,time:temps,freq:freque,name:simu_name_tmp[0],objects:PTRARR(nobj,/ALLOCATE_HEAP),out:''}
 
 
 ; ***** preparing DENSITY parameters *****
@@ -1165,7 +1165,7 @@ end
 ;************************************************************** 
 ;READ_SAVE_JSON
 ;************************************************************** 
-pro read_save_json,adresse_mfl,file_name,parameters,config=config
+pro read_save_json,version,adresse_mfl,file_name,parameters,config=config
 ;************************************************************** 
 
 ; ***** initializing local variables *****
@@ -1768,6 +1768,6 @@ endfor
 bd[wparent[0]].rad/=bd[wparent[0]].rad
 
 ; ***** building SERPE objects *****
-parameters = build_serpe_obj(adresse_mfl,file_name,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d)
+parameters = build_serpe_obj(version,adresse_mfl,file_name,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d)
 
 end
