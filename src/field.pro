@@ -88,59 +88,74 @@ pro read_Bfield_and_density_from_user, ilat, ilongitude, x_read, b_read, bz_read
     if (*obj).north then ihemisphere='north' else if (*obj).south then ihemisphere='south'
     csv_file = (*obj).folder+'*'+ihemisphere+"*"+ilat_name+"*"+ilon_name+"*.csv"
 
-    data = READ_CSV(csv_file, header=header, count = n)
-    n_header=0                                                            
-    while strmid(data.field1[n_header],0,1) eq '#' do n_header=n_header+1
+    search_for_csv_file=FILE_SEARCH(csv_file)
+
+    if search_for_csv_file eq '' then begin
+        ; # In case csv_file doesnt exist, then values are set to 0.
+        n=150 ;#random number so that the interpolation done later works
+        b_read  = dblarr(3,n)
+        f_read  = dblarr(n)
+        x_read  = dblarr(3,n)
+        gb_read = dblarr(n)
+        bz_read = dblarr(3,n)
+        density = dblarr(n)
+    else begin
+        data = READ_CSV(csv_file, header=header, count = n)
+        n_header=0                                                            
+        while strmid(data.field1[n_header],0,1) eq '#' do n_header=n_header+1
+
+        data = READ_CSV(csv_file, header = header, count = n, table_header = table_header, n_table_header = n_header-1)
+        
+
+        b_read  = dblarr(3,n)
+        f_read  = dblarr(n)
+        x_read  = dblarr(3,n)
+        gb_read = dblarr(n)
+        bz_read = dblarr(3,n)
+        density = dblarr(n)
+        
+
+        if strmatch(table_header, "*True*", /fold_case) then begin ;# so that if the Field line is not connected to the star, False will be set and magnetic field line will contain only 0
+            fieldNames_data = TAG_NAMES(data)
+
+            header[0] = strtrim(strmid(header[0], 1, strlen(header[0])-1),2)
+            newHeader = strarr(n_elements(header))
+            for iheader = 0,n_elements(header)-1 do newHeader[iheader] = STRMID(header[iheader], 0, STRPOS(header[iheader], '[') - 1)
+
+            newStruct = HASH(newHeader)
 
 
-    data = READ_CSV(csv_file, header = header, count = n, table_header = table_header, n_table_header = n_header-1)
-    fieldNames_data = TAG_NAMES(data)
+            for i = 0, N_ELEMENTS(newHeader) - 1 do begin
+                fieldNames_newstruc = STRMID(newHeader[i], 0, STRPOS(header[i], '[')-1)
+                fieldName_data = fieldNames_data[i]                  
+                newStruct[fieldNames_newstruc] = data.(fieldName_data)
+            endfor
 
-    header[0] = strtrim(strmid(header[0], 1, strlen(header[0])-1),2)
-    newHeader = strarr(n_elements(header))
-    for iheader = 0,n_elements(header)-1 do newHeader[iheader] = STRMID(header[iheader], 0, STRPOS(header[iheader], '[') - 1)
+            x_read [0,*] = newStruct["X"]
+            x_read [1,*] = newStruct["Y"]
+            x_read [2,*] = newStruct["Z"]
+            b_read [0,*] = newStruct["BX"]
+            b_read [1,*] = newStruct["BY"]
+            b_read [2,*] = newStruct["BZ"]
+            
+            if STRMATCH(newheader, "BZenith*",/FOLD_CASE) then begin
+                bz_read [0,*] = newStruct["BZenithX"]
+                bz_read [1,*] = newStruct["BZenithY"]
+                bz_read [2,*] = newStruct["BZenithZ"]
+            endif
 
-    newStruct = HASH(newHeader)
+            if STRMATCH(newheader, "GradB*",/FOLD_CASE) then $
+                gb_read = newStruct["GradB"]
 
-
-    for i = 0, N_ELEMENTS(newHeader) - 1 do begin
-        fieldNames_newstruc = STRMID(newHeader[i], 0, STRPOS(header[i], '[')-1)
-        fieldName_data = fieldNames_data[i]                  
-        newStruct[fieldNames_newstruc] = data.(fieldName_data)
-    endfor
-    
-    b_read  = dblarr(3,n)
-    f_read  = dblarr(n)
-    x_read  = dblarr(3,n)
-    gb_read = dblarr(n)
-    bz_read = dblarr(3,n)
-    density = dblarr(n)
-    
-
-    x_read [0,*] = newStruct["X"]
-    x_read [1,*] = newStruct["Y"]
-    x_read [2,*] = newStruct["Z"]
-    b_read [0,*] = newStruct["BX"]
-    b_read [1,*] = newStruct["BY"]
-    b_read [2,*] = newStruct["BZ"]
-    
-    if STRMATCH(newheader, "BZenith*",/FOLD_CASE) then begin
-        bz_read [0,*] = newStruct["BZenithX"]
-        bz_read [1,*] = newStruct["BZenithY"]
-        bz_read [2,*] = newStruct["BZenithZ"]
-    endif
-
-    if STRMATCH(newheader, "GradB*",/FOLD_CASE) then $
-        gb_read = newStruct["GradB"]
-
-    if STRMATCH(newheader, "Rho", /FOLD_case) then $
-        density = newStruct["Rho"]
+            if STRMATCH(newheader, "Rho", /FOLD_case) then $
+                density = newStruct["Rho"]
 
 
-    fsb = 2.79924835996 ; # electon cyclotron frequency [MHz] to B [Gauss] = (e*15.345970*1e-4)/(2*!pi*m_e)/1e6 with e = 1.602e-19 and  m_e = 9.109e-31. Should be fsb = 2.79906 to be more precise...
+            fsb = 2.79924835996 ; # electon cyclotron frequency [MHz] to B [Gauss] = (e*15.345970*1e-4)/(2*!pi*m_e)/1e6 with e = 1.602e-19 and  m_e = 9.109e-31. Should be fsb = 2.79906 to be more precise...
 
-    f_read = total(b_read^2,1) * fsb
-
+            f_read = total(b_read^2,1) * fsb
+        endif
+    endelse
 
 return
 end
