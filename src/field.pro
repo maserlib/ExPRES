@@ -237,37 +237,39 @@ pro density_calculation, obj, parameters, dens
     ;*********************
     ;Calcul du alt_min entrant dans la determination de la densite dans le cas du modele 'ionospheric'
     ;*********************
-    angle_n=atan((*(*obj).x_n)[2,*,*,*],sqrt((*(*obj).x_n)[0,*,*,*]^2+(*(*obj).x_n)[1,*,*,*]^2))
-    alt_min_n=sqrt(1./(cos(angle_n)^2+sin(angle_n)^2/(1-flat)^2))
-
-    angle_s=atan((*(*obj).x_s)[2,*,*,*],sqrt((*(*obj).x_s)[0,*,*,*]^2+(*(*obj).x_s)[1,*,*,*]^2))
-    alt_min_s=sqrt(1./(cos(angle_s)^2+sin(angle_s)^2/(1-flat)^2))
+    if (*obj).north then begin
+        angle_n=atan((*(*obj).x_n)[2,*,*,*],sqrt((*(*obj).x_n)[0,*,*,*]^2+(*(*obj).x_n)[1,*,*,*]^2))
+        alt_min_n=sqrt(1./(cos(angle_n)^2+sin(angle_n)^2/(1-flat)^2))
+    endif else (*obj).south then begin
+        angle_s=atan((*(*obj).x_s)[2,*,*,*],sqrt((*(*obj).x_s)[0,*,*,*]^2+(*(*obj).x_s)[1,*,*,*]^2))
+        alt_min_s=sqrt(1./(cos(angle_s)^2+sin(angle_s)^2/(1-flat)^2))
+    end
     ;*********************
     for i=0,nd-1 do begin
         case (*(dens[i])).type of
             'stellar': BEGIN
-                (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0/total((*((*obj).x_n))^2,1)
-                (*((*obj).dens_s))[*,*,*]=(*((*obj).dens_s))[*,*,*]+(*(dens[i])).rho0/total((*((*obj).x_s))^2,1)
+                if (*obj).north then (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0/total((*((*obj).x_n))^2,1) $
+                else if (*obj).south then (*((*obj).dens_s))[*,*,*]=(*((*obj).dens_s))[*,*,*]+(*(dens[i])).rho0/total((*((*obj).x_s))^2,1)
                 END
             'ionospheric': BEGIN
-                (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0*$
-                   exp(-((sqrt(total((*((*obj).x_n))^2,1))-(alt_min_n+(*(dens[i])).perp))>0)/((*(dens[i])).height))
-                (*((*obj).dens_s))[*,*,*]=(*((*obj).dens_s))[*,*,*]+(*(dens[i])).rho0*$
+                if (*obj).north then (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0*$
+                   exp(-((sqrt(total((*((*obj).x_n))^2,1))-(alt_min_n+(*(dens[i])).perp))>0)/((*(dens[i])).height)) $
+                else if (*obj).south then (*((*obj).dens_s))[*,*,*]=(*((*obj).dens_s))[*,*,*]+(*(dens[i])).rho0*$
                    exp(-((sqrt(total((*((*obj).x_s))^2,1))-(alt_min_s+(*(dens[i])).perp))>0)/((*(dens[i])).height))
                 END
             'torus': BEGIN
-                (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0*$
+                if (*obj).north then (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0*$
                    exp(-sqrt((sqrt(total(((*((*obj).x_n))[0:1,*,*,*])^2,1))-(*(dens[i])).perp)^2+$
-                   ((*((*obj).x_n))[2,*,*,*])^2)/(*(dens[i])).height)
-                (*((*obj).dens_s))[*,*,*]=(*((*obj).dens_s))[*,*,*]+(*(dens[i])).rho0*$
+                   ((*((*obj).x_n))[2,*,*,*])^2)/(*(dens[i])).height) $
+                else if (*obj).south then (*((*obj).dens_s))[*,*,*]=(*((*obj).dens_s))[*,*,*]+(*(dens[i])).rho0*$
                     exp(-sqrt((sqrt(total(((*((*obj).x_s))[0:1,*,*,*])^2,1))-(*(dens[i])).perp)^2+$
                     ((*((*obj).x_s))[2,*,*,*])^2)/(*(dens[i])).height)
                 END
             'disk' : BEGIN
-                (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0*$
+                if (*obj).north then (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0*$
                     exp(-(sqrt(total(((*((*obj).x_n))[0:1,*,*,*])^2,1)))/(*(dens[i])).perp)*$
-                    exp(-(sqrt(((*((*obj).x_n))[2,*,*,*])^2))/(*(dens[i])).height)
-                (*((*obj).dens_s))[*,*,*]=(*((*obj).dens_s))[*,*,*]+(*(dens[i])).rho0*$
+                    exp(-(sqrt(((*((*obj).x_n))[2,*,*,*])^2))/(*(dens[i])).height) $
+                else if (*obj).south then (*((*obj).dens_s))[*,*,*]=(*((*obj).dens_s))[*,*,*]+(*(dens[i])).rho0*$
                     exp(-(sqrt(total(((*((*obj).x_s))[0:1,*,*,*])^2,1)))/(*(dens[i])).perp)*$
                     exp(-(sqrt(((*((*obj).x_s))[2,*,*,*])^2))/(*(dens[i])).height)
                 END
@@ -276,8 +278,8 @@ pro density_calculation, obj, parameters, dens
     endfor
 
     ;w_p^2/w_c^2
-    (*((*obj).dens_n))[*,*,*]=((0.009*sqrt((*((*obj).dens_n))[*,*,*]))/rebin(*parameters.freq.freq_tab,parameters.freq.n_freq,360,(*obj).nlat))^2
-    (*((*obj).dens_s))[*,*,*]=((0.009*sqrt((*((*obj).dens_s))[*,*,*]))/rebin(*parameters.freq.freq_tab,parameters.freq.n_freq,360,(*obj).nlat))^2 
+    if (*obj).north then (*((*obj).dens_n))[*,*,*]=((0.009*sqrt((*((*obj).dens_n))[*,*,*]))/rebin(*parameters.freq.freq_tab,parameters.freq.n_freq,360,(*obj).nlat))^2 $
+    else if (*obj).south then (*((*obj).dens_s))[*,*,*]=((0.009*sqrt((*((*obj).dens_s))[*,*,*]))/rebin(*parameters.freq.freq_tab,parameters.freq.n_freq,360,(*obj).nlat))^2 
 end
 
 
