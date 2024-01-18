@@ -232,7 +232,7 @@ pro density_calculation, obj, parameters, dens
 
     ; if the object is a satellite, take the flatenning of the central body
     if (*obj).sat then begin
-        flat = (*(*(*obj).parent).parent).flat $
+        flat = (*(*(*obj).parent).parent).flat
         nd=n_elements((*((*((*((*obj).parent)).parent)).density)))
         if nd ne 0 then dens=(*((*((*((*obj).parent)).parent)).density))
     endif else begin
