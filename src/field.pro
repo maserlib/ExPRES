@@ -136,7 +136,7 @@ pro read_Bfield_and_density_from_user, ilat, ilongitude
     f_read = total(b_read^2,1) * fsb
 
 
-return x_read, b_read, bz_read, gb_read, f_read, density
+return(x_read, b_read, bz_read, gb_read, f_read, density)
 
 
 ; **************************************************************
