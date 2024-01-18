@@ -89,8 +89,14 @@ pro read_Bfield_and_density_from_user, ilat, ilongitude, x_read, b_read, bz_read
     csv_file = (*obj).folder+'*'+ihemisphere+"*"+ilat_name+"*"+ilon_name+"*.csv"
 
     data = READ_CSV(csv_file, header=header, count = n)
+    n_header=0                                                            
+    while strmid(data.field1[n_header],0,1) eq '#' do n_header=n_header+1
+
+
+    data = READ_CSV(csv_file, header = header, count = n, table_header = table_header, n_table_header = n_header-1)
     fieldNames_data = TAG_NAMES(data)
 
+    header[0] = strtrim(strmid(header[0], 1, strlen(header[0])-1),2)
     newHeader = strarr(n_elements(header))
     for iheader = 0,n_elements(header)-1 do newHeader[iheader] = STRMID(header[iheader], 0, STRPOS(header[iheader], '[') - 1)
 
