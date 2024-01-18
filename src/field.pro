@@ -243,6 +243,7 @@ pro density_calculation, obj, parameters, dens
     endif else (*obj).south then begin
         angle_s=atan((*(*obj).x_s)[2,*,*,*],sqrt((*(*obj).x_s)[0,*,*,*]^2+(*(*obj).x_s)[1,*,*,*]^2))
         alt_min_s=sqrt(1./(cos(angle_s)^2+sin(angle_s)^2/(1-flat)^2))
+    endelse
     end
     ;*********************
     for i=0,nd-1 do begin
