@@ -589,7 +589,7 @@ if (*obj).sat then begin
 
 
 ; # *** Calculation of the maximal frequency at the footprint of the magnetic field lines, based on the w_p/w_c ratio
-fmaxcmi_calculation, obj, parameters
+fmaxcmi_calculation, obj
 
 
 return;plot,sqrt(total((*((*obj).x_s))^2,1)),alog((*((*obj).dens_s))[*,90,*])
