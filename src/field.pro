@@ -187,37 +187,39 @@ end
 pro fmaxcmi_calculation, obj, parameters
     
     ff=(*(parameters.freq.freq_tab))
-    ; # NORTHERN HEMISPHERE
-    for ilat=0,(*obj).nlat-1 do begin
-        for ilong=0,359 do begin
-            nwf=where((*(*obj).dens_n)[*,ilong,ilat] lt 0.01)
-            if ((nwf[-1]-nwf[0]+1) eq n_elements(nwf)) or (nwf[0] eq 0.) then (*((*obj).fmaxCMI))[0,ilong,ilat]=ff[nwf[-1]] $
-            else begin
-                test=1
-                k=-1
-                while (test eq 1) and (k gt -(n_elements(nwf))) do begin
-                    if (nwf[k] - nwf[k-1]) eq 1 then k=k-1 else test=0
-                endwhile
-                (*((*obj).fmaxCMI))[0,ilong,ilat]=ff[nwf[k-1]]
-            endelse
+    if (*obj).north then begin
+        ; # NORTHERN HEMISPHERE
+        for ilat=0,(*obj).nlat-1 do begin
+            for ilong=0,359 do begin
+                nwf=where((*(*obj).dens_n)[*,ilong,ilat] lt 0.01)
+                if ((nwf[-1]-nwf[0]+1) eq n_elements(nwf)) or (nwf[0] eq 0.) then (*((*obj).fmaxCMI))[0,ilong,ilat]=ff[nwf[-1]] $
+                else begin
+                    test=1
+                    k=-1
+                    while (test eq 1) and (k gt -(n_elements(nwf))) do begin
+                        if (nwf[k] - nwf[k-1]) eq 1 then k=k-1 else test=0
+                    endwhile
+                    (*((*obj).fmaxCMI))[0,ilong,ilat]=ff[nwf[k-1]]
+                endelse
+            endfor
         endfor
-    endfor
-
+    endif else if (*obj).south then begin
     ; # SOUTHERN HEMISPHERE
-    for ilat=0,(*obj).nlat-1 do begin
-        for ilong=0,359 do begin
-            nwf=where((*(*obj).dens_s)[*,ilong,ilat] lt 0.01)
-            if ((nwf[-1]-nwf[0]+1) eq n_elements(nwf)) or (nwf[0] eq 0.) then (*((*obj).fmaxCMI))[1,ilong,ilat]=ff[nwf[-1]] $
-            else begin
-                test=1
-                k=-1
-                while (test eq 1) and (k gt -(n_elements(nwf))) do begin
-                    if (nwf[k] - nwf[k-1]) eq 1 then k=k-1 else test=0
-                endwhile
-                (*((*obj).fmaxCMI))[1,ilong,ilat]=ff[nwf[k-1]]
-            endelse
+        for ilat=0,(*obj).nlat-1 do begin
+            for ilong=0,359 do begin
+                nwf=where((*(*obj).dens_s)[*,ilong,ilat] lt 0.01)
+                if ((nwf[-1]-nwf[0]+1) eq n_elements(nwf)) or (nwf[0] eq 0.) then (*((*obj).fmaxCMI))[1,ilong,ilat]=ff[nwf[-1]] $
+                else begin
+                    test=1
+                    k=-1
+                    while (test eq 1) and (k gt -(n_elements(nwf))) do begin
+                        if (nwf[k] - nwf[k-1]) eq 1 then k=k-1 else test=0
+                    endwhile
+                    (*((*obj).fmaxCMI))[1,ilong,ilat]=ff[nwf[k-1]]
+                endelse
+            endfor
         endfor
-    endfor
+    endif
 end
 
 ; **************************************************************
