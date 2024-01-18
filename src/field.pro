@@ -562,7 +562,7 @@ if (*obj).sat then begin
         if nd ne 0 then dens=(*((*((*obj).parent)).density))
     endelse
  for idens=0,nd-1 do $
-    begin if STRMATCH((*(dens[idens])).type, 'auto', /FOLD_CASE) eq 0 then $
+    if STRMATCH((*(dens[idens])).type, 'auto', /FOLD_CASE) eq 0 then $
         density_calculation, obj, parameters
 
 
