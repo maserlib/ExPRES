@@ -137,7 +137,7 @@ pro read_Bfield_and_density_from_user, ilat, ilongitude, x_read, b_read, bz_read
 
 
 return
-
+end
 
 ; **************************************************************
 ; FMAX_CALCULATION
@@ -151,7 +151,8 @@ return
 ;    ilongitude: in, required, type= int
 
 pro fmax_calculation, obj, x_read, f_read, ilongitude, ilatitude
-; if the object is a satellite, take the flatenning of the central body
+
+    ; if the object is a satellite, take the flatenning of the central body
     if (*obj).sat then flat = (*(*(*obj).parent).parent).flat $
         else flat = (*(*obj).parent).flat                           
 
@@ -167,7 +168,6 @@ pro fmax_calculation, obj, x_read, f_read, ilongitude, ilatitude
     if (*obj).north then ihemisphere=0 else if (*obj).south then ihemisphere=1
     
     (*((*obj).fmax))[ihemisphere,ilongitude,ilatitude]=f_read(w(nw-1l))
-
 end
 
 ; **************************************************************
