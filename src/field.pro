@@ -150,7 +150,7 @@ return
 ;    f_read: in, required, type= fltarr(n)
 ;    ilongitude: in, required, type= int
 
-pro fmax_calcuation, obj, x_read, f_read, ilongitude, ilatitude
+pro fmax_calculation, obj, x_read, f_read, ilongitude, ilatitude
 ; if the object is a satellite, take the flatenning of the central body
     if (*obj).sat then flat = (*(*(*obj).parent).parent).flat $
         else flat = (*(*obj).parent).flat                           
@@ -353,7 +353,7 @@ if (*obj).north then begin
                 ;*********************
                 ;calculion of fmax
                 ;*********************
-                fmax_calcuation, obj, x_read, f_read, ilongitude, ilat
+                fmax_calculation, obj, x_read, f_read, ilongitude, ilat
             endfor
             ; # **** smoothing value of fmax                        
             (*((*obj).fmax))[0,*,i]=smooth(smooth(smooth(smooth((*((*obj).fmax))[0,*,i],5),5),5),5)
@@ -419,7 +419,7 @@ if (*obj).north then begin
                     ;*********************
                     ;calculion of fmax
                     ;*********************
-                    fmax_calcuation, obj, x_read, f_read, j, i
+                    fmax_calculation, obj, x_read, f_read, j, i
                 endelse
             ; end loop on longitude
             endfor
@@ -472,7 +472,7 @@ if (*obj).south then begin
                 ;*********************
                 ;calculion of fmax
                 ;*********************
-                fmax_calcuation, obj, x_read, f_read, ilongitude, ilat
+                fmax_calculation, obj, x_read, f_read, ilongitude, ilat
             endfor
             ; # **** smoothing value of fmax                        
             (*((*obj).fmax))[1,*,i]=smooth(smooth(smooth(smooth((*((*obj).fmax))[1,*,i],5),5),5),5)
@@ -533,7 +533,7 @@ if (*obj).south then begin
                     ;*********************
                     ;calculion of fmax (partie SUD)
                     ;*********************
-                    pro fmax_calcuation, obj, x_read, f_read, j, i
+                    fmax_calculation, obj, x_read, f_read, j, i
                 endelse
             ; end loop on longitude
             endfor
