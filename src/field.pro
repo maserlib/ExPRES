@@ -249,30 +249,42 @@ pro density_calculation, obj, parameters, dens
     for i=0,nd-1 do begin
         case (*(dens[i])).type of
             'stellar': BEGIN
-                if (*obj).north then (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0/total((*((*obj).x_n))^2,1) $
-                else if (*obj).south then (*((*obj).dens_s))[*,*,*]=(*((*obj).dens_s))[*,*,*]+(*(dens[i])).rho0/total((*((*obj).x_s))^2,1)
+                if (*obj).north then begin
+                    (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0/total((*((*obj).x_n))^2,1)
+                endif else if (*obj).south then begin
+                    (*((*obj).dens_s))[*,*,*]=(*((*obj).dens_s))[*,*,*]+(*(dens[i])).rho0/total((*((*obj).x_s))^2,1)
+                endif
                 END
             'ionospheric': BEGIN
-                if (*obj).north then (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0*$
-                   exp(-((sqrt(total((*((*obj).x_n))^2,1))-(alt_min_n+(*(dens[i])).perp))>0)/((*(dens[i])).height)) $
-                else if (*obj).south then (*((*obj).dens_s))[*,*,*]=(*((*obj).dens_s))[*,*,*]+(*(dens[i])).rho0*$
-                   exp(-((sqrt(total((*((*obj).x_s))^2,1))-(alt_min_s+(*(dens[i])).perp))>0)/((*(dens[i])).height))
+                if (*obj).north then begin
+                    (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0*$
+                        exp(-((sqrt(total((*((*obj).x_n))^2,1))-(alt_min_n+(*(dens[i])).perp))>0)/((*(dens[i])).height))
+                endif else if (*obj).south then begin
+                    (*((*obj).dens_s))[*,*,*]=(*((*obj).dens_s))[*,*,*]+(*(dens[i])).rho0*$
+                        exp(-((sqrt(total((*((*obj).x_s))^2,1))-(alt_min_s+(*(dens[i])).perp))>0)/((*(dens[i])).height))
+                endif
                 END
             'torus': BEGIN
-                if (*obj).north then (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0*$
-                   exp(-sqrt((sqrt(total(((*((*obj).x_n))[0:1,*,*,*])^2,1))-(*(dens[i])).perp)^2+$
-                   ((*((*obj).x_n))[2,*,*,*])^2)/(*(dens[i])).height) $
-                else if (*obj).south then (*((*obj).dens_s))[*,*,*]=(*((*obj).dens_s))[*,*,*]+(*(dens[i])).rho0*$
-                    exp(-sqrt((sqrt(total(((*((*obj).x_s))[0:1,*,*,*])^2,1))-(*(dens[i])).perp)^2+$
-                    ((*((*obj).x_s))[2,*,*,*])^2)/(*(dens[i])).height)
+                if (*obj).north then begin
+                    (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0*$
+                        exp(-sqrt((sqrt(total(((*((*obj).x_n))[0:1,*,*,*])^2,1))-(*(dens[i])).perp)^2+$
+                        ((*((*obj).x_n))[2,*,*,*])^2)/(*(dens[i])).height)
+                endif else if (*obj).south then begin
+                    (*((*obj).dens_s))[*,*,*]=(*((*obj).dens_s))[*,*,*]+(*(dens[i])).rho0*$
+                        exp(-sqrt((sqrt(total(((*((*obj).x_s))[0:1,*,*,*])^2,1))-(*(dens[i])).perp)^2+$
+                        ((*((*obj).x_s))[2,*,*,*])^2)/(*(dens[i])).height)
+                endif
                 END
             'disk' : BEGIN
-                if (*obj).north then (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0*$
-                    exp(-(sqrt(total(((*((*obj).x_n))[0:1,*,*,*])^2,1)))/(*(dens[i])).perp)*$
-                    exp(-(sqrt(((*((*obj).x_n))[2,*,*,*])^2))/(*(dens[i])).height) $
-                else if (*obj).south then (*((*obj).dens_s))[*,*,*]=(*((*obj).dens_s))[*,*,*]+(*(dens[i])).rho0*$
-                    exp(-(sqrt(total(((*((*obj).x_s))[0:1,*,*,*])^2,1)))/(*(dens[i])).perp)*$
-                    exp(-(sqrt(((*((*obj).x_s))[2,*,*,*])^2))/(*(dens[i])).height)
+                if (*obj).north then begin 
+                    (*((*obj).dens_n))[*,*,*]=(*((*obj).dens_n))[*,*,*]+(*(dens[i])).rho0*$
+                        exp(-(sqrt(total(((*((*obj).x_n))[0:1,*,*,*])^2,1)))/(*(dens[i])).perp)*$
+                        exp(-(sqrt(((*((*obj).x_n))[2,*,*,*])^2))/(*(dens[i])).height) 
+                endif else if (*obj).south then begin
+                    (*((*obj).dens_s))[*,*,*]=(*((*obj).dens_s))[*,*,*]+(*(dens[i])).rho0*$
+                        exp(-(sqrt(total(((*((*obj).x_s))[0:1,*,*,*])^2,1)))/(*(dens[i])).perp)*$
+                        exp(-(sqrt(((*((*obj).x_s))[2,*,*,*])^2))/(*(dens[i])).height)
+                endif
                 END
         endcase
     ; fin boucle densite
