@@ -1,6 +1,43 @@
 # Version History
 
-## Latest Release - 1.1.0 (2020)
+## Latest Release - 1.3.0 (2023)
+
+Contributors: C. Louis, P. Zarka, B. Cecconi
+
+Change Log for version 1.3.0:
+- Documentation: 
+  - Added readthedocs documentation, available at: https://expres.readthedocs.io/en/latest/ 
+- Configuration:
+  - Added the wave propagation mode (LO or RX) as an (optional) input. Default value is RX.
+
+## Version 1.2.0 (2023)
+
+Contributors: C. Louis, B. Cecconi
+
+Change Log for version 1.2.0:
+- Documentation: 
+  - Added readthedocs documentation, available at: https://expres.readthedocs.io/en/latest/ 
+- Configuration:
+    - Validated the refraction effect module
+    - Updated of input file schema
+    - Added new lead angle models
+      - Bonfond et al., 2009, [doi: 10.1029/2009JA014312](https://doi.org/10.1029/2009JA014312)
+      - Bonfond et al., 2017, [doi: 10.1016/j.icarus.2017.01.009](https://doi.org/10.1016/j.icarus.2017.01.009)
+      - Hinton et al., 2019, [doi: 10.1029/2009JA014394](https://doi.org/10.1029/2009JA014394)
+      - Hue et al., 2023, [doi: 10.1029/2023JA031363](https://doi.org/10.1029/2023JA031363)
+    - Added new Jupiter's magnetic field and current sheet model:
+      - JRM33 ([Connerney et al., 2022, doi: 10.1029/2021JE007055.](https://doi.org/10.1029/2021JE007055)) + CON2020 ([Connerney et al., 2020, doi:10.1029/2020JA028138](https://doi.org/doi:10.1029/2020JA028138))
+    - Added new Uranus' magnetic field models:
+      - AH5 ([Herbert et al., 2009, doi:10.1029/2009JA014394](https://doi.org/doi:10.1029/2009JA014394.))
+      - Q3 ([Connerney et al., 1998, doi:10.1029/JA092iA13p15329](https://doi.org/doi:10.1029/JA092iA13p15329))
+- Others:
+    - Fixed issue with theta = constant to take into account the surface and/or ionospheric cutoff  
+  
+Related Publication: 
+- Louis, C. K, Lamy, L., Jackman, C. M., Cecconi, B., Hess, S. L. G. 2023. "Predictions for Unraus-moons radio emissions and comparison with Voyager 2/PRA observations." Planetary, Solar and Heliospheric Radio Emissions IX, edited by C. K. Louis, C. M. Jackman, G. Fischer, A. H. Sulaiman, P. Zucca, DIAS, TCD, Dublin, Ireland, [doi: 10.25546/103106](https://doi.org/10.25546/103106).
+-  Hue, V., Gladstone, G. R., Louis, C. K., Greathouse, T. K., Bonfond, B., Szalay, J. R., Moirano, A., Giles, R. S., Kammer, J. A., Imai, M., Mura, A., Versteeg, M. H., Clark, G., Gérard, J. -C., Grodent, D. C., Rabia, J., Sulaiman, A. H., Bolton, S. J., Connerney, J. E. P. 2023. "The Io, Europa and Ganymede Auroral Footprints at Jupiter in the Ultraviolet: Positions and Equatorial Lead Angles." Journal of Geophysical Research: Space Physics, 128, 5, e2023JA031363, [doi: 10.1029/2023JA031363](https://doi.org/10.1029/2023JA031363).
+
+## Version  1.1.0 (2020)
 
 Contributors: C. Louis, B. Cecconi
 
@@ -29,7 +66,7 @@ Change Log for version 1.1.0:
   - Added support for M-shell with JRM09 magnetic field model
   
 Related Publication: 
-- Cecconi, B. C. K. Louis, C. Muñoz, C. Vallat. 2020. "Auroral Radio Source Occultation Modeling and Application to the JUICE Science Mission Planning." Astron. Astrophys., _Submitted_.
+- Cecconi, B. C. K. Louis, C. Muñoz, C. Vallat. 2021. "Jovian auroral radio source occultation modelling and application to the JUICE science mission planning." Planetary and Space Science, 209, 105344, [doi: 10.1016/j.pss.2021.105344](https://doi.org/10.1016/j.pss.2021.105344).
     
 
 ## Version  1.0.0 (2019)
