@@ -81,7 +81,7 @@ end
 ;    ilat: in, required, type= int
 ;    ilongitude: in, required, type= int
 ;
-pro read_Bfield_and_density_from_user, ilat, ilongitude, x_read, b_read, bz_read, gb_read, f_read, density
+pro read_Bfield_and_density_from_user, obj, ilat, ilongitude, x_read, b_read, bz_read, gb_read, f_read, density
     if (*obj).nlat gt 1 then ilat_name = '' else ilat_name = '_'+strtrim(ilat,2)
     ilon_name = string(format='(I03)', ilon)
 
