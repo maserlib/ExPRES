@@ -1,45 +1,55 @@
 {
     "creators": [
         {
+            "name": "Louis, Corentin K.",
             "orcid": "0000-0002-9552-8822",
-            "affiliation": "DIAS, Dublin, Ireland",
-            "name": "Louis, Corentin K."
+            "affiliation": {
+                "https://ror.org/02eptjh02",
+                "https://ror.org/051sx6d27"
+            }
         },
         {
+            "name": "Hess, Sébastien L. G",
             "orcid": "0000-0001-5753-0991",
-            "affiliation": "ONERA, Toulouse, France",
-            "name": "Hess, Sébastien L. G"
+            "affiliation": "ONERA, Toulouse, France"
         },
         {
+            "name": "Cecconi, Baptiste",
             "orcid": "0000-0001-7915-5571",
-            "affiliation": "LESIA, Observatoire de Paris-PSL, CRNS, SU, UPC",
-            "name": "Cecconi, Baptiste"
+            "affiliation": "https://ror.org/02eptjh02"
         },
         {
+            "name": "Zarka, Philippe",
             "orcid": "0000-0003-1672-9878",
-            "affiliation": "LESIA, Observatoire de Paris-PSL, CRNS, SU, UPC",
-            "name": "Zarka, Philippe"
+            "affiliation": "https://ror.org/02eptjh02"
         },
         {
+            "name": "Lamy, Laurent",
             "orcid": "0000-0002-8428-1369",
-            "affiliation": "LESIA, Observatoire de Paris-PSL, CRNS, SU, UPC",
-            "name": "Lamy, Laurent"
+            "affiliation": {
+                "https://ror.org/02eptjh02",
+                "https://ror.org/00ssy9q55"
+            }
         },
         {
+            "name": "Aicardi, Stéphane",
             "orcid": "0000-0003-4475-0930",
-            "affiliation": "DIO, Observatoire de Paris-PSL",
-            "name": "Aicardi, Stéphane"
+            "affiliation": "DIO, Observatoire de Paris-PSL"
         },
         {
+            "name": "Loh, Alan",
             "orcid": "0000-0002-4698-9542",
-            "affiliation": "LESIA, Observatoire de Paris-PSL, CRNS, SU, UPC",
-            "name": "Loh, Alan"
+            "affiliation": "https://ror.org/02eptjh02"
         }
     ],
 
     "license": "MIT",
 
     "title": "maserlib/ExPRES",
+
+    "description": "ExPRES (Exoplanetary and Planetary Radio Emission Simulator) reproduces the occurrence of CMI-generated radio emissions from planetary magnetospheres, exoplanets or star-planet interacting systems in time-frequency plane, with special attention given to computation of the radio emission beaming at and near its source. Physical information drawn from such radio observations may include the location and dynamics of the radio sources, the type of current system leading to electron acceleration and their energy and, for exoplanetary systems, the magnetic field strength, the orbital period of the emitting body and the rotation period, tilt and offset of the planetary magnetic field. Most of these parameters can be remotely measured only via radio observations. ExPRES code provides the proper framework of analysis and interpretation for past (Cassini, Voyager, Galileo), current (Juno, ground-based radio telescopes) and future (BepiColombo, Juice) observations of planetary radio emissions, as well as for future detection of radio emissions from exoplanetary systems.",
+
+    "Notes": "This work has also been supported by the EPN-2024-RI (Europlanet 2024 Research Infrastructure) project, under contract number 871149 with the EC. ",
 
     "keywords": ["Radio Emissions", "Simulations", "Planetary"],
 
