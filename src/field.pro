@@ -85,10 +85,12 @@ pro read_Bfield_and_density_from_user, ilat, ilongitude, x_read, b_read, bz_read
     if (*obj).nlat gt 1 then ilat_name = '' else ilat_name = '_'+strtrim(ilat,2)
     ilon_name = string(format='(I03)', ilon)
 
-    if (*obj).north then ihemisphere='north' else if (*obj).south then ihemisphere='south'
+    ;#if (*obj).north then ihemisphere='north' else if (*obj).south then ihemisphere='south'
+    if (*obj).north then ihemisphere='_m_' else if (*obj).south then ihemisphere='_p_'
     csv_file = (*obj).folder+'*'+ihemisphere+"*"+ilat_name+"*"+ilon_name+"*.csv"
 
     search_for_csv_file=FILE_SEARCH(csv_file)
+    stop
 
     if search_for_csv_file eq '' then begin
         ; # In case csv_file doesnt exist, then values are set to 0.
@@ -99,7 +101,7 @@ pro read_Bfield_and_density_from_user, ilat, ilongitude, x_read, b_read, bz_read
         gb_read = dblarr(n)
         bz_read = dblarr(3,n)
         density = dblarr(n)
-    else begin
+    endif else begin
         data = READ_CSV(csv_file, header=header, count = n)
         n_header=0                                                            
         while strmid(data.field1[n_header],0,1) eq '#' do n_header=n_header+1
