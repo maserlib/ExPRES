@@ -1,12 +1,12 @@
 {
     "creators": [
         {
-            "name": "Louis, Corentin K.",
             "orcid": "0000-0002-9552-8822",
             "affiliation": {
-                "https://ror.org/02eptjh02",
+                "https://ror.org/02eptjh02":
                 "https://ror.org/051sx6d27"
-            }
+            },
+            "name": "Louis, Corentin K."
         },
         {
             "name": "Hess, Sébastien L. G",
@@ -27,7 +27,7 @@
             "name": "Lamy, Laurent",
             "orcid": "0000-0002-8428-1369",
             "affiliation": {
-                "https://ror.org/02eptjh02",
+                "https://ror.org/02eptjh02":
                 "https://ror.org/00ssy9q55"
             }
         },
