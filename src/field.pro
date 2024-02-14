@@ -78,19 +78,16 @@ end
 ;
 ; :Params:
 ;    obj: in, required, type=pointer
-;    ilat: in, required, type= int
 ;    ilongitude: in, required, type= int
 ;
-pro read_Bfield_and_density_from_user, obj, ilat, ilongitude, x_read, b_read, bz_read, gb_read, f_read, density
-    if (*obj).nlat gt 1 then ilat_name = '' else ilat_name = '_'+strtrim(ilat,2)
-    ilon_name = string(format='(I03)', ilon)
+pro read_Bfield_and_density_from_user, obj, ilongitude, x_read, b_read, bz_read, gb_read, f_read, density
+    ilon_name = string(format='(I03)', ilongitude)
 
     ;#if (*obj).north then ihemisphere='north' else if (*obj).south then ihemisphere='south'
     if (*obj).north then ihemisphere='_m_' else if (*obj).south then ihemisphere='_p_'
-    csv_file = (*obj).folder+'*'+ihemisphere+"*"+ilat_name+"*"+ilon_name+"*.csv"
+    csv_file = (*obj).folder+'*'+ihemisphere+"*"+ilon_name+"*.csv"
 
     search_for_csv_file=FILE_SEARCH(csv_file)
-    stop
 
     if search_for_csv_file eq '' then begin
         ; # In case csv_file doesnt exist, then values are set to 0.
@@ -132,7 +129,7 @@ pro read_Bfield_and_density_from_user, obj, ilat, ilongitude, x_read, b_read, bz
                 fieldName_data = fieldNames_data[i]                  
                 newStruct[fieldNames_newstruc] = data.(fieldName_data)
             endfor
-
+            
             x_read [0,*] = newStruct["X"]
             x_read [1,*] = newStruct["Y"]
             x_read [2,*] = newStruct["Z"]
@@ -140,18 +137,19 @@ pro read_Bfield_and_density_from_user, obj, ilat, ilongitude, x_read, b_read, bz
             b_read [1,*] = newStruct["BY"]
             b_read [2,*] = newStruct["BZ"]
             
-            if STRMATCH(newheader, "BZenith*",/FOLD_CASE) then begin
-                bz_read [0,*] = newStruct["BZenithX"]
-                bz_read [1,*] = newStruct["BZenithY"]
-                bz_read [2,*] = newStruct["BZenithZ"]
-            endif
+            for i_elements_header = 0,n_elements(newheader)-1 do begin
+                if STRMATCH(newheader[i_elements_header], "BZenith*",/FOLD_CASE) then begin
+                    bz_read [0,*] = newStruct["BZenithX"]
+                    bz_read [1,*] = newStruct["BZenithY"]
+                    bz_read [2,*] = newStruct["BZenithZ"]
+                endif
 
-            if STRMATCH(newheader, "GradB*",/FOLD_CASE) then $
-                gb_read = newStruct["GradB"]
+                if STRMATCH(newheader[i_elements_header], "GradB*",/FOLD_CASE) then $
+                    gb_read = newStruct["GradB"]
 
-            if STRMATCH(newheader, "Rho", /FOLD_case) then $
-                density = newStruct["Rho"]
-
+                if STRMATCH(newheader[i_elements_header], "Rho", /FOLD_case) then $
+                    density = newStruct["Rho"]
+            endfor
 
             fsb = 2.79924835996 ; # electon cyclotron frequency [MHz] to B [Gauss] = (e*15.345970*1e-4)/(2*!pi*m_e)/1e6 with e = 1.602e-19 and  m_e = 9.109e-31. Should be fsb = 2.79906 to be more precise...
 
@@ -354,6 +352,12 @@ if STRTRIM((*obj).file_lg,2) ne '' then begin
     (*obj).longitude=tmp
 endif
 
+if (*obj).sat then mfl_auto=(*((*((*obj).parent)).parent)).mfl $
+        else mfl_auto=(*((*obj).parent)).mfl
+
+;# Adding a condition on mfl_auto to change nlat to 1 in case mfl auto is active.
+if mfl_auto eq 'auto' then (*obj).nlat = 1
+
 (*((*obj).grad_b_eq))=fltarr(2,360,(*obj).nlat)
 (*((*obj).grad_b_in))=fltarr(2,360,(*obj).nlat)
 (*((*obj).fmax))=fltarr(2,360,(*obj).nlat)
@@ -368,45 +372,41 @@ if (*obj).north then begin
     (*((*obj).dens_n))=dblarr(parameters.freq.n_freq,360,(*obj).nlat)
     ff=(*(parameters.freq.freq_tab))
 
-    if (*obj).sat then mfl_auto=(*((*((*obj).parent)).parent)).mfl $
-        else mfl_auto=(*((*obj).parent)).mfl
-
     if STRMATCH(mfl_auto, 'auto', /FOLD_CASE) then begin
-        for ilat=0,(*obj).nlat-1 do begin
-            for ilongitude=0,359 do begin
-                read_Bfield_and_density_from_user, obj, ilat, ilongitude, x_read, b_read, bz_read, gb_read, f_read, density
+        ilat = 0
+        for ilongitude=0,359 do begin
+            read_Bfield_and_density_from_user, obj, ilongitude, x_read, b_read, bz_read, gb_read, f_read, density
 
-                ; # *******************************************
-                ;# if density is included in the file and asked to be used by the user, we deal with the density here instead of later:
-                if (*obj).sat then begin
-                    nd=n_elements((*((*((*((*obj).parent)).parent)).density)))
-                    if nd ne 0 then dens=(*((*((*((*obj).parent)).parent)).density))
-                endif else begin
-                    nd=n_elements((*((*((*obj).parent)).density)))
-                    if nd ne 0 then dens=(*((*((*obj).parent)).density))
-                endelse
-                if nd eq 1 then $
-                    if STRMATCH((*(dens)).type, 'auto', /FOLD_CASE) then $
-                        (*((*obj).dens_n))[*,ilongitude,ilat] = interpol(density, f_read, ff)
-                ; # *******************************************
-                
-                for k=0,2 do begin
-                    (*((*obj).b_n))[k,*,ilongitude,ilat] = interpol(b_read(k,*),f_read,ff)
-                    (*((*obj).x_n))[k,*,ilongitude,ilat] = interpol(x_read(k,*),f_read,ff)
-                    (*((*obj).bz_n))[k,*,ilongitude,ilat] = interpol(bz_read(k,*),f_read,ff)
-                    if (*obj).sat then (*((*obj).x_n))[k,*,ilongitude,ilat]=(*((*obj).x_n))[k,*,ilongitude,ilat]*(*((*((*obj).parent)).parent)).radius $
-                        else (*((*obj).x_n))[k,*,ilongitude,ilat]=(*((*obj).x_n))[k,*,ilongitude,ilat]*(*((*obj).parent)).radius
-                endfor
-                (*((*obj).gb_n))[*,ilongitude,ilat] = interpol(gb_read,f_read,ff)
-
-                ;*********************
-                ;calculion of fmax
-                ;*********************
-                fmax_calculation, obj, x_read, f_read, ilongitude, ilat
+            ; # *******************************************
+            ;# if density is included in the file and asked to be used by the user, we deal with the density here instead of later:
+            if (*obj).sat then begin
+                nd=n_elements((*((*((*((*obj).parent)).parent)).density)))
+                if nd ne 0 then dens=(*((*((*((*obj).parent)).parent)).density))
+            endif else begin
+                nd=n_elements((*((*((*obj).parent)).density)))
+                if nd ne 0 then dens=(*((*((*obj).parent)).density))
+            endelse
+            if nd eq 1 then $
+                if STRMATCH((*(dens[0])).type, 'auto', /FOLD_CASE) then $
+                    (*((*obj).dens_n))[*,ilongitude] = interpol(density, f_read, ff)
+            ; # *******************************************
+            
+            for k=0,2 do begin
+                (*((*obj).b_n))[k,*,ilongitude] = interpol(b_read(k,*),f_read,ff)
+                (*((*obj).x_n))[k,*,ilongitude] = interpol(x_read(k,*),f_read,ff)
+                (*((*obj).bz_n))[k,*,ilongitude] = interpol(bz_read(k,*),f_read,ff)
+                if (*obj).sat then (*((*obj).x_n))[k,*,ilongitude]=(*((*obj).x_n))[k,*,ilongitude]*(*((*((*obj).parent)).parent)).radius $
+                    else (*((*obj).x_n))[k,*,ilongitude]=(*((*obj).x_n))[k,*,ilongitude]*(*((*obj).parent)).radius
             endfor
-            ; # **** smoothing value of fmax                        
-            (*((*obj).fmax))[0,*,i]=smooth(smooth(smooth(smooth((*((*obj).fmax))[0,*,i],5),5),5),5)
+            (*((*obj).gb_n))[*,ilongitude] = interpol(gb_read,f_read,ff)
+
+            ;*********************
+            ;calculion of fmax
+            ;*********************
+            fmax_calculation, obj, x_read, f_read, ilongitude, ilat
         endfor
+        ; # **** smoothing value of fmax                     
+        (*((*obj).fmax))[0,*]=smooth(smooth(smooth(smooth((*((*obj).fmax))[0,*],5),5),5),5)
     endif else begin
         for i=0,(*obj).nlat-1 do begin
             for j=0,359 do begin
@@ -474,7 +474,6 @@ if (*obj).north then begin
             endfor
             ; # **** smoothing value of fmax						
             (*((*obj).fmax))[0,*,i]=smooth(smooth(smooth(smooth((*((*obj).fmax))[0,*,i],5),5),5),5)
-
         ; end loop on latitude
         endfor			
     endelse
@@ -488,45 +487,41 @@ if (*obj).south then begin
     (*((*obj).gb_s))=fltarr(parameters.freq.n_freq,360,(*obj).nlat)
     (*((*obj).dens_s))=fltarr(parameters.freq.n_freq,360,(*obj).nlat)
     ff=(*(parameters.freq.freq_tab))
-
-    if (*obj).sat then mfl_auto=(*((*((*obj).parent)).parent)).mfl $
-        else mfl_auto=(*((*obj).parent)).mfl
     if STRMATCH(mfl_auto, 'auto', /FOLD_CASE) then begin
-        for ilat=0,(*obj).nlat-1 do begin
-            for ilongitude=0,359 do begin
-                read_Bfield_and_density_from_user, obj, ilat, ilongitude, x_read, b_read, bz_read, gb_read, f_read, density
+        ilat = 0
+        for ilongitude=0,359 do begin
+            read_Bfield_and_density_from_user, obj, ilongitude, x_read, b_read, bz_read, gb_read, f_read, density
 
-                ; # *******************************************
-                ;# if density is included in the file and asked to be used by the user, we deal with the density here instead of later:
-                if (*obj).sat then begin
-                    nd=n_elements((*((*((*((*obj).parent)).parent)).density)))
-                    if nd ne 0 then dens=(*((*((*((*obj).parent)).parent)).density))
-                endif else begin
-                    nd=n_elements((*((*((*obj).parent)).density)))
-                    if nd ne 0 then dens=(*((*((*obj).parent)).density))
-                endelse
-                if nd eq 1 then $
-                    if STRMATCH((*(dens)).type, 'auto', /FOLD_CASE) then $
-                    (*((*obj).dens_s))[*,ilongitude,ilat] = interpol(density, f_read, ff)
-                ; # *******************************************
-                
-                for k=0,2 do begin
-                    (*((*obj).b_s))[k,*,ilongitude,ilat] = interpol(b_read(k,*),f_read,ff)
-                    (*((*obj).x_s))[k,*,ilongitude,ilat] = interpol(x_read(k,*),f_read,ff)
-                    (*((*obj).bz_s))[k,*,ilongitude,ilat] = interpol(bz_read(k,*),f_read,ff)
-                    if (*obj).sat then (*((*obj).x_s))[k,*,ilongitude,ilat]=(*((*obj).x_s))[k,*,ilongitude,ilat]*(*((*((*obj).parent)).parent)).radius $
-                        else (*((*obj).x_s))[k,*,ilongitude,ilat]=(*((*obj).x_s))[k,*,ilongitude,ilat]*(*((*obj).parent)).radius
-                endfor
-                (*((*obj).gb_s))[*,ilongitude,ilat] = interpol(gb_read,f_read,ff)
-
-                ;*********************
-                ;calculion of fmax
-                ;*********************
-                fmax_calculation, obj, x_read, f_read, ilongitude, ilat
+            ; # *******************************************
+            ;# if density is included in the file and asked to be used by the user, we deal with the density here instead of later:
+            if (*obj).sat then begin
+                nd=n_elements((*((*((*((*obj).parent)).parent)).density)))
+                if nd ne 0 then dens=(*((*((*((*obj).parent)).parent)).density))
+            endif else begin
+                nd=n_elements((*((*((*obj).parent)).density)))
+                if nd ne 0 then dens=(*((*((*obj).parent)).density))
+            endelse
+            if nd eq 1 then $
+                if STRMATCH((*(dens[0])).type, 'auto', /FOLD_CASE) then $
+                (*((*obj).dens_s))[*,ilongitude] = interpol(density, f_read, ff)
+            ; # *******************************************
+            
+            for k=0,2 do begin
+                (*((*obj).b_s))[k,*,ilongitude] = interpol(b_read(k,*),f_read,ff)
+                (*((*obj).x_s))[k,*,ilongitude] = interpol(x_read(k,*),f_read,ff)
+                (*((*obj).bz_s))[k,*,ilongitude] = interpol(bz_read(k,*),f_read,ff)
+                if (*obj).sat then (*((*obj).x_s))[k,*,ilongitude]=(*((*obj).x_s))[k,*,ilongitude]*(*((*((*obj).parent)).parent)).radius $
+                    else (*((*obj).x_s))[k,*,ilongitude]=(*((*obj).x_s))[k,*,ilongitude]*(*((*obj).parent)).radius
             endfor
-            ; # **** smoothing value of fmax                        
-            (*((*obj).fmax))[1,*,i]=smooth(smooth(smooth(smooth((*((*obj).fmax))[1,*,i],5),5),5),5)
+            (*((*obj).gb_s))[*,ilongitude] = interpol(gb_read,f_read,ff)
+
+            ;*********************
+            ;calculion of fmax
+            ;*********************
+            fmax_calculation, obj, x_read, f_read, ilongitude, ilat
         endfor
+        ; # **** smoothing value of fmax                        
+        (*((*obj).fmax))[1,*]=smooth(smooth(smooth(smooth((*((*obj).fmax))[1,*],5),5),5),5)
     endif else begin
         for i=0,(*obj).nlat-1 do begin
             for j=0,359 do begin
