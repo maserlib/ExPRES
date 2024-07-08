@@ -142,7 +142,7 @@ endif
 
 outsplit=strsplit(parameters.out,'/',/EXTRACT)
 filename=strmid(parameters.out,0,strlen(parameters.out)-strlen(outsplit(n_elements(outsplit)-1)))
-version="v11"
+version=parameters.version
 skt_file = filename+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_'+version+'.skt'
 master_file = filename+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_'+version+'.cdf'
 
@@ -309,7 +309,7 @@ pro fz_cdf,obj,parameters
 cdf_close,(*obj).id
 
 adresse_save_tmp=loadpath('adresse_save',parameters)
-version="v11"
+version=parameters.version
 cmdskt='rm '+adresse_save_tmp+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_'+version+'.skt'
 cmdcdf='rm '+adresse_save_tmp+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_'+version+'.cdf'
 spawn,cmdskt
