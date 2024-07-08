@@ -1,6 +1,30 @@
 # Version History
 
-## Latest Release - 1.1.0 (2020)
+## Latest Release - 1.3.0 (2023)
+Contributors: C. Louis, B. Cecconi
+
+Change Log for version 1.3.0:
+- Add the wave propagation mode (LO or RX) as an (optional) input. Default value is RX.
+
+Related Publication: 
+- Philippe Zarka, Corentin K. Louis, Jiale Zhang, Hui Tian, Julien Morin and Yang Gao, "Location and energy of electrons producing the radio bursts from AD Leo observed by FAST in December 2021", submitted to Astronomy & Astrophysics
+
+## Version  1.2.0 (2023)
+
+Contributors: C. Louis, B. Cecconi
+
+Change Log for version 1.2.0:
+- Add new lead angle models
+- Validate the refraction effect module
+- Update of input file schema
+- Fix issue with theta = constant to take into account the surface and/or ionospheric cutoff
+- New Jupiter's magnetic field and current sheet models available
+
+Related Publication: 
+- Hue, V., Gladstone, G. R., Louis, C. K., Greathouse, T. K., Bonfond, B., Szalay, J. R., et al. (2023), "The Io, Europa, and Ganymede auroral footprints at Jupiter in the ultraviolet: Positions and equatorial lead angles", Journal of Geophysical Research: Space Physics, 128, e2023JA031363. https://doi.org/10.1029/2023JA031363
+
+
+## Version  1.1.0 (2020)
 
 Contributors: C. Louis, B. Cecconi
 
