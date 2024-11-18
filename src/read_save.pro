@@ -1300,7 +1300,7 @@ doy2=strtrim(amj_aj(long64(Y2*10000l+Mo2*100+D2)),2)
 date=STRMID(observer.start,0,10)+':'+STRMID(observer.start,10,2)+':'+STRMID(observer.start,12,2)
 adresse_ephem=loadpath('adresse_ephem',parameters,config=config)
 if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
-  if ((observer.motion+observer.predef) eq 0b) then begin
+    if ((observer.motion+observer.predef) eq 0b) then begin
   	if size(((serpe_save['OBSERVER'])['FIXE_DIST']),/type) eq 7 then begin			; if fixe_dist="auto"
   		if ((serpe_save['OBSERVER'])['SC'] eq 'Cassini' and (long64(strmid(observer.start,0,12)) ge 201603281700) and (long64(strmid(observer.start,0,12)) lt 201701010000)) then begin
   
@@ -1322,7 +1322,7 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   			while (error eq 1) do begin
   				call_ephemph,(serpe_save['OBSERVER'])['PARENT'],spacecraft=(serpe_save['OBSERVER'])['SC'],date,name		; call ephemeride of Miriade VO
   				read_ephemph,name,distance=distance,longitude=longitude,lat=lat,error=error								; writing ephem of Miriade VO
-          if (error2 gt 30) then  stop,'Error on the call of MIRIADE ephemerides. Please restart the simulation and/or check that MIRIADE is working properly'
+          			if (error2 gt 30) then  stop,'Error on the call of MIRIADE ephemerides. Please restart the simulation and/or check that MIRIADE is working properly'
   				error2=error2+1
   			endwhile
   		
@@ -1337,11 +1337,11 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   		
   	endif else begin	; sinon enregistre donnees entrees par utilisateur
   		observer.smaj=float((serpe_save['OBSERVER'])['FIXE_DIST'])
-  	  observer.smin=float((serpe_save['OBSERVER'])['FIXE_DIST'])
+  	  	observer.smin=float((serpe_save['OBSERVER'])['FIXE_DIST'])
   		observer.phs=-float((serpe_save['OBSERVER'])['FIXE_SUBL'])
   		observer.decl=float((serpe_save['OBSERVER'])['FIXE_DECL'])
   	endelse
-  endif else if (observer.predef eq 1b) then begin
+    endif else if (observer.predef eq 1b) then begin
   	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'juno' then begin
   		if long64(strmid(date,0,8)) le 20151231 then stop,'ephemeris before DoY 2015 365 are not defined. A file with the corresponding ephemeris needs to be loaded, please contact the ExPRES team - contact.maser@obspm.fr'
       		if long64(strmid(date,0,8)) ge 20251016 then stop,'ephemeris after DoY 2025 288 (October 15th, 2025) are not defined. A file with the corresponding ephemeris needs to be loaded, please contact the ExPRES team - contact.maser@obspm.fr'
@@ -1355,58 +1355,58 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
       			restore,adresse_ephem+'Juno/'+strmid(strtrim(long64(observer.start),2),0,4)+'.sav'
       		if (long64(strmid(observer.start,0,8)) ge 20250101) and (long64(strmid(observer.start,0,8)) lt 20251016) then $
       			restore,adresse_ephem+'Juno/2025_001-288.sav'
-      endif
+
       
       
   	
-  		w=where((long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. ge long(strmid(doy1,4,3))+long(H1)/24.+long(Mi1)/24./60.) and (long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. le (long(strmid(doy2,4,3))+long(H2)/24.+long(Mi2)/24./60.)))
+    		w=where((long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. ge long(strmid(doy1,4,3))+long(H1)/24.+long(Mi1)/24./60.) and (long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. le (long(strmid(doy2,4,3))+long(H2)/24.+long(Mi2)/24./60.)))
       
-  		longitude=ephem[w].oblon
-  		distance=ephem[w].dist_RJ
-  		lat=ephem[w].oblat
-      longitude=interpol(longitude,time.nbr)
-      distance=interpol(distance,time.nbr)
-      lat=interpol(lat,time.nbr)
+    		longitude=ephem[w].oblon
+    		distance=ephem[w].dist_RJ
+    		lat=ephem[w].oblat
+    		longitude=interpol(longitude,time.nbr)
+    		distance=interpol(distance,time.nbr)
+    		lat=interpol(lat,time.nbr)
 
-  	endif else $
+     	endif else $
   	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'galileo' then begin
   		restore,adresse_ephem+'Galileo/1996_240-260.sav'
   		
-      w=where((long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. ge long(strmid(doy1,4,3))+long(H1)/24.+long(Mi1)/24./60.) and (long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. le (long(strmid(doy2,4,3))+long(H2)/24.+long(Mi2)/24./60.)))
+      		w=where((long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. ge long(strmid(doy1,4,3))+long(H1)/24.+long(Mi1)/24./60.) and (long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. le (long(strmid(doy2,4,3))+long(H2)/24.+long(Mi2)/24./60.)))
       
-      longitude=ephem[w].oblon
-      distance=ephem[w].dist_RJ
-      lat=ephem[w].oblat
+      		longitude=ephem[w].oblon
+      		distance=ephem[w].dist_RJ
+      		lat=ephem[w].oblat
        
-      longitude=interpol(longitude,time.nbr)
-      distance=interpol(distance,time.nbr)
-      lat=interpol(lat,time.nbr)
+      		longitude=interpol(longitude,time.nbr)
+      		distance=interpol(distance,time.nbr)
+      		lat=interpol(lat,time.nbr)
   	
   	endif else $
   	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'voyager1' and strmid((serpe_save['OBSERVER'])['SCTIME'],0,4) eq '1979' then begin
   		restore,adresse_ephem+'Voyager/Voyager1_ephem_1979.sav'
   		w=where((long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. ge long(strmid(doy1,4,3))+long(H1)/24.+long(Mi1)/24./60.) and (long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. le (long(strmid(doy2,4,3))+long(H2)/24.+long(Mi2)/24./60.)))
       
-      longitude=ephem[w].oblon
-      distance=ephem[w].dist_RJ
-      lat=ephem[w].oblat
+      		longitude=ephem[w].oblon
+      		distance=ephem[w].dist_RJ
+      		lat=ephem[w].oblat
        
-      longitude=interpol(longitude,time.nbr)
-      distance=interpol(distance,time.nbr)
-      lat=interpol(lat,time.nbr)	
+      		longitude=interpol(longitude,time.nbr)
+      		distance=interpol(distance,time.nbr)
+      		lat=interpol(lat,time.nbr)	
   	
   	endif else $
   	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'voyager2' and strmid((serpe_save['OBSERVER'])['SCTIME'],0,4) eq '1979' then begin
   		restore,adresse_ephem+'Voyager/Voyager2_ephem_1979.sav'
   		w=where((long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. ge long(strmid(doy1,4,3))+long(H1)/24.+long(Mi1)/24./60.) and (long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. le (long(strmid(doy2,4,3))+long(H2)/24.+long(Mi2)/24./60.)))
       
-      longitude=ephem[w].oblon
-      distance=ephem[w].dist_RJ
-      lat=ephem[w].oblat
-       
-      longitude=interpol(longitude,time.nbr)
-      distance=interpol(distance,time.nbr)
-      lat=interpol(lat,time.nbr)	
+       		longitude=ephem[w].oblon
+      		distance=ephem[w].dist_RJ
+      		lat=ephem[w].oblat
+      	
+       		longitude=interpol(longitude,time.nbr)
+      		distance=interpol(distance,time.nbr)
+      		lat=interpol(lat,time.nbr)	
   	
   	endif else begin
   	
