@@ -1334,15 +1334,15 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   				
   		endelse
   		; enregistrement des donnees lues
-  		observer.smaj=distance[0]
-  	  observer.smin=distance[0]
+  		observer.smaj=distance[0] ; Will be divided by bd[wparent[0]].rad at the end, when body entry will have been read
+  	  observer.smin=distance[0] ; Will be divided by bd[wparent[0]].rad at the end, when body entry will have been read
   	  observer.phs=-longitude[0]
   		observer.decl=lat[0]
   		
   		
   	endif else begin	; sinon enregistre donnees entrees par utilisateur
-  		observer.smaj=float((serpe_save['OBSERVER'])['FIXE_DIST'])
-  	  	observer.smin=float((serpe_save['OBSERVER'])['FIXE_DIST'])
+  		observer.smaj=float((serpe_save['OBSERVER'])['FIXE_DIST']) ; Will be divided by bd[wparent[0]].rad at the end, when body entry will have been read
+  	  	observer.smin=float((serpe_save['OBSERVER'])['FIXE_DIST']) ; Will be divided by bd[wparent[0]].rad at the end, when body entry will have been read
   		observer.phs=-float((serpe_save['OBSERVER'])['FIXE_SUBL'])
   		observer.decl=float((serpe_save['OBSERVER'])['FIXE_DECL'])
   	endelse
@@ -1469,8 +1469,8 @@ endif
 ; ********* ********	
 	
 if observer.motion then begin
-	observer.smaj=(serpe_save['OBSERVER'])['SEMI_MAJ']
-	observer.smin=(serpe_save['OBSERVER'])['SEMI_MIN']
+	observer.smaj=(serpe_save['OBSERVER'])['SEMI_MAJ'] ; Will be divided by bd[wparent[0]].rad at the end, when body entry will have been read
+	observer.smin=(serpe_save['OBSERVER'])['SEMI_MIN'] ; Will be divided by bd[wparent[0]].rad at the end, when body entry will have been read
 	observer.alg=(serpe_save['OBSERVER'])['SUBL']
 	observer.decl=(serpe_save['OBSERVER'])['DECL']
 	observer.phs=(serpe_save['OBSERVER'])['PHASE']
@@ -1625,14 +1625,9 @@ for i=0,nbody-1 do begin
       ; # updating the date to take into account the light travel time
       ; # The longitude of a secondary body (a moon) is taken from the moon pov
       ; # It's necessary to go back in time, corresponding to the distance main body-observer
-
-      case ((serpe_save['BODY'])[i])['PARENT'] of 
-        'Jupiter': Rayon=71492.00
-        'Uranus': Rayon=25559.00
-        'Saturn': Rayon=60268.00
-      endcase
+	
       if observer.motion eq 0 then begin
-        caldat,julday1-(observer.smaj[0]*Rayon/3e5/60./60./24.),M0,D0,Y0,H0,Mi0,S0
+        caldat,julday1-(observer.smaj[0]/bd[wparent[0]].rad/3e5/60./60./24.),M0,D0,Y0,H0,Mi0,S0
       endif else begin
         stop,"The ExPRES team has to configure the light travel time correction for the case where the observer is an orbiter..."
       endelse
@@ -1763,8 +1758,9 @@ for i=0,nsrc-1 do begin
 		sc[n].refract=((serpe_save['SOURCE'])[i])['REFRACTION']
 	endif
 endfor
-
-bd[wparent[0]].rad/=bd[wparent[0]].rad
+observer.smaj/=bd[wparent[0]].rad ; So that smaj is in planetary radius for sure, whatever the units used by the users
+observer.smin/=bd[wparent[0]].rad ; So that smin is in planetary radius for sure, whatever the units used by the users
+bd[wparent[0]].rad/=bd[wparent[0]].rad  ; So that parent body radius is in planetary radius for sure, whatever the units used by the users
 
 ; ***** building SERPE objects *****
 parameters = build_serpe_obj(version,adresse_mfl,file_name,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d)
