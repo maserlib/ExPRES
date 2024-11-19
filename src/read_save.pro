@@ -1274,7 +1274,11 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq "@wgc" then begin
     endif
 
 endif else if (serpe_save['OBSERVER'])['EPHEM'] ne '' then begin
-  read_ephem_obs,(serpe_save['OBSERVER'])['EPHEM'],time0,time,observer,longitude,distance,lat,error
+  for i=0,nbody-1 do begin
+    if ((serpe_save['BODY'])[i])['ON']on then $
+        if ((serpe_save['BODY'])[i])['PARENT'] eq '' then $
+            radius_parent = ((serpe_save['BODY'])[i])['RADIUS']
+  read_ephem_obs,(serpe_save['OBSERVER'])['EPHEM'],radius_parent,time0,time,observer,longitude,distance,lat,error
   if error eq 1 then stop,'Check your ephemeris file'
   struct_replace_field,observer,'SMAJ',distance
   struct_replace_field,observer,'SMIN',distance
