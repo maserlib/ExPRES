@@ -2,19 +2,28 @@ PRO read_ephem_obs,ephem,radius_parent,time0,time,observer,longitude,distance,la
 
 radius_parent = DOUBLE(radius_parent)
 tmp=(STRSPLIT(ephem,'.',/EXTRACT))
+print,"starting read_ephem_obs routine"
 if tmp[-1] eq 'csv' then begin
 
 	result=read_csv(ephem,n_table_header=14,table_header=head)
 	if head[-2] ne 'State Vector Results' then result=read_csv(ephem,n_table_header=16,table_header=head)
 	if n_tags(result) ge 10 then begin
+ 		print,"n_tag ge 10"
+   		print,n_elements(result.field01)
 		if n_elements(result.field01) lt 7 then goto, erreur
 	endif else begin
+ 		print,"n_tag lt 10"
+   		print,n_elements(result.field1)
 		if n_elements(result.field1) lt 7 then goto, erreur
 	endelse
 	
 	if n_tags(result) ge 10 then begin
+ 		print,"n_tag ge 10"
+   		print,n_elements(where(result.field04 ne 0))
 		n=n_elements(where(result.field04 ne 0))
 	endif else begin
+ 		print,"n_tag lt 10"
+   		print,n_elements(where(result.field4 ne 0))
 		n=n_elements(where(result.field4 ne 0))
 	endelse
 	Date=strarr(n)
