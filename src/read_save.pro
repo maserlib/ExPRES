@@ -1670,8 +1670,8 @@ for i=0,nbody-1 do begin
 			ds[nd].name=((((serpe_save['BODY'])[i])['DENS'])[l])['NAME']
 			ds[nd].type=((((serpe_save['BODY'])[i])['DENS'])[l])['TYPE']
 			ds[nd].rho0=((((serpe_save['BODY'])[i])['DENS'])[l])['RHO0']
-			ds[nd].height=((((serpe_save['BODY'])[i])['DENS'])[l])['SCALE']
-			ds[nd].perp=((((serpe_save['BODY'])[i])['DENS'])[l])['PERP']
+			ds[nd].height=((((serpe_save['BODY'])[i])['DENS'])[l])['SCALE']/bd[wparent[0]].rad
+			ds[nd].perp=((((serpe_save['BODY'])[i])['DENS'])[l])['PERP']/bd[wparent[0]].rad
 		endif
 	endfor
 endfor
