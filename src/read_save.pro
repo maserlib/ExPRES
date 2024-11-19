@@ -1604,12 +1604,14 @@ for i=0,nbody-1 do begin
 		bd[n].parent=((serpe_save['BODY'])[i])['PARENT']
 		bd[n].smaj=((serpe_save['BODY'])[i])['SEMI_MAJ']
 		bd[n].smin=((serpe_save['BODY'])[i])['SEMI_MIN']
-    if bd[n].parent ne '' then begin
-      wparent = where(bd.name eq bd[n].parent)
-      bd[n].rad=bd[n].rad/bd[wparent[0]].rad
-      bd[n].smaj=bd[n].smaj/bd[wparent[0]].rad
-      bd[n].smin=bd[n].smin/bd[wparent[0]].rad
-    endif
+    	
+        	wparent = where(bd.name eq bd[n].parent)
+      		parent_body_radius = bd[wparent[0]].rad 
+    		if bd[n].parent ne '' then begin
+      			bd[n].rad=bd[n].rad/parent_body_radius
+      			bd[n].smaj=bd[n].smaj/parent_body_radius
+      			bd[n].smin=bd[n].smin/parent_body_radius
+    		endif
 		bd[n].decl=((serpe_save['BODY'])[i])['DECLINATION']
 		bd[n].alg=((serpe_save['BODY'])[i])['APO_LONG']
 		bd[n].incl=((serpe_save['BODY'])[i])['INCLINATION']
@@ -1665,8 +1667,8 @@ for i=0,nbody-1 do begin
 			ds[nd].name=((((serpe_save['BODY'])[i])['DENS'])[l])['NAME']
 			ds[nd].type=((((serpe_save['BODY'])[i])['DENS'])[l])['TYPE']
 			ds[nd].rho0=((((serpe_save['BODY'])[i])['DENS'])[l])['RHO0']
-			ds[nd].height=((((serpe_save['BODY'])[i])['DENS'])[l])['SCALE']/bd[wparent[0]].rad
-			ds[nd].perp=((((serpe_save['BODY'])[i])['DENS'])[l])['PERP']/bd[wparent[0]].rad
+			ds[nd].height=((((serpe_save['BODY'])[i])['DENS'])[l])['SCALE']/parent_body_radius
+			ds[nd].perp=((((serpe_save['BODY'])[i])['DENS'])[l])['PERP']/parent_body_radius
 		endif
 	endfor
 endfor
@@ -1758,9 +1760,9 @@ for i=0,nsrc-1 do begin
 		sc[n].refract=((serpe_save['SOURCE'])[i])['REFRACTION']
 	endif
 endfor
-observer.smaj/=bd[wparent[0]].rad ; So that smaj is in planetary radius for sure, whatever the units used by the users
-observer.smin/=bd[wparent[0]].rad ; So that smin is in planetary radius for sure, whatever the units used by the users
-bd[wparent[0]].rad/=bd[wparent[0]].rad  ; So that parent body radius is in planetary radius for sure, whatever the units used by the users
+observer.smaj/=parent_body_radius ; So that smaj is in planetary radius for sure, whatever the units used by the users
+observer.smin/=parent_body_radius ; So that smin is in planetary radius for sure, whatever the units used by the users
+bd[wparent[0]].rad/=parent_body_radius  ; So that parent body radius is in planetary radius for sure, whatever the units used by the users
 
 ; ***** building SERPE objects *****
 parameters = build_serpe_obj(version,adresse_mfl,file_name,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d)
