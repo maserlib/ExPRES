@@ -1282,7 +1282,7 @@ endif else if (serpe_save['OBSERVER'])['EPHEM'] ne '' then begin
   print,radius_parent
   endfor
   read_ephem_obs,(serpe_save['OBSERVER'])['EPHEM'],radius_parent,time0,time,observer,longitude,distance,lat,error
-  print("reading done")
+  print,"reading done"
   if error eq 1 then stop,'Check your ephemeris file'
   struct_replace_field,observer,'SMAJ',distance
   struct_replace_field,observer,'SMIN',distance
