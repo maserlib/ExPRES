@@ -50,7 +50,7 @@ as that of provided *central body* radius. Hence, setting the central body radiu
 parameters are provided in units of the central body planetary radii. On the contrary, providing the radius of the
 central body in km implies that all other spatial parameters must be also provided in km. The recommended convention
 is to provide all spatial parameters in units of the *central body* radius. This convention is followed in the examples
-provided below.
+provided below. **Note that if you use the ``OBSERVER`` ``TYPE``: ``Pre-Defined`` with ``EPHEM``: *file name* you will need to provide the *central body* radius in km (hence  the same applies to all other spatial parameters).**
 
 The file output file names are built by ExPRES, using a set up configuration parameters. The general scheme is:
 ``expres_{OBS}_{BODY}_{SRC}_{MAG}_{SRC_PROP}_{DATE}_v{VERS}.json``. The parts of the template are explained in the table
