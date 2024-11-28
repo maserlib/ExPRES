@@ -590,7 +590,7 @@ if (*obj).south then begin
 ; fin boucle hemisphere sud
 endif
 
-; # *** Calculation of the density along the magnetic field lines
+; # *** Calculation of the density along the magnetic field lines, if (*(dens[idens])).type ne 'auto'
 if (*obj).sat then begin
         nd=n_elements((*((*((*((*obj).parent)).parent)).density)))
         if nd ne 0 then dens=(*((*((*((*obj).parent)).parent)).density))
@@ -600,7 +600,7 @@ if (*obj).sat then begin
     endelse
  for idens=0,nd-1 do $
     if STRMATCH((*(dens[idens])).type, 'auto', /FOLD_CASE) eq 0 then $
-        density_calculation, obj, parameters
+        density_calculation, obj, parameters, dens
 
 
 ; # *** Calculation of the maximal frequency at the footprint of the magnetic field lines, based on the w_p/w_c ratio
