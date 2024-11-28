@@ -1597,7 +1597,7 @@ for i=0,nbody-1 do begin
       test=where(((serpe_save['BODY'])[i]).keys() eq 'MAG_FOLDER',cnt)
       if cnt ne 0 then begin
         if ((serpe_save['BODY'])[i])['MAG_FOLDER'] ne '' then $
-          bd[n].folder=STRUPCASE(((serpe_save['BODY'])[i])['MAG_FOLDER'])
+          bd[n].folder=((serpe_save['BODY'])[i])['MAG_FOLDER']
       endif
     endif
 
