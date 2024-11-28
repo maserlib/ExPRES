@@ -127,7 +127,6 @@ pro read_Bfield_and_density_from_user, obj, ilongitude, x_read, b_read, bz_read,
                 fieldName_data = fieldNames_data[i]                  
                 newStruct[fieldNames_newstruc] = data.(fieldName_data)
             endfor
-            print,newStruct["X"]
             x_read [0,*] = newStruct["X"]
             x_read [1,*] = newStruct["Y"]
             x_read [2,*] = newStruct["Z"]
