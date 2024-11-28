@@ -833,7 +833,7 @@ User-defined Model
 +++++++++++
 
 If the user want to use it's own pre-defined model, it is needed to set ``MAG: 'auto'``. The user will have to give the path to the folder that contains the user-defined magnetic field lines, using the option ``MAG_FOLDER: 'path/to/the/directory/containing/the/Magnetic_field_lines/files`` (without a '/' at the end of the path)
-The files need to be in csv (comma separated values) format, and contain (see example below) for each point along the magnetic field lines the cartesian coordinates (X, Y, Z, in main body radius units) and the corresponding magnetic field values (BX, BY, BZ, in Gauss units), and optionnaly the value of the density (in :math:`cm^{-3}` units).
+The files need to be in csv (comma separated values) format, and contain (see example below) for each point along the magnetic field lines the cartesian coordinates (X, Y, Z, in main body radius units) and the corresponding magnetic field values (BX, BY, BZ, in Gauss units), and optionnaly the value of the density (in :math:`cm^{-3}` units). The header needs to contain at least a line that informs if the field line is connected to the main body (True or False), and the name of the variables (needs to be X, Y, Z, BX, BY, BZ, Rho).
 
 .. code-block::
 
