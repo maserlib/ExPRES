@@ -146,6 +146,9 @@ pro read_Bfield_and_density_from_user, obj, ilongitude, x_read, b_read, bz_read,
 
                 if STRMATCH(newheader[i_elements_header], "Rho", /FOLD_case) then $
                     density = newStruct["Rho"]
+		    print,"careful, this will need to be changed when the density will be correctly provided as n_e in cm^(-3), not n_p in g.cm^(-3)"
+		    m_p = 1,673e-27 # kg
+      		    density = density/(m_p*1e3)
             endfor
 
             fsb = 2.79924835996 ; # electon cyclotron frequency [MHz] to B [Gauss] = (e*15.345970*1e-4)/(2*!pi*m_e)/1e6 with e = 1.602e-19 and  m_e = 9.109e-31. Should be fsb = 2.79906 to be more precise...
