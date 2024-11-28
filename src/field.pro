@@ -87,6 +87,7 @@ pro read_Bfield_and_density_from_user, obj, ilongitude, x_read, b_read, bz_read,
     if (*obj).north then ihemisphere='_m_' else if (*obj).south then ihemisphere='_p_'
     csv_file = (*obj).folder+'*'+ihemisphere+"*"+ilon_name+"*.csv"
 
+    print,csv_file
     search_for_csv_file=FILE_SEARCH(csv_file)
     print,search_for_csv_file
     if search_for_csv_file eq '' then begin
