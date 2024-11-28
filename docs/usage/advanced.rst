@@ -414,6 +414,7 @@ therefore :math:`T = \sqrt{\frac{a^{3} * 4 * \pi^{2}}{G * M_{\textrm{Io}}}}*\fra
 
 - ``INIT_AX``: The reference longitude (in degrees)
 - ``MAG``: The internal body magnetic field model (see the :ref:`Magnetic Field Model<MFL>` section below)
+- ``MAG_FOLDER``: if ``MAG: auto``, this is the folder name containing the csv files with user defined magnetic field model of the body
 - ``MOTION``: Flag to indicate if the current body is moving in the simulation frame (must be ``false`` for the central
   body)
 - ``PARENT``: Named body, around which the current body is orbiting (must be one of the defined bodies, and must be
