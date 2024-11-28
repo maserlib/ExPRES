@@ -414,7 +414,7 @@ therefore :math:`T = \sqrt{\frac{a^{3} * 4 * \pi^{2}}{G * M_{\textrm{Io}}}}*\fra
 
 - ``INIT_AX``: The reference longitude (in degrees)
 - ``MAG``: The internal body magnetic field model (see the :ref:`Magnetic Field Model<MFL>` section below)
-- ``MAG_FOLDER``: if ``MAG: auto``, this is the folder name containing the csv files with user defined magnetic field model of the body
+- ``MAG_FOLDER``: if ``MAG: auto``, this is the folder name containing the csv files with user defined magnetic field model of the body (see the :ref:`Magnetic Field Model<MFL>` section below)
 - ``MOTION``: Flag to indicate if the current body is moving in the simulation frame (must be ``false`` for the central
   body)
 - ``PARENT``: Named body, around which the current body is orbiting (must be one of the defined bodies, and must be
@@ -771,6 +771,9 @@ diameter of 5.91 Jovian Radii (orbit of Io) and a torus scale-height of 1 Jovian
 Magnetic Field Models
 ---------------------
 
+Pre-defined Models
++++++++++++
+
 The detailed magnetic field models available for ExPRES are listed in the `LESIA_mag
 <https://gitlab.obspm.fr/maser/lesia-mag/lesia-mag_idl>`_ repository. We recall below the list of models and the
 related references.
@@ -825,3 +828,15 @@ related references.
 |Proxima Centauri axi  |               |                            |``proxima_centauri_axi``|
 |Proxima Centauri      |               |                            |``proxima_centauri``    |
 +---------+------------+---------------+----------------------------+------------------------+
+
+User-defined Model
++++++++++++
+
+If the user want to use it's own pre-defined model, it is needed to set ``MAG: 'auto'``. The user will have to give the path to the folder that contains the user-defined magnetic field lines, using the option ``MAG_FOLDER: 'path/to/the/directory/containing/the/Magnetic_field_lines/files`` (without a '/' at the end of the path)
+The files need to be in csv (comma separated values) format, and contain (see example below) for each point along the magnetic field lines the cartesian coordinates (X, Y, Z, in main body radius units) and the corresponding magnetic field values (BX, BY, BZ, in Gauss units), and optionnaly the value of the density (in :math:`cm^{-3}` units).
+
+.. code-block::
+
+  #Field line is connected to star: True
+  #X [Rs], Y [Rs], Z [Rs], BX [G], BY [G], BZ [G], Rho [g/cm3]
+  8.859999656677246094e+00,  0.000000000000000000e+00,  0.000000000000000000e+00,  1.744556119298172961e-02,  -4.976430410837964996e-04,  -8.696679184620229822e-04, 12.541234207203594e+03
