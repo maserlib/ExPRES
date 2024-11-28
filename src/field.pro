@@ -98,8 +98,8 @@ pro read_Bfield_and_density_from_user, obj, ilongitude, x_read, b_read, bz_read,
         bz_read = dblarr(3,n)
         density = dblarr(n)
     endif else begin
-    	print(csv_file)
-     	print(search_for_csv_file)
+    	print,csv_file
+     	print,search_for_csv_file
         data = READ_CSV(search_for_csv_file, header=header, count = n)
         n_header=0                                                            
         while strmid(data.field1[n_header],0,1) eq '#' do n_header=n_header+1
