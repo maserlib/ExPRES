@@ -88,6 +88,7 @@ pro read_Bfield_and_density_from_user, obj, ilongitude, x_read, b_read, bz_read,
     csv_file = (*obj).folder+'*'+ihemisphere+"*"+ilon_name+"*.csv"
 
     search_for_csv_file=FILE_SEARCH(csv_file)
+    print,search_for_csv_file
     if search_for_csv_file eq '' then begin
         ; # In case csv_file doesnt exist, then values are set to 0.
         n=150 ;#random number so that the interpolation done later works
