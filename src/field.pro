@@ -389,6 +389,10 @@ if (*obj).north then begin
             if nd eq 1 then $
                 if STRMATCH((*(dens[0])).type, 'auto', /FOLD_CASE) then $
                     (*((*obj).dens_n))[*,ilongitude] = interpol(density, f_read, ff)
+		    ; dens needs to be w_p^2/w_c^2, not just n_e
+		    (*((*obj).dens_n))[*,*,*]=((0.009*sqrt((*((*obj).dens_n))[*,*,*]))/rebin(*parameters.freq.freq_tab,parameters.freq.n_freq,360,(*obj).nlat))^2
+      
+
             ; # *******************************************
             
             for k=0,2 do begin
@@ -504,6 +508,7 @@ if (*obj).south then begin
             if nd eq 1 then $
                 if STRMATCH((*(dens[0])).type, 'auto', /FOLD_CASE) then $
                 (*((*obj).dens_s))[*,ilongitude] = interpol(density, f_read, ff)
+		(*((*obj).dens_s))[*,*,*]=((0.009*sqrt((*((*obj).dens_s))[*,*,*]))/rebin(*parameters.freq.freq_tab,parameters.freq.n_freq,360,(*obj).nlat))^2 
             ; # *******************************************
             
             for k=0,2 do begin
