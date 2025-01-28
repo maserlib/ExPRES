@@ -145,7 +145,7 @@ endif else begin
 	y = (*(obj)).semi_minor_axis(*)*sin(alpha(*))
 	z = fltarr(ns)
 
-	print,c, x, y
+	print,alpha,(*(obj)).semi_major_axis(*), *(obj)).semi_minor_axis(*)
 
 	r=sqrt(x^2+y^2+z^2)
 	rp=shift(r,-1)
