@@ -1606,10 +1606,8 @@ for i=0,nbody-1 do begin
 		bd[n].smaj=((serpe_save['BODY'])[i])['SEMI_MAJ']
 		bd[n].smin=((serpe_save['BODY'])[i])['SEMI_MIN']
 
-     		if bd[n].parent eq '' then begin ;# if no parent == central body
+     		if bd[n].parent eq '' then $ ;# if no parent == central body
 			parent_body_radius = bd[n].rad 
-			print, 'parent_body_radius:'
-   			print, parent_body_radius
       		endif
     		bd[n].decl=((serpe_save['BODY'])[i])['DECLINATION']
 		bd[n].alg=((serpe_save['BODY'])[i])['APO_LONG']
