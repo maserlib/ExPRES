@@ -1608,7 +1608,7 @@ for i=0,nbody-1 do begin
 
      		if bd[n].parent eq '' then $ ;# if no parent == central body
 			parent_body_radius = bd[n].rad 
-      		endif
+   
     		bd[n].decl=((serpe_save['BODY'])[i])['DECLINATION']
 		bd[n].alg=((serpe_save['BODY'])[i])['APO_LONG']
 		bd[n].incl=((serpe_save['BODY'])[i])['INCLINATION']
