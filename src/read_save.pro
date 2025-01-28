@@ -1666,8 +1666,8 @@ for i=0,nbody-1 do begin
 			ds[nd].name=((((serpe_save['BODY'])[i])['DENS'])[l])['NAME']
 			ds[nd].type=((((serpe_save['BODY'])[i])['DENS'])[l])['TYPE']
 			ds[nd].rho0=((((serpe_save['BODY'])[i])['DENS'])[l])['RHO0']
-			ds[nd].height=((((serpe_save['BODY'])[i])['DENS'])[l])['SCALE']/parent_body_radius
-			ds[nd].perp=((((serpe_save['BODY'])[i])['DENS'])[l])['PERP']/parent_body_radius
+			ds[nd].height=((((serpe_save['BODY'])[i])['DENS'])[l])['SCALE']
+			ds[nd].perp=((((serpe_save['BODY'])[i])['DENS'])[l])['PERP']
 		endif
 	endfor
 endfor
@@ -1675,13 +1675,16 @@ endfor
 print, 'parent_body_radius:'
 print, parent_body_radius
 n=0
+nd=0
 for i=0,n_elements(bd)-1 do begin; So that parent body radius is in planetary radius for sure, whatever the units used by the users
-	bd[n].rad/=parent_body_radius
 	bd[n].smaj/=parent_body_radius
 	bd[n].smin/=parent_body_radius
  	bd[n].rad/=parent_body_radius
 endfor
-
+for i=0,n_elements(ds)-1 do begin
+	ds[nd].height/=parent_body_radius
+	ds[nd].perp/=parent_body_radius
+endfor
 
 ; ***** loading SOURCE section *****
 sc=[src]
