@@ -1677,7 +1677,7 @@ print, parent_body_radius
 n=0
 for i=0,n_elements(bd)-1 do begin; So that parent body radius is in planetary radius for sure, whatever the units used by the users
 	bd[n].rad/=parent_body_radius
-	bd[n].smaj/parent_body_radius
+	bd[n].smaj/=parent_body_radius
 	bd[n].smin/=parent_body_radius
  	bd[n].rad/=parent_body_radius
 endfor
