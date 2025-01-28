@@ -1280,7 +1280,7 @@ endif else if (serpe_save['OBSERVER'])['EPHEM'] ne '' then begin
             radius_parent = ((serpe_save['BODY'])[i])['RADIUS']
   endfor
   read_ephem_obs,(serpe_save['OBSERVER'])['EPHEM'],radius_parent,time0,time,observer,longitude,distance,lat,error
-  print, distance
+
   if error eq 1 then stop,'Check your ephemeris file'
   struct_replace_field,observer,'SMAJ',distance
   struct_replace_field,observer,'SMIN',distance
@@ -1761,7 +1761,10 @@ for i=0,nsrc-1 do begin
 		sc[n].refract=((serpe_save['SOURCE'])[i])['REFRACTION']
 	endif
 endfor
-print, observer.smaj, observer.smin
+print, 'parent_body_radius:'
+print, parent_body_radius:
+print, 'bd[wparent[0]]'
+print, bd[wparent[0]]
 observer.smaj/=parent_body_radius ; So that smaj is in planetary radius for sure, whatever the units used by the users
 observer.smin/=parent_body_radius ; So that smin is in planetary radius for sure, whatever the units used by the users
 bd[wparent[0]].rad/=parent_body_radius  ; So that parent body radius is in planetary radius for sure, whatever the units used by the users
