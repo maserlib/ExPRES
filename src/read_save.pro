@@ -1761,6 +1761,7 @@ for i=0,nsrc-1 do begin
 		sc[n].refract=((serpe_save['SOURCE'])[i])['REFRACTION']
 	endif
 endfor
+print, observer.smaj, observer.smin
 observer.smaj/=parent_body_radius ; So that smaj is in planetary radius for sure, whatever the units used by the users
 observer.smin/=parent_body_radius ; So that smin is in planetary radius for sure, whatever the units used by the users
 bd[wparent[0]].rad/=parent_body_radius  ; So that parent body radius is in planetary radius for sure, whatever the units used by the users
