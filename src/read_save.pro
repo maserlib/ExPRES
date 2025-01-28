@@ -1607,7 +1607,10 @@ for i=0,nbody-1 do begin
 		bd[n].smin=((serpe_save['BODY'])[i])['SEMI_MIN']
     	
         	wparent = where(bd.name eq bd[n].parent)
-      		parent_body_radius = bd[wparent[0]].rad 
+		print, bd.name
+   		print, wparent
+	 	if wparent ne -1 then $
+      			parent_body_radius = bd[wparent[0]].rad 
     		if bd[n].parent ne '' then begin
       			bd[n].rad=bd[n].rad/parent_body_radius
       			bd[n].smaj=bd[n].smaj/parent_body_radius
