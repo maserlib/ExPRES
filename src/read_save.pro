@@ -1762,7 +1762,7 @@ for i=0,nsrc-1 do begin
 	endif
 endfor
 print, 'parent_body_radius:'
-print, parent_body_radius:
+print, parent_body_radius
 print, 'bd[wparent[0]]'
 print, bd[wparent[0]]
 observer.smaj/=parent_body_radius ; So that smaj is in planetary radius for sure, whatever the units used by the users
