@@ -178,6 +178,13 @@ if tag_names(*obj,/str) eq 'BODY' then begin
 	(*obj).lct=PTR_NEW(l)
 endif
 
+print, (*obj).traj_file
+print, (*obj).motion
+print,'rtp:'
+print,rtp
+print,'xyz:'
+print,xyz
+
 (*obj).trajectory_xyz=PTR_NEW(traj_xyz+pxyz)
 traj_rtp=xyz_to_rtp(traj_xyz)
 (*obj).trajectory_rtp=PTR_NEW(traj_rtp)
