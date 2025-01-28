@@ -1609,8 +1609,14 @@ for i=0,nbody-1 do begin
         	wparent = where(bd.name eq bd[n].parent)
 		print, bd.name
    		print, wparent
-	 	if wparent ne -1 then $
+     		print, wparent[0]
+	 	if wparent ne -1 then begin
+   			help, bd[wparent[0]]
       			parent_body_radius = bd[wparent[0]].rad 
+			print, 'parent_body_radius:'
+   			print, parent_body_radius
+      		endif
+      		print, bd[n].parent 
     		if bd[n].parent ne '' then begin
       			bd[n].rad=bd[n].rad/parent_body_radius
       			bd[n].smaj=bd[n].smaj/parent_body_radius
