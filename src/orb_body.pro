@@ -69,14 +69,11 @@ if (*obj).traj_file eq '' then begin
 	if (*obj).motion eq 0 then begin
 		rtp=rtp(*,0)
 		rtp[1]=!pi*0.5-(*(obj)).apoapsis_declination*!dtor
-print,'rtp:'
-print,rtp
+  
 		xyz=fltarr(3)
 		xyz(2)=rtp(0)*cos(rtp(1))
 		xyz(0)=rtp(0)*sin(rtp(1))*cos(rtp(2))
 		xyz(1)=rtp(0)*sin(rtp(1))*sin(rtp(2))
-print,'xyz:'
-print,xyz
 		traj_rtp[*,*]=rebin(rtp,3,ns)
 		traj_xyz[*,*]=rebin(xyz,3,ns)
 	endif else begin
@@ -177,12 +174,15 @@ if tag_names(*obj,/str) eq 'BODY' then begin
 
 	(*obj).lct=PTR_NEW(l)
 endif
+print, (*obj).traj_file
+print, (*obj).motion
+print,'rtp:'
+print,rtp
+print,'xyz:'
+print,xyz
+
 
 (*obj).trajectory_xyz=PTR_NEW(traj_xyz+pxyz)
-print,'traj_xyz:'
-print, traj_xyz
-print, 'pxyz:'
-print, pxyz
 traj_rtp=xyz_to_rtp(traj_xyz)
 (*obj).trajectory_rtp=PTR_NEW(traj_rtp)
 
