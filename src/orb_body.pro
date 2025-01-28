@@ -176,7 +176,10 @@ if tag_names(*obj,/str) eq 'BODY' then begin
 endif
 
 (*obj).trajectory_xyz=PTR_NEW(traj_xyz+pxyz)
-print, *(*obj).trajectory_xyz
+print,'traj_xyz:'
+print, traj_xyz
+print, 'pxyz:'
+print, pxyz
 traj_rtp=xyz_to_rtp(traj_xyz)
 (*obj).trajectory_rtp=PTR_NEW(traj_rtp)
 
