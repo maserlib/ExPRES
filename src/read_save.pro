@@ -1629,7 +1629,7 @@ for i=0,nbody-1 do begin
       ; # It's necessary to go back in time, corresponding to the distance main body-observer
 	
       if observer.motion eq 0 then begin
-        caldat,julday1-(observer.smaj[0]/bd[wparent[0]].rad/3e5/60./60./24.),M0,D0,Y0,H0,Mi0,S0
+        caldat,julday1-(observer.smaj[0]/3e5/60./60./24.),M0,D0,Y0,H0,Mi0,S0
       endif else begin
         stop,"The ExPRES team has to configure the light travel time correction for the case where the observer is an orbiter..."
       endelse
