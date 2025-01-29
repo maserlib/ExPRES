@@ -313,10 +313,10 @@ coef=0b
 
 ;**** Calculation of the line of sight vector
 ; Vector of the distance between the observer and the source
-print,'x'
-print,x
-print,'xyz_obs'
-print,xyz_obs
+;print,'x'
+;print,x
+;print,'xyz_obs'
+;print,xyz_obs
 x=xyz_obs-x 
 ; *** distance observateur-source ***
 dist=rebin(reform(sqrt(total(x^2,1)),1,parameters.freq.n_freq,nlg*nlat),3,parameters.freq.n_freq,nlg*nlat) 
