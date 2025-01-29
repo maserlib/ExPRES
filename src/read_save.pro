@@ -1279,6 +1279,7 @@ endif else if (serpe_save['OBSERVER'])['EPHEM'] ne '' then begin
         if ((serpe_save['BODY'])[i])['PARENT'] eq '' then $
             radius_parent = ((serpe_save['BODY'])[i])['RADIUS']
   endfor
+  print,radius_parent
   read_ephem_obs,(serpe_save['OBSERVER'])['EPHEM'],1,time0,time,observer,longitude,distance,lat,error ;# radius_parent is set to 1 here, because we do not want to normalize the distance yet. It will be down for all 'distance' value at the end of this loop
 
   if error eq 1 then stop,'Check your ephemeris file'
