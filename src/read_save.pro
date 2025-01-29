@@ -1279,7 +1279,7 @@ endif else if (serpe_save['OBSERVER'])['EPHEM'] ne '' then begin
         if ((serpe_save['BODY'])[i])['PARENT'] eq '' then $
             radius_parent = ((serpe_save['BODY'])[i])['RADIUS']
   endfor
-  read_ephem_obs,(serpe_save['OBSERVER'])['EPHEM'],radius_parent,time0,time,observer,longitude,distance,lat,error
+  read_ephem_obs,(serpe_save['OBSERVER'])['EPHEM'],1,time0,time,observer,longitude,distance,lat,error ;# radius_parent is set to 1 here, because we do not want to normalize the distance yet. It will be down for all 'distance' value at the end of this loop
 
   if error eq 1 then stop,'Check your ephemeris file'
   struct_replace_field,observer,'SMAJ',distance
@@ -1672,7 +1672,7 @@ endfor
 
 n=0
 nd=0
-for i=0,n_elements(bd)-1 do begin; So that parent body radius is in planetary radius for sure, whatever the units used by the users
+for i=0,n_elements(bd)-1 do begin; So that every "distance" values are in planetary radius for sure, including parent body radius, whatever the units used by the users
 	bd[n].smaj/=parent_body_radius
 	bd[n].smin/=parent_body_radius
  	bd[n].rad/=parent_body_radius
