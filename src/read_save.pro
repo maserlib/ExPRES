@@ -1672,22 +1672,21 @@ for i=0,nbody-1 do begin
 	endfor
 endfor
 
-n=0
-nd=0
+
 for i=0,n_elements(bd)-1 do begin; So that every "distance" values are in planetary radius for sure, including parent body radius, whatever the units used by the users
-	bd[n].smaj/=radius_parent
-	bd[n].smin/=radius_parent
- 	bd[n].rad/=radius_parent
+ 	bd[i].smaj/=radius_parent
+	bd[i].smin/=radius_parent
+ 	bd[i].rad/=radius_parent
 endfor
 for i=0,n_elements(ds)-1 do begin
-	ds[nd].height/=radius_parent
-	ds[nd].perp/=radius_parent
+	ds[i].height/=radius_parent
+	ds[i].perp/=radius_parent
 endfor
 
 print, 'observer'
 print, observer
 print,'body'
-for i=0,n_elements(bd)-1 do print,bd[i]
+for i=0,n_elements(bd)-1 do help,bd[i]
 
 
 ; ***** loading SOURCE section *****
