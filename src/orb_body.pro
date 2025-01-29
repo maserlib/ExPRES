@@ -145,8 +145,6 @@ endif else begin
 	y = (*(obj)).semi_minor_axis(*)*sin(alpha(*))
 	z = fltarr(ns)
 
-	print,alpha,(*(obj)).semi_major_axis, (*(obj)).semi_minor_axis
-
 	r=sqrt(x^2+y^2+z^2)
 	rp=shift(r,-1)
 	corec=2.*abs(rp-r)/(rp+r)*360./2./!pi+1.
@@ -176,13 +174,6 @@ if tag_names(*obj,/str) eq 'BODY' then begin
 
 	(*obj).lct=PTR_NEW(l)
 endif
-print, (*obj).traj_file
-print, (*obj).motion
-print,'rtp:'
-print,rtp
-print,'xyz:'
-print,xyz
-
 
 (*obj).trajectory_xyz=PTR_NEW(traj_xyz+pxyz)
 traj_rtp=xyz_to_rtp(traj_xyz)
