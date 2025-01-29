@@ -1243,9 +1243,10 @@ endelse
 ;# first for loop is useful to normalize all distance (observer.smin and observer.smax) by the main body radius
 for i=0,nbody-1 do begin
     if ((serpe_save['BODY'])[i])['ON'] then $
-        if ((serpe_save['BODY'])[i])['PARENT'] eq '' then $
+        if ((serpe_save['BODY'])[i])['PARENT'] eq '' then $ ;# if body.parent == '' (i.e., as no parent) it means it is the central body 
             radius_parent = ((serpe_save['BODY'])[i])['RADIUS']
 endfor
+print, radius_parent
 
 observer.motion=0b
 observer.predef=0b
@@ -1606,8 +1607,8 @@ for i=0,nbody-1 do begin
 		bd[n].smaj=((serpe_save['BODY'])[i])['SEMI_MAJ']
 		bd[n].smin=((serpe_save['BODY'])[i])['SEMI_MIN']
 
-     		if bd[n].parent eq '' then $ ;# if no parent == central body
-			parent_body_radius = bd[n].rad 
+     		;#if bd[n].parent eq '' then $ ;# if no parent == central body
+		;#	parent_body_radius = bd[n].rad 
    
     		bd[n].decl=((serpe_save['BODY'])[i])['DECLINATION']
 		bd[n].alg=((serpe_save['BODY'])[i])['APO_LONG']
@@ -1624,9 +1625,10 @@ for i=0,nbody-1 do begin
       ; # updating the date to take into account the light travel time
       ; # The longitude of a secondary body (a moon) is taken from the moon pov
       ; # It's necessary to go back in time, corresponding to the distance main body-observer
-	
+	print, observer.smaj[0]
+ 	print, radius_parent
       if observer.motion eq 0 then begin
-        caldat,julday1-(observer.smaj[0]*parent_body_radius/3e5/60./60./24.),M0,D0,Y0,H0,Mi0,S0
+        caldat,julday1-(observer.smaj[0]*radius_parent/3e5/60./60./24.),M0,D0,Y0,H0,Mi0,S0
       endif else begin
         stop,"The ExPRES team has to configure the light travel time correction for the case where the observer is an orbiter..."
       endelse
@@ -1673,13 +1675,13 @@ endfor
 n=0
 nd=0
 for i=0,n_elements(bd)-1 do begin; So that every "distance" values are in planetary radius for sure, including parent body radius, whatever the units used by the users
-	bd[n].smaj/=parent_body_radius
-	bd[n].smin/=parent_body_radius
- 	bd[n].rad/=parent_body_radius
+	bd[n].smaj/=radius_parent
+	bd[n].smin/=radius_parent
+ 	bd[n].rad/=radius_parent
 endfor
 for i=0,n_elements(ds)-1 do begin
-	ds[nd].height/=parent_body_radius
-	ds[nd].perp/=parent_body_radius
+	ds[nd].height/=radius_parent
+	ds[nd].perp/=radius_parent
 endfor
 
 ; ***** loading SOURCE section *****
