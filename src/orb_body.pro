@@ -177,10 +177,10 @@ endif
 
 print, (*obj).traj_file
 print, (*obj).motion
-print,'rtp:'
-print,rtp
-print,'xyz:'
-print,xyz
+print,'traj_xyz:'
+print,traj_xyz
+print,'pxyz:'
+print,pxyz
 
 (*obj).trajectory_xyz=PTR_NEW(traj_xyz+pxyz)
 traj_rtp=xyz_to_rtp(traj_xyz)
