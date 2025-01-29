@@ -1684,6 +1684,12 @@ for i=0,n_elements(ds)-1 do begin
 	ds[nd].perp/=radius_parent
 endfor
 
+print, 'observer'
+print, observer
+print,'body'
+for i=0,n_elements(bd)-1 do print,bd[i]
+
+
 ; ***** loading SOURCE section *****
 sc=[src]
 n=0
