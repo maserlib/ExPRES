@@ -4,7 +4,7 @@ tmp=(STRSPLIT(ephem,'.',/EXTRACT))
 
 if observer.parent.lower() eq 'jupiter' then $
 	planet_radius = 71492d $
-else if observer.parent.lower() eq 'saturn' then
+else if observer.parent.lower() eq 'saturn' then$
 	planet_radius = 60268d 
 	
 if tmp[-1] eq 'csv' then begin
