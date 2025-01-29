@@ -1670,8 +1670,6 @@ for i=0,nbody-1 do begin
 	endfor
 endfor
 
-print, 'parent_body_radius:'
-print, parent_body_radius
 n=0
 nd=0
 for i=0,n_elements(bd)-1 do begin; So that parent body radius is in planetary radius for sure, whatever the units used by the users
