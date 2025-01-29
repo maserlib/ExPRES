@@ -1240,10 +1240,17 @@ endelse
 
 
 ; ***** loading OBSERVER section *****
+;# first for loop is useful to normalize all distance (observer.smin and observer.smax) by the main body radius
+for i=0,nbody-1 do begin
+    if ((serpe_save['BODY'])[i])['ON'] then $
+        if ((serpe_save['BODY'])[i])['PARENT'] eq '' then $
+            radius_parent = ((serpe_save['BODY'])[i])['RADIUS']
+endfor
+
 observer.motion=0b
 observer.predef=0b
 case (serpe_save['OBSERVER'])['TYPE'] of
-	'Pre-Defined' : observer.predef=1b 
+    'Pre-Defined' : observer.predef=1b 
     'Orbiter' : observer.motion=1b
     'Fixed': 
 endcase
@@ -1274,13 +1281,7 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq "@wgc" then begin
     endif
 
 endif else if (serpe_save['OBSERVER'])['EPHEM'] ne '' then begin
-  for i=0,nbody-1 do begin
-    if ((serpe_save['BODY'])[i])['ON'] then $
-        if ((serpe_save['BODY'])[i])['PARENT'] eq '' then $
-            radius_parent = ((serpe_save['BODY'])[i])['RADIUS']
-  endfor
-  print,radius_parent
-  read_ephem_obs,(serpe_save['OBSERVER'])['EPHEM'],1,time0,time,observer,longitude,distance,lat,error ;# radius_parent is set to 1 here, because we do not want to normalize the distance yet. It will be down for all 'distance' value at the end of this loop
+  read_ephem_obs,(serpe_save['OBSERVER'])['EPHEM'],radius_parent,time0,time,observer,longitude,distance,lat,error 
 
   if error eq 1 then stop,'Check your ephemeris file'
   struct_replace_field,observer,'SMAJ',distance
@@ -1332,19 +1333,17 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
           			if (error2 gt 30) then  stop,'Error on the call of MIRIADE ephemerides. Please restart the simulation and/or check that MIRIADE is working properly'
   				error2=error2+1
   			endwhile
-  		
-  				
-  		endelse
-  		; enregistrement des donnees lues
-  		observer.smaj=distance[0] ; Will be divided by bd[wparent[0]].rad at the end, when body entry will have been read
-  	  observer.smin=distance[0] ; Will be divided by bd[wparent[0]].rad at the end, when body entry will have been read
-  	  observer.phs=-longitude[0]
+		endelse
+	  	; enregistrement des donnees lues
+	  	observer.smaj=distance[0]
+  	  	observer.smin=distance[0]
+  	  	observer.phs=-longitude[0]
   		observer.decl=lat[0]
   		
   		
   	endif else begin	; sinon enregistre donnees entrees par utilisateur
-  		observer.smaj=float((serpe_save['OBSERVER'])['FIXE_DIST']) ; Will be divided by bd[wparent[0]].rad at the end, when body entry will have been read
-  	  	observer.smin=float((serpe_save['OBSERVER'])['FIXE_DIST']) ; Will be divided by bd[wparent[0]].rad at the end, when body entry will have been read
+  		observer.smaj=float((serpe_save['OBSERVER'])['FIXE_DIST'])/radius_parent ;# so that it will normalized observer.smin and observer.smax to planetary radius, whatever units users used (km or RP)
+  	  	observer.smin=float((serpe_save['OBSERVER'])['FIXE_DIST'])/radius_parent ;# so that it will normalized observer.smin and observer.smax to planetary radius, whatever units users used (km or RP)
   		observer.phs=-float((serpe_save['OBSERVER'])['FIXE_SUBL'])
   		observer.decl=float((serpe_save['OBSERVER'])['FIXE_DECL'])
   	endelse
@@ -1471,8 +1470,8 @@ endif
 ; ********* ********	
 	
 if observer.motion then begin
-	observer.smaj=(serpe_save['OBSERVER'])['SEMI_MAJ'] ; Will be divided by bd[wparent[0]].rad at the end, when body entry will have been read
-	observer.smin=(serpe_save['OBSERVER'])['SEMI_MIN'] ; Will be divided by bd[wparent[0]].rad at the end, when body entry will have been read
+	observer.smaj=(serpe_save['OBSERVER'])['SEMI_MAJ']/radius_parent ;# so that it will normalized observer.smin and observer.smax to planetary radius, whatever units users used (km or RP)
+	observer.smin=(serpe_save['OBSERVER'])['SEMI_MIN']/radius_parent ;# so that it will normalized observer.smin and observer.smax to planetary radius, whatever units users used (km or RP)
 	observer.alg=(serpe_save['OBSERVER'])['SUBL']
 	observer.decl=(serpe_save['OBSERVER'])['DECL']
 	observer.phs=(serpe_save['OBSERVER'])['PHASE']
@@ -1627,7 +1626,7 @@ for i=0,nbody-1 do begin
       ; # It's necessary to go back in time, corresponding to the distance main body-observer
 	
       if observer.motion eq 0 then begin
-        caldat,julday1-(observer.smaj[0]/3e5/60./60./24.),M0,D0,Y0,H0,Mi0,S0
+        caldat,julday1-(observer.smaj[0]*parent_body_radius/3e5/60./60./24.),M0,D0,Y0,H0,Mi0,S0
       endif else begin
         stop,"The ExPRES team has to configure the light travel time correction for the case where the observer is an orbiter..."
       endelse
