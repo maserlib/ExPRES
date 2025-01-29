@@ -2,9 +2,9 @@ PRO read_ephem_obs,ephem,time0,time,observer,longitude,distance,lat,error
 
 tmp=(STRSPLIT(ephem,'.',/EXTRACT))
 
-if observer.parent.lower() == 'jupiter' then $
+if observer.parent.lower() eq 'jupiter' then $
 	planet_radius = 71492d $
-else if observer.parent.lower() == 'saturn' then
+else if observer.parent.lower() eq 'saturn' then
 	planet_radius = 60268d 
 	
 if tmp[-1] eq 'csv' then begin
