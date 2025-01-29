@@ -1,6 +1,12 @@
 PRO read_ephem_obs,ephem,time0,time,observer,longitude,distance,lat,error
 
 tmp=(STRSPLIT(ephem,'.',/EXTRACT))
+
+if observer.parent.lower() == 'jupiter' then $
+	planet_radius = 71492d $
+else if observer.parent.lower() == 'saturn' then
+	planet_radius = 60268d 
+	
 if tmp[-1] eq 'csv' then begin
 
 	result=read_csv(ephem,n_table_header=14,table_header=head)
@@ -24,12 +30,12 @@ if tmp[-1] eq 'csv' then begin
 		date=strmid(result.field01[0:n-1],0,4)+strmid(result.field01[0:n-1],5,2)+strmid(result.field01[0:n-1],8,2)+strmid(result.field01[0:n-1],11,2)+strmid(result.field01[0:n-1],14,2)+strmid(result.field01[0:n-1],17,2)
 		longitude=(360+(-1.)*result.field02[0:n-1]+360.) mod 360d
 		lat=result.field03[0:n-1]
-		distance=result.field04[0:n-1]/71492d
+		distance=result.field04[0:n-1]/planet_radius
 	endif else begin
 		date=strmid(result.field1[0:n-1],0,4)+strmid(result.field1[0:n-1],5,2)+strmid(result.field1[0:n-1],8,2)+strmid(result.field1[0:n-1],11,2)+strmid(result.field1[0:n-1],14,2)+strmid(result.field1[0:n-1],17,2)
 		longitude=(360+(-1.)*result.field2[0:n-1]+360.) mod 360d
 		lat=result.field3[0:n-1]
-		distance=result.field4[0:n-1]/71492d
+		distance=result.field4[0:n-1]/planet_radius
 	endelse
 endif
 
