@@ -1246,7 +1246,6 @@ for i=0,nbody-1 do begin
         if ((serpe_save['BODY'])[i])['PARENT'] eq '' then $ ;# if body.parent == '' (i.e., as no parent) it means it is the central body 
             radius_parent = ((serpe_save['BODY'])[i])['RADIUS']
 endfor
-print, radius_parent
 
 observer.motion=0b
 observer.predef=0b
@@ -1625,8 +1624,6 @@ for i=0,nbody-1 do begin
       ; # updating the date to take into account the light travel time
       ; # The longitude of a secondary body (a moon) is taken from the moon pov
       ; # It's necessary to go back in time, corresponding to the distance main body-observer
-	print, observer.smaj[0]
- 	print, radius_parent
       if observer.motion eq 0 then begin
         caldat,julday1-(observer.smaj[0]*radius_parent/3e5/60./60./24.),M0,D0,Y0,H0,Mi0,S0
       endif else begin
@@ -1682,11 +1679,6 @@ for i=0,n_elements(ds)-1 do begin
 	ds[i].height/=radius_parent
 	ds[i].perp/=radius_parent
 endfor
-
-print, 'observer'
-print, observer
-print,'body'
-for i=0,n_elements(bd)-1 do help,bd[i]
 
 
 ; ***** loading SOURCE section *****
