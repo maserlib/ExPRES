@@ -2,10 +2,10 @@
     "creators": [
         {
             "orcid": "0000-0002-9552-8822",
-            "affiliation": {
-                "https://ror.org/02eptjh02":
+            "affiliation": [
+                "https://ror.org/02eptjh02",
                 "https://ror.org/051sx6d27"
-            },
+            ],
             "name": "Louis, Corentin K."
         },
         {
