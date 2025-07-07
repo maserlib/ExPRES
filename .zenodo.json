@@ -2,10 +2,7 @@
     "creators": [
         {
             "orcid": "0000-0002-9552-8822",
-            "affiliation": [
-                "https://ror.org/02eptjh02",
-                "https://ror.org/051sx6d27"
-            ],
+            "affiliation": "https://ror.org/017zz7s54",
             "name": "Louis, Corentin K."
         },
         {
@@ -16,18 +13,18 @@
         {
             "name": "Cecconi, Baptiste",
             "orcid": "0000-0001-7915-5571",
-            "affiliation": "https://ror.org/02eptjh02"
+            "affiliation": "https://ror.org/017zz7s54"
         },
         {
             "name": "Zarka, Philippe",
             "orcid": "0000-0003-1672-9878",
-            "affiliation": "https://ror.org/02eptjh02"
+            "affiliation": "https://ror.org/017zz7s54"
         },
         {
             "name": "Lamy, Laurent",
             "orcid": "0000-0002-8428-1369",
             "affiliation": {
-                "https://ror.org/02eptjh02":
+                "https://ror.org/017zz7s54":
                 "https://ror.org/00ssy9q55"
             }
         },
@@ -39,7 +36,7 @@
         {
             "name": "Loh, Alan",
             "orcid": "0000-0002-4698-9542",
-            "affiliation": "https://ror.org/02eptjh02"
+            "affiliation": "https://ror.org/017zz7s54"
         }
     ],
 
