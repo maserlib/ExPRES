@@ -1,5 +1,6 @@
-PRO read_ephem_obs,ephem,time0,time,observer,longitude,distance,lat,error
+PRO read_ephem_obs,ephem,radius_parent,time0,time,observer,longitude,distance,lat,error
 
+radius_parent = DOUBLE(radius_parent)
 tmp=(STRSPLIT(ephem,'.',/EXTRACT))
 if tmp[-1] eq 'csv' then begin
 
@@ -24,12 +25,12 @@ if tmp[-1] eq 'csv' then begin
 		date=strmid(result.field01[0:n-1],0,4)+strmid(result.field01[0:n-1],5,2)+strmid(result.field01[0:n-1],8,2)+strmid(result.field01[0:n-1],11,2)+strmid(result.field01[0:n-1],14,2)+strmid(result.field01[0:n-1],17,2)
 		longitude=(360+(-1.)*result.field02[0:n-1]+360.) mod 360d
 		lat=result.field03[0:n-1]
-		distance=result.field04[0:n-1]/71492d
+		distance=result.field04[0:n-1]/radius_parent
 	endif else begin
 		date=strmid(result.field1[0:n-1],0,4)+strmid(result.field1[0:n-1],5,2)+strmid(result.field1[0:n-1],8,2)+strmid(result.field1[0:n-1],11,2)+strmid(result.field1[0:n-1],14,2)+strmid(result.field1[0:n-1],17,2)
 		longitude=(360+(-1.)*result.field2[0:n-1]+360.) mod 360d
 		lat=result.field3[0:n-1]
-		distance=result.field4[0:n-1]/71492d
+		distance=result.field4[0:n-1]/radius_parent
 	endelse
 endif
 

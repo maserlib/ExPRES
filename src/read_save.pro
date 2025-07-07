@@ -1086,6 +1086,7 @@ for i=0,n_elements(sc)-2 do begin
       print,'Is your magnetic field model name correct?'
 	   END
   endcase
+
 	if (strmid(mfl,0,6) eq 'Dipole') then fld=mfl else if (mfl ne 'auto') then fld=adresse_mfl+fld
 
   if STRMATCH(mfl, 'auto', /FOLD_CASE) then (*((parameters.objects[n]))).folder=fld else $
@@ -1099,6 +1100,7 @@ for i=0,n_elements(sc)-2 do begin
         endcase
       ;#endif else (*((parameters.objects[n]))).folder=fld+'_lsh'
     endelse
+
   print, (*((parameters.objects[n]))).folder
   
 
@@ -1238,10 +1240,17 @@ endelse
 
 
 ; ***** loading OBSERVER section *****
+;# first for loop is useful to normalize all distance (observer.smin and observer.smax) by the main body radius
+for i=0,nbody-1 do begin
+    if ((serpe_save['BODY'])[i])['ON'] then $
+        if ((serpe_save['BODY'])[i])['PARENT'] eq '' then $ ;# if body.parent == '' (i.e., as no parent) it means it is the central body 
+            radius_parent = ((serpe_save['BODY'])[i])['RADIUS']
+endfor
+
 observer.motion=0b
 observer.predef=0b
 case (serpe_save['OBSERVER'])['TYPE'] of
-	'Pre-Defined' : observer.predef=1b 
+    'Pre-Defined' : observer.predef=1b 
     'Orbiter' : observer.motion=1b
     'Fixed': 
 endcase
@@ -1272,7 +1281,8 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq "@wgc" then begin
     endif
 
 endif else if (serpe_save['OBSERVER'])['EPHEM'] ne '' then begin
-  read_ephem_obs,(serpe_save['OBSERVER'])['EPHEM'],time0,time,observer,longitude,distance,lat,error
+  read_ephem_obs,(serpe_save['OBSERVER'])['EPHEM'],radius_parent,time0,time,observer,longitude,distance,lat,error 
+
   if error eq 1 then stop,'Check your ephemeris file'
   struct_replace_field,observer,'SMAJ',distance
   struct_replace_field,observer,'SMIN',distance
@@ -1298,7 +1308,7 @@ doy2=strtrim(amj_aj(long64(Y2*10000l+Mo2*100+D2)),2)
 date=STRMID(observer.start,0,10)+':'+STRMID(observer.start,10,2)+':'+STRMID(observer.start,12,2)
 adresse_ephem=loadpath('adresse_ephem',parameters,config=config)
 if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
-  if ((observer.motion+observer.predef) eq 0b) then begin
+    if ((observer.motion+observer.predef) eq 0b) then begin
   	if size(((serpe_save['OBSERVER'])['FIXE_DIST']),/type) eq 7 then begin			; if fixe_dist="auto"
   		if ((serpe_save['OBSERVER'])['SC'] eq 'Cassini' and (long64(strmid(observer.start,0,12)) ge 201603281700) and (long64(strmid(observer.start,0,12)) lt 201701010000)) then begin
   
@@ -1320,91 +1330,89 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   			while (error eq 1) do begin
   				call_ephemph,(serpe_save['OBSERVER'])['PARENT'],spacecraft=(serpe_save['OBSERVER'])['SC'],date,name		; call ephemeride of Miriade VO
   				read_ephemph,name,distance=distance,longitude=longitude,lat=lat,error=error								; writing ephem of Miriade VO
-          if (error2 gt 30) then  stop,'Error on the call of MIRIADE ephemerides. Please restart the simulation and/or check that MIRIADE is working properly'
+          			if (error2 gt 30) then  stop,'Error on the call of MIRIADE ephemerides. Please restart the simulation and/or check that MIRIADE is working properly'
   				error2=error2+1
   			endwhile
-  		
-  				
-  		endelse
-  		; enregistrement des donnees lues
-  		observer.smaj=distance[0]
-  	  observer.smin=distance[0]
-  	  observer.phs=-longitude[0]
+		endelse
+	  	; enregistrement des donnees lues
+	  	observer.smaj=distance[0]
+  	  	observer.smin=distance[0]
+  	  	observer.phs=-longitude[0]
   		observer.decl=lat[0]
   		
   		
   	endif else begin	; sinon enregistre donnees entrees par utilisateur
-  		observer.smaj=float((serpe_save['OBSERVER'])['FIXE_DIST'])
-  	  observer.smin=float((serpe_save['OBSERVER'])['FIXE_DIST'])
+  		observer.smaj=float((serpe_save['OBSERVER'])['FIXE_DIST'])/radius_parent ;# so that it will normalized observer.smin and observer.smax to planetary radius, whatever units users used (km or RP)
+  	  	observer.smin=float((serpe_save['OBSERVER'])['FIXE_DIST'])/radius_parent ;# so that it will normalized observer.smin and observer.smax to planetary radius, whatever units users used (km or RP)
   		observer.phs=-float((serpe_save['OBSERVER'])['FIXE_SUBL'])
   		observer.decl=float((serpe_save['OBSERVER'])['FIXE_DECL'])
   	endelse
-  endif else if (observer.predef eq 1b) then begin
+    endif else if (observer.predef eq 1b) then begin
   	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'juno' then begin
   		if long64(strmid(date,0,8)) le 20151231 then stop,'ephemeris before DoY 2015 365 are not defined. A file with the corresponding ephemeris needs to be loaded, please contact the ExPRES team - contact.maser@obspm.fr'
-      if long64(strmid(date,0,8)) ge 20220101 then stop,'ephemeris after DoY 2021 365 are not defined. A file with the corresponding ephemeris needs to be loaded, please contact the ExPRES team - contact.maser@obspm.fr'
-  		if (long64(strmid(observer.start,0,8)) ge 20160101) and (long64(strmid(observer.start,0,8)) lt 20170101) then $
-  		restore,adresse_ephem+'Juno/2016_001-366.sav'
-  		if (long64(strmid(observer.start,0,8)) ge 20170101) and (long64(strmid(observer.start,0,8)) lt 20180101) then $
-  		restore,adresse_ephem+'Juno/2017_001-365.sav'
-  		if (long64(strmid(observer.start,0,8)) ge 20180101) and (long64(strmid(observer.start,0,8)) lt 20190101) then $
-  		restore,adresse_ephem+'Juno/2018_001-365.sav'
-      if (strmid(strtrim(long64(observer.start),2),0,4) eq '2019') then $
-      restore,adresse_ephem+'Juno/2019.sav'
-      if (strmid(strtrim(long64(observer.start),2),0,4) eq '2020') then $
-      restore,adresse_ephem+'Juno/2020.sav'
-      if (strmid(strtrim(long64(observer.start),2),0,4) eq '2021') then $
-      restore,adresse_ephem+'Juno/2021.sav'
+      		if long64(strmid(date,0,8)) ge 20251016 then stop,'ephemeris after DoY 2025 288 (October 15th, 2025) are not defined. A file with the corresponding ephemeris needs to be loaded, please contact the ExPRES team - contact.maser@obspm.fr'
+  		if (strmid(strtrim(long64(observer.start),2),0,4) eq '2016') then $
+  			restore,adresse_ephem+'Juno/2016_001-366.sav'
+  		if (strmid(strtrim(long64(observer.start),2),0,4) eq '2017') then $
+  			restore,adresse_ephem+'Juno/2017_001-365.sav'
+  		if (strmid(strtrim(long64(observer.start),2),0,4) eq '2018') then $
+  			restore,adresse_ephem+'Juno/2018_001-365.sav'
+     		if (long64(strmid(observer.start,0,4)) ge 2019) and (long64(strmid(observer.start,0,4)) le 2024) then $
+      			restore,adresse_ephem+'Juno/'+strmid(strtrim(long64(observer.start),2),0,4)+'.sav'
+      		if (long64(strmid(observer.start,0,8)) ge 20250101) and (long64(strmid(observer.start,0,8)) lt 20251016) then $
+      			restore,adresse_ephem+'Juno/2025_001-288.sav'
+
+      
       
   	
-  		w=where((long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. ge long(strmid(doy1,4,3))+long(H1)/24.+long(Mi1)/24./60.) and (long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. le (long(strmid(doy2,4,3))+long(H2)/24.+long(Mi2)/24./60.)))
+    		w=where((long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. ge long(strmid(doy1,4,3))+long(H1)/24.+long(Mi1)/24./60.) and (long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. le (long(strmid(doy2,4,3))+long(H2)/24.+long(Mi2)/24./60.)))
       
-  		longitude=ephem[w].oblon
-  		distance=ephem[w].dist_RJ
-  		lat=ephem[w].oblat
-      longitude=interpol(longitude,time.nbr)
-      distance=interpol(distance,time.nbr)
-      lat=interpol(lat,time.nbr)
+    		longitude=ephem[w].oblon
+    		distance=ephem[w].dist_RJ
+    		lat=ephem[w].oblat
+    		longitude=interpol(longitude,time.nbr)
+    		distance=interpol(distance,time.nbr)
+    		lat=interpol(lat,time.nbr)
 
-  	endif else $
+     	endif else $
   	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'galileo' then begin
   		restore,adresse_ephem+'Galileo/1996_240-260.sav'
   		
-      w=where((long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. ge long(strmid(doy1,4,3))+long(H1)/24.+long(Mi1)/24./60.) and (long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. le (long(strmid(doy2,4,3))+long(H2)/24.+long(Mi2)/24./60.)))
+      		w=where((long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. ge long(strmid(doy1,4,3))+long(H1)/24.+long(Mi1)/24./60.) and (long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. le (long(strmid(doy2,4,3))+long(H2)/24.+long(Mi2)/24./60.)))
       
-      longitude=ephem[w].oblon
-      distance=ephem[w].dist_RJ
-      lat=ephem[w].oblat
+      		longitude=ephem[w].oblon
+      		distance=ephem[w].dist_RJ
+      		lat=ephem[w].oblat
        
-      longitude=interpol(longitude,time.nbr)
-      distance=interpol(distance,time.nbr)
-      lat=interpol(lat,time.nbr)
+      		longitude=interpol(longitude,time.nbr)
+      		distance=interpol(distance,time.nbr)
+      		lat=interpol(lat,time.nbr)
   	
   	endif else $
   	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'voyager1' and strmid((serpe_save['OBSERVER'])['SCTIME'],0,4) eq '1979' then begin
   		restore,adresse_ephem+'Voyager/Voyager1_ephem_1979.sav'
   		w=where((long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. ge long(strmid(doy1,4,3))+long(H1)/24.+long(Mi1)/24./60.) and (long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. le (long(strmid(doy2,4,3))+long(H2)/24.+long(Mi2)/24./60.)))
       
-      longitude=ephem[w].oblon
-      distance=ephem[w].dist_RJ
-      lat=ephem[w].oblat
+      		longitude=ephem[w].oblon
+      		distance=ephem[w].dist_RJ
+      		lat=ephem[w].oblat
        
-      longitude=interpol(longitude,time.nbr)
-      distance=interpol(distance,time.nbr)
-      lat=interpol(lat,time.nbr)	
+      		longitude=interpol(longitude,time.nbr)
+      		distance=interpol(distance,time.nbr)
+      		lat=interpol(lat,time.nbr)	
   	
   	endif else $
   	if strlowcase((serpe_save['OBSERVER'])['SC']) eq 'voyager2' and strmid((serpe_save['OBSERVER'])['SCTIME'],0,4) eq '1979' then begin
   		restore,adresse_ephem+'Voyager/Voyager2_ephem_1979.sav'
   		w=where((long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. ge long(strmid(doy1,4,3))+long(H1)/24.+long(Mi1)/24./60.) and (long(ephem.day)+long(ephem.hr)/24.+long(ephem.min)/24./60. le (long(strmid(doy2,4,3))+long(H2)/24.+long(Mi2)/24./60.)))
       
-      longitude=ephem[w].oblon
-      distance=ephem[w].dist_RJ
-      lat=ephem[w].oblat
-       
-      longitude=interpol(longitude,time.nbr)
-      distance=interpol(distance,time.nbr)
-      lat=interpol(lat,time.nbr)	
+       		longitude=ephem[w].oblon
+      		distance=ephem[w].dist_RJ
+      		lat=ephem[w].oblat
+      	
+       		longitude=interpol(longitude,time.nbr)
+      		distance=interpol(distance,time.nbr)
+      		lat=interpol(lat,time.nbr)	
   	
   	endif else begin
   	
@@ -1462,8 +1470,8 @@ endif
 ; ********* ********	
 	
 if observer.motion then begin
-	observer.smaj=(serpe_save['OBSERVER'])['SEMI_MAJ']
-	observer.smin=(serpe_save['OBSERVER'])['SEMI_MIN']
+	observer.smaj=(serpe_save['OBSERVER'])['SEMI_MAJ']/radius_parent ;# so that it will normalized observer.smin and observer.smax to planetary radius, whatever units users used (km or RP)
+	observer.smin=(serpe_save['OBSERVER'])['SEMI_MIN']/radius_parent ;# so that it will normalized observer.smin and observer.smax to planetary radius, whatever units users used (km or RP)
 	observer.alg=(serpe_save['OBSERVER'])['SUBL']
 	observer.decl=(serpe_save['OBSERVER'])['DECL']
 	observer.phs=(serpe_save['OBSERVER'])['PHASE']
@@ -1605,13 +1613,11 @@ for i=0,nbody-1 do begin
 		bd[n].parent=((serpe_save['BODY'])[i])['PARENT']
 		bd[n].smaj=((serpe_save['BODY'])[i])['SEMI_MAJ']
 		bd[n].smin=((serpe_save['BODY'])[i])['SEMI_MIN']
-    if bd[n].parent ne '' then begin
-      wparent = where(bd.name eq bd[n].parent)
-      bd[n].rad=bd[n].rad/bd[wparent[0]].rad
-      bd[n].smaj=bd[n].smaj/bd[wparent[0]].rad
-      bd[n].smin=bd[n].smin/bd[wparent[0]].rad
-    endif
-		bd[n].decl=((serpe_save['BODY'])[i])['DECLINATION']
+
+     		;#if bd[n].parent eq '' then $ ;# if no parent == central body
+		;#	parent_body_radius = bd[n].rad 
+   
+    		bd[n].decl=((serpe_save['BODY'])[i])['DECLINATION']
 		bd[n].alg=((serpe_save['BODY'])[i])['APO_LONG']
 		bd[n].incl=((serpe_save['BODY'])[i])['INCLINATION']
 
@@ -1625,15 +1631,12 @@ for i=0,nbody-1 do begin
     	
       ; # updating the date to take into account the light travel time
       ; # The longitude of a secondary body (a moon) is taken from the moon pov
-      ; # It s necessary to go back in time, corresponding to the distance main body-observer
 
-      case ((serpe_save['BODY'])[i])['PARENT'] of 
-        'Jupiter': Rayon=71492.00
-        'Uranus': Rayon=25559.00
-        'Saturn': Rayon=60268.00
-      endcase
+      ; # It's necessary to go back in time, corresponding to the distance main body-observer
+      if radius_parent eq 1:
+        stop, "In that case (['BODY']['PHASE'] = 'auto'), you need to have all your distance units defined in km so that the light travel time is correctly taken into account"
       if observer.motion eq 0 then begin
-        caldat,julday1-(observer.smaj[0]*Rayon/3e5/60./60./24.),M0,D0,Y0,H0,Mi0,S0
+        caldat,julday1-(observer.smaj[0]*radius_parent/3e5/60./60./24.),M0,D0,Y0,H0,Mi0,S0
       endif else begin
         stop,"The ExPRES team has to configure the light travel time correction for the case where the observer is an orbiter..."
       endelse
@@ -1676,6 +1679,18 @@ for i=0,nbody-1 do begin
 		endif
 	endfor
 endfor
+
+
+for i=0,n_elements(bd)-1 do begin; So that every "distance" values are in planetary radius for sure, including parent body radius, whatever the units used by the users
+ 	bd[i].smaj/=radius_parent
+	bd[i].smin/=radius_parent
+ 	bd[i].rad/=radius_parent
+endfor
+for i=0,n_elements(ds)-1 do begin
+	ds[i].height/=radius_parent
+	ds[i].perp/=radius_parent
+endfor
+
 
 ; ***** loading SOURCE section *****
 sc=[src]
@@ -1764,8 +1779,6 @@ for i=0,nsrc-1 do begin
 		sc[n].refract=((serpe_save['SOURCE'])[i])['REFRACTION']
 	endif
 endfor
-
-bd[wparent[0]].rad/=bd[wparent[0]].rad
 
 ; ***** building SERPE objects *****
 parameters = build_serpe_obj(version,adresse_mfl,file_name,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d)

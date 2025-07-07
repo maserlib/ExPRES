@@ -69,7 +69,7 @@ if (*obj).traj_file eq '' then begin
 	if (*obj).motion eq 0 then begin
 		rtp=rtp(*,0)
 		rtp[1]=!pi*0.5-(*(obj)).apoapsis_declination*!dtor
-
+  
 		xyz=fltarr(3)
 		xyz(2)=rtp(0)*cos(rtp(1))
 		xyz(0)=rtp(0)*sin(rtp(1))*cos(rtp(2))
@@ -138,7 +138,7 @@ if (*obj).traj_file eq '' then begin
 endif else begin
 
 
-;*********** on a a chaque pas de t la valeur de la distance à Jupiter, la longitude et l inclinaison
+;*********** At eacg t step we have the value of the distance, longitude and inclination to the central body
 	alpha=(*(obj)).initial_phase*!dtor
 	c = sqrt((*(obj)).semi_major_axis(*)^2-(*(obj)).semi_minor_axis(*)^2)
 	x = (*(obj)).semi_major_axis(*)*cos(alpha(*))+c
