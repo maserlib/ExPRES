@@ -13,7 +13,7 @@ Physical units (km) are recommanded. Planetary Radius units can still be used, e
 - Creation of codemeta.json file
 
 Related Publications:
-- Judy Chebly, Antoine Strugarek, Corentin K. Louis, "", to be submitted to Astronomy & Astrophysics
+- Judy Chebly, Antoine Strugarek, Corentin K. Louis, Julian D. Alvarado Gomez, Philippe Zarka, "Assessing SPI-induced radio emission using 3D MHD simulations of stellar winds", to be submitted to Astronomy & Astrophysics
 
 ## Version 1.3.0 (2023)
 Contributors: C. Louis, B. Cecconi
