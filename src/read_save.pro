@@ -915,7 +915,7 @@ PRO init_serpe_structures,time,freq,observer,body,dens,src,spdyn,cdf,mov2d,mov3d
 time={TI,mini:0d,maxi:0d,nbr:0l,dt:0.}
 freq={FR,mini:0.,maxi:0.,nbr:0l,df:0.,name:'',log:0b,predef:0b,freq_tab:PTR_NEW(/ALLOCATE_HEAP)}
 observer={OB,motion:0b,smaj:0.,smin:0.,decl:0.,alg:0.,incl:0.,phs:0.,predef:0b,name:'',parent:'',start:''}
-body={BO,on:0b,name:'',rad:0.,per:0.,flat:0.,orb1:0.,lg0:0.,sat:0b,smaj:0.,smin:0.,decl:0.,alg:0.,incl:0.,phs:0.,parent:'', mfl:'',dens:intarr(4),ipar:0}
+body={BO,on:0b,name:'',rad:0.,per:0.,flat:0.,orb1:0.,lg0:0.,sat:0b,smaj:0.,smin:0.,decl:0.,alg:0.,incl:0.,phs:0.,parent:'', mfl:'', folder:'',dens:intarr(4),ipar:0}
 dens={DE,on:0b,name:'',type:'',rho0:0.,height:0.,perp:0.}
 src={SO,on:0b,name:'',parent:'',sat:'',type:'',loss:0b,mode:'RX',lossbornes:0b,ring:0b,cavity:0b,constant:0.,width:0.,temp:0d,cold:0d,v:0d,lagauto:'off',lagmodel:'',lgmin:0.,lgmax:0.,lgnbr:1,lgstep:1.,latmin:0.,latmax:0.,latstep:1.,north:0b,south:0b,subcor:0.,aurora_alt:0d,refract:0b}
 spdyn={SP,intensity:0b,polar:0b,f_t:0b,lg_t:0b,lat_t:0b,f_r:0b,lg_r:0b,lat_r:0b,f_lg:0b,lg_lg:0b,lat_lg:0b,f_lat:0b,lg_lat:0b,lat_lat:0b,f_lt:0b,lg_lt:0b,lat_lt:0b,$
@@ -949,6 +949,7 @@ for i=0,n_elements(ds)-2 do begin
 		'Ionospheric': typ='ionospheric'
 		'Torus': typ='torus'
 		'Disk': typ='disk'
+    'auto': typ='auto'
 	endcase
 
 	(parameters.objects[n])=PTR_NEW({DENSITY,name:(ds[i+1]).name,type:typ,rho0:(ds[i+1]).rho0,height:(ds[i+1]).height,perp:(ds[i+1]).perp,it:[''],cb:[''],fz:['']})
@@ -961,7 +962,7 @@ rank_bodies,bd
 start_bodies=n
 
 for i=0,n_elements(bd)-2 do begin
-	(parameters.objects[n])=PTR_NEW({BODY,name:(bd[i+1]).name,radius:(bd[i+1]).rad,period:(bd[i+1]).per,flat:(bd[i+1]).flat,orb_1r:(bd[i+1]).orb1,lg0:(bd[i+1]).lg0,motion:(bd[i+1]).sat,$
+	(parameters.objects[n])=PTR_NEW({BODY,name:(bd[i+1]).name, mfl:(bd[i+1]).mfl, radius:(bd[i+1]).rad,period:(bd[i+1]).per,flat:(bd[i+1]).flat,orb_1r:(bd[i+1]).orb1,lg0:(bd[i+1]).lg0,motion:(bd[i+1]).sat,$
 				parent:PTR_NEW(/ALLOCATE_HEAP),initial_phase:(bd[i+1]).phs,semi_major_axis:(bd[i+1]).smaj,semi_minor_axis:(bd[i+1]).smin,apoapsis_declination:(bd[i+1]).decl,$
 				apoapsis_longitude:(bd[i+1]).alg,orbit_inclination:(bd[i+1]).incl,traj_file:'',density:PTR_NEW(/ALLOCATE_HEAP),$
 				lg:PTR_NEW(/ALLOCATE_HEAP),lct:PTR_NEW(/ALLOCATE_HEAP),trajectory_xyz:PTR_NEW(/ALLOCATE_HEAP),trajectory_rtp:PTR_NEW(/ALLOCATE_HEAP),$
@@ -1077,23 +1078,29 @@ for i=0,n_elements(sc)-2 do begin
 		'Z3': fld='Z3'
     'Q3': fld ='Q3'
     'AH5': fld ='AH5'
+    'auto': BEGIN
+        fld = bd[wpar[0]].folder
+    END
 		else: BEGIN
       fld=mfl
-      print,'Is your MFL model correct ?'
+      print,'Is your magnetic field model name correct?'
 	   END
   endcase
-	if strmid(mfl,0,6) eq 'Dipole' then fld=mfl else fld=adresse_mfl+fld
-  
-  if ((sc[i+1]).type eq 'fixed in latitude') then (*((parameters.objects[n]))).folder=fld+'_lat' else begin
-    ;#if strlowcase((*parent).name) eq 'jupiter' then begin
-      case strlowcase((sc[i+1]).type) of
-        'attached to a satellite': (*((parameters.objects[n]))).folder=fld+'_lsh'
-        'l-shell': (*((parameters.objects[n]))).folder=fld+'_lsh'
-        'm-shell': (*((parameters.objects[n]))).folder=fld+'_msh'
-        else: (*((parameters.objects[n]))).folder=fld+'_msh'
-      endcase
-    ;#endif else (*((parameters.objects[n]))).folder=fld+'_lsh'
-  endelse
+
+	if (strmid(mfl,0,6) eq 'Dipole') then fld=mfl else if (mfl ne 'auto') then fld=adresse_mfl+fld
+
+  if STRMATCH(mfl, 'auto', /FOLD_CASE) then (*((parameters.objects[n]))).folder=fld else $
+    if ((sc[i+1]).type eq 'fixed in latitude') then (*((parameters.objects[n]))).folder=fld+'_lat' else begin
+     ;#if strlowcase((*parent).name) eq 'jupiter' then begin
+        case strlowcase((sc[i+1]).type) of
+          'attached to a satellite': (*((parameters.objects[n]))).folder=fld+'_lsh'
+          'l-shell': (*((parameters.objects[n]))).folder=fld+'_lsh'
+          'm-shell': (*((parameters.objects[n]))).folder=fld+'_msh'
+          else: (*((parameters.objects[n]))).folder=fld+'_msh'
+        endcase
+      ;#endif else (*((parameters.objects[n]))).folder=fld+'_lsh'
+    endelse
+
   print, (*((parameters.objects[n]))).folder
   
 
@@ -1230,13 +1237,6 @@ endif else begin
     freq.name='Linear'
   endelse
 endelse
-
-
-
-
-
-
-
 
 
 ; ***** loading OBSERVER section *****
@@ -1601,6 +1601,14 @@ for i=0,nbody-1 do begin
 		bd[n].orb1=((serpe_save['BODY'])[i])['ORB_PER']    ; # orb_per=(2*pi*sqrt(a^3/(GM))/60 (in minutes) with a the radius of the body, G=6.67430e-11 and M the mass of thd body ; Third law of Kepler  
 		bd[n].lg0=((serpe_save['BODY'])[i])['INIT_AX']
 		bd[n].mfl=((serpe_save['BODY'])[i])['MAG']
+    if bd[n].mfl eq 'auto' then begin
+      test=where(((serpe_save['BODY'])[i]).keys() eq 'MAG_FOLDER',cnt)
+      if cnt ne 0 then begin
+        if ((serpe_save['BODY'])[i])['MAG_FOLDER'] ne '' then $
+          bd[n].folder=((serpe_save['BODY'])[i])['MAG_FOLDER']
+      endif
+    endif
+
 		bd[n].sat=((serpe_save['BODY'])[i])['MOTION']
 		bd[n].parent=((serpe_save['BODY'])[i])['PARENT']
 		bd[n].smaj=((serpe_save['BODY'])[i])['SEMI_MAJ']
@@ -1623,7 +1631,10 @@ for i=0,nbody-1 do begin
     	
       ; # updating the date to take into account the light travel time
       ; # The longitude of a secondary body (a moon) is taken from the moon pov
+
       ; # It's necessary to go back in time, corresponding to the distance main body-observer
+      if radius_parent eq 1:
+        stop, "In that case (['BODY']['PHASE'] = 'auto'), you need to have all your distance units defined in km so that the light travel time is correctly taken into account"
       if observer.motion eq 0 then begin
         caldat,julday1-(observer.smaj[0]*radius_parent/3e5/60./60./24.),M0,D0,Y0,H0,Mi0,S0
       endif else begin
