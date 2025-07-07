@@ -6,20 +6,20 @@
     "dateCreated": "2006-09-01",
     "datePublished": "2019-01-08",
     "dateModified": "2023-12-21",
-    "downloadUrl": "https://github.com/maserlib/ExPRES/archive/refs/tags/1.3.0.zip",
+    "downloadUrl": "https://github.com/maserlib/ExPRES/archive/refs/tags/1.4.0.zip",
     "issueTracker": "https://github.com/maserlib/ExPRES/issues",
     "name": "ExPRES",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "identifier": "10.5281/zenodo.4280546",
     "description": "Exoplanetary and Planetary Radio Emission Simulator",
     "applicationCategory": "Astronomy",
-    "releaseNotes": "Add the wave propagation mode (LO or RX) as an (optional) input. Default value is RX.\n",
+    "releaseNotes": "Add the possibility for users to provide magnetic field and density models.\n",
     "funding": "EPN-2024-RI (https://doi.org/10.3030/871149)",
     "developmentStatus": "active",
     "isPartOf": "https://maser.lesia.obspm.fr",
     "referencePublication": "https://doi.org/10.1051/0004-6361/201935161",
     "readme": "https://expres.readthedocs.io/en/latest/",
-    "softwareVersion": "1.3.0",
+    "softwareVersion": "1.4.0",
     "keywords": [
         "radio astronomy; planetary radio emissions; exoplanets; planetary magnetospheres"
     ],
@@ -27,7 +27,7 @@
         "IDL"
     ],
     "relatedLink": [
-        "https://voparis-ns.obspm.fr/maser/expres/v1.3/schema#",
+        "https://voparis-ns.obspm.fr/maser/expres/v1.4/schema#",
         "https://maser.lesia.obspm.fr/task-2-modeling-tools/expres/?lang=en",
         "https://voparis-uws-maser.obspm.fr/client/",
         "http://ascl.net/1902.009",
@@ -42,7 +42,7 @@
             "email": "corentin.louis@obspm.fr",
             "affiliation": {
                 "@type": "Organization",
-                "name": "DIAS, Dublin, Ireland; Observatoire de Paris, France"
+                "name": "LIRA, Observatoire de Paris, Université PSL, Sorbonne Université, Université Paris Cité, CY Cergy Paris Université, CNRS, 92190 Meudon, France"
             }
         },
         {
@@ -64,7 +64,7 @@
             "email": "baptiste.cecconi@obspm.fr",
             "affiliation": {
                 "@type": "Organization",
-                "name": "Observatoire de Paris, France"
+                "name": "LIRA, Observatoire de Paris, Université PSL, Sorbonne Université, Université Paris Cité, CY Cergy Paris Université, CNRS, 92190 Meudon, France"
             }
         },
         {
@@ -75,7 +75,7 @@
             "email": "philippe.zarka@obspm.fr",
             "affiliation": {
                 "@type": "Organization",
-                "name": "CNRS, Observatoire de Paris, France"
+                "name": "LIRA, Observatoire de Paris, Université PSL, Sorbonne Université, Université Paris Cité, CY Cergy Paris Université, CNRS, 92190 Meudon, France"
             }
         },
         {
@@ -86,7 +86,7 @@
             "email": "laurent.lamy@obspm.fr",
             "affiliation": {
                 "@type": "Organization",
-                "name": "Observatoire de Paris, France"
+                "name": "LIRA, Observatoire de Paris, Université PSL, Sorbonne Université, Université Paris Cité, CY Cergy Paris Université, CNRS, 92190 Meudon, France"
             }
         },
         {
@@ -108,7 +108,7 @@
             "email": "alan.loh@obspm.fr",
             "affiliation": {
                 "@type": "Organization",
-                "name": "Observatoire de Paris, France"
+                "name": "LIRA, Observatoire de Paris, Université PSL, Sorbonne Université, Université Paris Cité, CY Cergy Paris Université, CNRS, 92190 Meudon, France"
             }
         }
     ],
@@ -121,7 +121,7 @@
             "email": "corentin.louis@obspm.fr",
             "affiliation": {
                 "@type": "Organization",
-                "name": "Observatoire de Paris, France"
+                "name": "LIRA, Observatoire de Paris, Université PSL, Sorbonne Université, Université Paris Cité, CY Cergy Paris Université, CNRS, 92190 Meudon, France"
             }
         }
     ]
