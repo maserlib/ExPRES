@@ -1628,11 +1628,14 @@ for i=0,nbody-1 do begin
 ; si c est le cas, on calcul à partir de la longitude au t=0 de la closest approach la longitude au t=0 de la simulation
 ; si c est pas le cas, alors on fait appelle à MIRIADE pour les éphémérides au t=0 de la simulation
 		if size((((serpe_save['BODY'])[i])['PHASE']),/type) eq 7 then begin									; if phase = "auto"
+  print,size((((serpe_save['BODY'])[i])['PHASE']),/type)
+  print,(((serpe_save['BODY'])[i])['PHASE'])
     	
       ; # updating the date to take into account the light travel time
       ; # The longitude of a secondary body (a moon) is taken from the moon pov
 
       ; # It's necessary to go back in time, corresponding to the distance main body-observer
+      print,radius_parent
       if radius_parent eq 1:
         stop, "In that case (['BODY']['PHASE'] = 'auto'), you need to have all your distance units defined in km so that the light travel time is correctly taken into account"
       if observer.motion eq 0 then begin
