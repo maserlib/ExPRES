@@ -1636,7 +1636,7 @@ for i=0,nbody-1 do begin
 
       ; # It's necessary to go back in time, corresponding to the distance main body-observer
       print,radius_parent
-      if radius_parent eq 1 then
+      if radius_parent eq 1 then $
         stop, "In that case (['BODY']['PHASE'] = 'auto'), you need to have all your distance units defined in km so that the light travel time is correctly taken into account"
       if observer.motion eq 0 then begin
         caldat,julday1-(observer.smaj[0]*radius_parent/3e5/60./60./24.),M0,D0,Y0,H0,Mi0,S0
