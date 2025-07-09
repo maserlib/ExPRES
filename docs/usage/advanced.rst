@@ -559,7 +559,7 @@ Output Configuration
 
 Dynamic Spectrum Output
 .......................
-Dynamic Spectra ouput setup:
+PDF output setup:
 
 - ``INTENSITY``: Flag to ouput 'Intensity' plots (``true`` or ``false``)
 - ``POLAR``: Flag to ouput 'Polar' plots (``true`` or ``false``)
@@ -573,7 +573,12 @@ Dynamic Spectra ouput setup:
 - ``KHZ``: Flag for spectral axis output in kHz (``true`` or ``false``, default is MHz)
 - ``LOG``: Flag for spectral axis output in log scale (``true`` or ``false``)
 - ``PDF``: Flag for PDF file output (``true`` or ``false``)
-- ``CDF``: Configuration of CDF file output
+
+
+CDF output setup:
+
+- ``CDF``: Configuration of CDF file output:
+
    - ``THETA``: Flag for THETA parameter output in the CDF file (``true`` or ``false``)
    - ``FP``: Flag for FP parameter output in the CDF file (``true`` or ``false``)
    - ``FC``: Flag for FC parameter output in the CDF file (``true`` or ``false``)
@@ -586,6 +591,11 @@ Dynamic Spectra ouput setup:
    - ``CML``: Flag for CML parameter output in the CDF file (``true`` or ``false``)
    - ``SRCPOS``: Flag for SRCPOS parameter output in the CDF file (``true`` or ``false``)
    - ``SRCVIS``: Flag for SRCVIS parameter output in the CDF file (``true`` or ``false``)
+
+Note that a CDF file is always produced (output by default), and that it will always contain at least the ``POLARISATION`` variable (regardless of the value of the other flags, even if they are all set to ``false``).
+
+IDL saveset output setup:
+
 - ``INFOS``: IDL Saveset output (for debugging) (``true`` or ``false``)
 
 .. _M2D:
