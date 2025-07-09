@@ -1633,10 +1633,24 @@ for i=0,nbody-1 do begin
       ; # The longitude of a secondary body (a moon) is taken from the moon pov
 
       ; # It's necessary to go back in time, corresponding to the distance main body-observer
-      if radius_parent eq 1 then $
-        stop, "In that case (['BODY']['PHASE'] = 'auto'), you need to have all your distance units defined in km so that the light travel time is correctly taken into account"
+      if radius_parent eq 1 then begin
+	    CASE ((serpe_save['BODY'])[i])['PARENT'] OF
+     		'Earth':   radius_parent_fix = 6378.137
+       		'Mars':    radius_parent_fix = 3396.2
+        	'Jupiter': radius_parent_fix = 71492.00
+        	'Saturn':  radius_parent_fix = 60268.00
+	 	'Uranus':  radius_parent_fix = 25559.00
+   		'Neptune':  radius_parent_fix = 24764.00
+        	ELSE: stop, "In that case (['BODY']['PHASE'] = 'auto' and the ((serpe_save['BODY'])[i])['PARENT'] you have chosen), you need to have all your distance units defined in km so that the light travel time is correctly taken into account"
+    	    ENDCASE
+      endif
+      
       if observer.motion eq 0 then begin
-        caldat,julday1-(observer.smaj[0]*radius_parent/3e5/60./60./24.),M0,D0,Y0,H0,Mi0,S0
+          if radius_parent eq 1 then begin
+       	       caldat,julday1-(observer.smaj[0]*radius_parent_fix/3e5/60./60./24.),M0,D0,Y0,H0,Mi0,S0
+          endif else begin
+	      caldat,julday1-(observer.smaj[0]*radius_parent/3e5/60./60./24.),M0,D0,Y0,H0,Mi0,S0
+          endelse
       endif else begin
         stop,"The ExPRES team has to configure the light travel time correction for the case where the observer is an orbiter..."
       endelse
