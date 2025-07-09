@@ -45,12 +45,7 @@ definition.
   models. The radio emission observable when the observer is located within the radio source beaming pattern.
   (Figure adapted from C. Louis, PhD Dissertation, 2018)
 
-All spatial parameters of the simulation configuration (distances, radii, lengths...) must be defined in the same units
-as that of provided *central body* radius. Hence, setting the central body radius to *1* implies that all other spatial
-parameters are provided in units of the central body planetary radii. On the contrary, providing the radius of the
-central body in km implies that all other spatial parameters must be also provided in km. The recommended convention
-is to provide all spatial parameters in units of the *central body* radius. This convention is followed in the examples
-provided below. **Note that if you use the ``OBSERVER`` ``TYPE``: ``Pre-Defined`` with ``EPHEM``: *file name* you will need to provide the *central body* radius in km (hence  the same applies to all other spatial parameters).**
+All spatial parameters of the simulation configuration (distances, radii, lengths...) must be defined in the same units as that of provided *central body* radius. The two options are *km* or *central body planetary radii*. Hence, providing the radius of the central body in km implies that all other spatial parameters must be also provided in km. On the contrary, setting the central body radius to *1* implies that all other spatial parameters are provided in units of the central body planetary radii. This second convention is followed in the examples provided below. **Note that if you use the ``OBSERVER`` ``TYPE``: ``Pre-Defined`` with ``EPHEM``: *file name* you will need to provide the *central body* radius in km (hence  the same applies to all other spatial parameters).**
 
 The file output file names are built by ExPRES, using a set up configuration parameters. The general scheme is:
 ``expres_{OBS}_{BODY}_{SRC}_{MAG}_{SRC_PROP}_{DATE}_v{VERS}.json``. The parts of the template are explained in the table
@@ -80,7 +75,7 @@ Simulation Setup
 ----------------
 
 The simulation setup is configured via an ExPRES configuration file (in *JSON* format), following the `ExPRES
-JSON-Schema v1.3 <https://voparis-ns.pages.obspm.fr/maser/expres/v1.3/schema#>`_.
+JSON-Schema v1.4 <https://voparis-ns.obspm.fr/maser/expres/v1.4/schema>`_.
 
 
 
@@ -774,68 +769,72 @@ Magnetic Field Models
 Pre-defined Models
 +++++++++++
 
-The detailed magnetic field models available for ExPRES are listed in the `LESIA_mag
-<https://gitlab.obspm.fr/maser/lesia-mag/lesia-mag_idl>`_ repository. We recall below the list of models and the
-related references.
+The detailed magnetic field models available for ExPRES are listed in the `LESIA_mag <https://gitlab.obspm.fr/maser/lesia-mag/lesia-mag_idl>`_ repository. We recall below the list of models and the related references.
 
-+---------+----------------------------+----------------------------+------------------------+
-| Planet  | Magnetic Field Model       | Current Sheet Model        | ``BODY.MAG`` Value     |
-|         +------------+---------------+------------+---------------+                        |
-|         | Short Name | Reference     | Model Name | Reference     |                        |
-+=========+============+===============+============+===============+========================+
-| Mercury | A12        | :cite:`And12` |                            | ``A12``                |
-+---------+------------+---------------+------------+---------------+------------------------+
-| Earth   | IGRF2000   |               |                            | ``IGRF2000``           |
-+---------+------------+---------------+------------+---------------+------------------------+
-| Jupiter | JRM33      | :cite:`CTO21` | CON20      | :cite:`CON20` | ``JRM33``              |
-|         +------------+---------------+            +               +------------------------+
-|         | JRM09      | :cite:`CKO18  |            |               | ``JRM09_CS2020``       |
-|         +------------+---------------+------------+---------------+------------------------+
-|         | ISaAC      | :cite:`HBZ11` | CAN81      | :cite:`CAN81` | ``ISaAC+Connerney CS`` |
-|         +------------+---------------+            |               +------------------------+
-|         | JRM09      | :cite:`CKO18` |            |               | ``JRM09+Connerney CS`` |
-|         +------------+---------------+            |               +------------------------+
-|         | O6         | :cite:`C1992` |            |               | ``O6+Connerney CS``    |
-|         +------------+---------------+            |               +------------------------+
-|         | VIP4       | :cite:`CAN98` |            |               | ``VIP4+Connerney CS``  |
-|         +------------+---------------+            |               +------------------------+
-|         | VIPAL      | :cite:`HBB17` |            |               | ``VIPAL+Connerney CS`` |
-|         +------------+---------------+            |               +------------------------+
-|         | VIT4       | :cite:`C2007` |            |               | ``VIT4+Connerney CS``  |
-+---------+------------+---------------+------------+---------------+------------------------+
-| Saturn  | SPV        | :cite:`DS90`  |                            | ``SPV``                |
-|         +------------+---------------+----------------------------+------------------------+
-|         | Z3         | :cite:`CAN84` |                            | ``Z3``                 |
-+---------+------------+---------------+----------------------------+------------------------+
-| Uranus  | AH5        | :cite:`H2009` |                            | ``AH5``                |
-|         +------------+---------------+----------------------------+------------------------+
-|         | Q3         | :cite:`CAN87` |                            | ``Q3``                 |
-+---------+------------+---------------+----------------------------+------------------------+
-|Exoplanet| TDS axi    | :cite:`HZ11`  |                            | ``TDS_axi``            |
-|         +------------+---------------+----------------------------+------------------------+
-|         | TDS        | :cite:`HZ11`  |                            | ``TDS``                |
-+---------+------------+---------------+----------------------------+------------------------+
-| Tau Boo | Tau Boo    |               |                            | ``Tau_Boo_ab_axi``     |
-+---------+------------+---------------+----------------------------+------------------------+
-| AD Leo  |ADLeo 262G  |  :cite:`Z24`  |                            | ``ADLeonis_262G``      |
-|         +------------+---------------+----------------------------+------------------------+
-|         |ADLeo 300G  |  :cite:`Z24`  |                            | ``ADLeonis_300G``      |
-|         +------------+---------------+----------------------------+------------------------+
-|         |ADLeo 441G  |  :cite:`Z24`  |                            | ``ADLeonis_441G``      |
-|         +------------+---------------+----------------------------+------------------------+
-|         |ADLeo 460G  |  :cite:`Z24`  |                            | ``ADLeonis_460G``      |
-+---------+------------+---------------+----------------------------+------------------------+
-|Proxima Centauri axi  |               |                            |``proxima_centauri_axi``|
-|Proxima Centauri      |               |                            |``proxima_centauri``    |
-+---------+------------+---------------+----------------------------+------------------------+
++---------+-----------------------------+----------------------------+------------------------+
+| Planet  | Magnetic Field Model        | Current Sheet Model        | ``BODY.MAG`` Value     |
+|         +-------------+---------------+------------+---------------+                        |
+|         | Short Name  | Reference     | Model Name | Reference     |                        |
++=========+=============+===============+============+===============+========================+
+| Mercury | A12         | :cite:`And12` |                            | ``A12``                |
++---------+-------------+---------------+------------+---------------+------------------------+
+| Earth   | IGRF2000    |               |                            | ``IGRF2000``           |
++---------+-------------+---------------+------------+---------------+------------------------+
+| Jupiter | JRM33       | :cite:`CTO21` | CON20      | :cite:`CON20` | ``JRM33``              |
+|         +-------------+---------------+            +               +------------------------+
+|         | JRM09       | :cite:`CKO18  |            |               | ``JRM09_CS2020``       |
+|         +-------------+---------------+------------+---------------+------------------------+
+|         | ISaAC       | :cite:`HBZ11` | CAN81      | :cite:`CAN81` | ``ISaAC+Connerney CS`` |
+|         +-------------+---------------+            |               +------------------------+
+|         | JRM09       | :cite:`CKO18` |            |               | ``JRM09+Connerney CS`` |
+|         +-------------+---------------+            |               +------------------------+
+|         | O6          | :cite:`C1992` |            |               | ``O6+Connerney CS``    |
+|         +-------------+---------------+            |               +------------------------+
+|         | VIP4        | :cite:`CAN98` |            |               | ``VIP4+Connerney CS``  |
+|         +-------------+---------------+            |               +------------------------+
+|         | VIPAL       | :cite:`HBB17` |            |               | ``VIPAL+Connerney CS`` |
+|         +-------------+---------------+            |               +------------------------+
+|         | VIT4        | :cite:`C2007` |            |               | ``VIT4+Connerney CS``  |
++---------+-------------+---------------+------------+---------------+------------------------+
+| Saturn  | SPV         | :cite:`DS90`  |                            | ``SPV``                |
+|         +-------------+---------------+----------------------------+------------------------+
+|         | Z3          | :cite:`CAN84` |                            | ``Z3``                 |
++---------+-------------+---------------+----------------------------+------------------------+
+| Uranus  | AH5         | :cite:`H2009` |                            | ``AH5``                |
+|         +-------------+---------------+----------------------------+------------------------+
+|         | Q3          | :cite:`CAN87` |                            | ``Q3``                 |
++---------+-------------+---------------+----------------------------+------------------------+
+|Exoplanet| TDS axi     | :cite:`HZ11`  |                            | ``TDS_axi``            |
+|         +-------------+---------------+----------------------------+------------------------+
+|         | TDS         | :cite:`HZ11`  |                            | ``TDS``                |
++---------+-------------+---------------+----------------------------+------------------------+
+| Tau Boo | Tau Boo     |               |                            | ``Tau_Boo_ab_axi``     |
++---------+-------------+---------------+----------------------------+------------------------+
+| AD Leo  |ADLeo 262G   |  :cite:`Z24`  |                            | ``ADLeonis_262G``      |
+|         +-------------+---------------+----------------------------+------------------------+
+|         |ADLeo 300G   |  :cite:`Z24`  |                            | ``ADLeonis_300G``      |
+|         +-------------+---------------+----------------------------+------------------------+
+|         |ADLeo 441G   |  :cite:`Z24`  |                            | ``ADLeonis_441G``      |
+|         +-------------+---------------+----------------------------+------------------------+
+|         |ADLeo 460G   |  :cite:`Z24`  |                            | ``ADLeonis_460G``      |
++---------+-------------+---------------+----------------------------+------------------------+
+|Proxima  | PC          |               |                            |``proxima_centauri``    |
+|Centauri +-------------+---------------+----------------------------+------------------------+
+|         | PC axi      |               |                            |``proxima_centauri_axi``|
++---------+-------------+---------------+----------------------------+------------------------+
+
+__ https://maser.obspm.fr/support/expres/mfl/A12_lsh/
+__ https://maser.obspm.fr/support/expres/mfl/IGRF2000_lsh/
+
 
 User-defined Model
 +++++++++++
 
-If the user want to use it's own pre-defined model, it is needed to set ``MAG: 'auto'``. The user will have to give the path to the folder that contains the user-defined magnetic field lines, using the option ``MAG_FOLDER: 'path/to/the/directory/containing/the/Magnetic_field_lines/files`` (without a '/' at the end of the path)
+If users want to use their own pre-defined magnetic field model, and optionnaly density model, it is needed to set ``MAG: 'auto'``. Users will have to give the path to the folder that contains the user-defined magnetic field lines, using the option ``MAG_FOLDER: 'path/to/the/directory/containing/the/Magnetic_field_lines/files`` (without a '/' at the end of the path). It is necessary to have one file per longitude with a 1° step.
 The files need to be in csv (comma separated values) format, and contain (see example below) for each point along the magnetic field lines the cartesian coordinates (X, Y, Z, in main body radius units) and the corresponding magnetic field values (BX, BY, BZ, in Gauss units), and optionnaly the value of the density (in :math:`cm^{-3}` units). The header needs to contain at least a line that informs if the field line is connected to the main body (True or False), and the name of the variables (needs to be X, Y, Z, BX, BY, BZ, Rho).
 
 .. code-block::
+  :caption: Example of the first 3 lines of a user-defined csv file for a magnetic field and density model
 
   #Field line is connected to star: True
   #X [Rs], Y [Rs], Z [Rs], BX [G], BY [G], BZ [G], Rho [g/cm3]
