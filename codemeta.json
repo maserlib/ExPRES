@@ -1,0 +1,128 @@
+{
+    "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+    "@type": "SoftwareSourceCode",
+    "license": "https://spdx.org/licenses/MIT",
+    "codeRepository": "https://github.com/maserlib/ExPRES",
+    "dateCreated": "2006-09-01",
+    "datePublished": "2019-01-08",
+    "dateModified": "2023-12-21",
+    "downloadUrl": "https://github.com/maserlib/ExPRES/archive/refs/tags/1.4.0.zip",
+    "issueTracker": "https://github.com/maserlib/ExPRES/issues",
+    "name": "ExPRES",
+    "version": "1.4.0",
+    "identifier": "10.5281/zenodo.4280546",
+    "description": "Exoplanetary and Planetary Radio Emission Simulator",
+    "applicationCategory": "Astronomy",
+    "releaseNotes": "Add the possibility for users to provide magnetic field and density models.\n",
+    "funding": "EPN-2024-RI (https://doi.org/10.3030/871149)",
+    "developmentStatus": "active",
+    "isPartOf": "https://maser.lesia.obspm.fr",
+    "referencePublication": "https://doi.org/10.1051/0004-6361/201935161",
+    "readme": "https://expres.readthedocs.io/en/latest/",
+    "softwareVersion": "1.4.0",
+    "keywords": [
+        "radio astronomy; planetary radio emissions; exoplanets; planetary magnetospheres"
+    ],
+    "programmingLanguage": [
+        "IDL"
+    ],
+    "relatedLink": [
+        "https://voparis-ns.obspm.fr/maser/expres/v1.4/schema#",
+        "https://maser.lesia.obspm.fr/task-2-modeling-tools/expres/?lang=en",
+        "https://voparis-uws-maser.obspm.fr/client/",
+        "http://ascl.net/1902.009",
+        "https://emac.gsfc.nasa.gov/?cid=2311-007"
+    ],
+    "author": [
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0002-9552-8822",
+            "givenName": "Corentin",
+            "familyName": "Louis",
+            "email": "corentin.louis@obspm.fr",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "LIRA, Observatoire de Paris, Université PSL, Sorbonne Université, Université Paris Cité, CY Cergy Paris Université, CNRS, 92190 Meudon, France"
+            }
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0001-5753-0991",
+            "givenName": "Sébastien L G",
+            "familyName": "Hess",
+            "email": "sebastien.hess@onera.fr",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "ONERA, Toulouse, France"
+            }
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0001-7915-5571",
+            "givenName": "Baptiste",
+            "familyName": "Cecconi",
+            "email": "baptiste.cecconi@obspm.fr",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "LIRA, Observatoire de Paris, Université PSL, Sorbonne Université, Université Paris Cité, CY Cergy Paris Université, CNRS, 92190 Meudon, France"
+            }
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0003-1672-9878",
+            "givenName": "Philippe",
+            "familyName": "Zarka",
+            "email": "philippe.zarka@obspm.fr",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "LIRA, Observatoire de Paris, Université PSL, Sorbonne Université, Université Paris Cité, CY Cergy Paris Université, CNRS, 92190 Meudon, France"
+            }
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0002-8428-1369",
+            "givenName": "Laurent",
+            "familyName": "Lamy",
+            "email": "laurent.lamy@obspm.fr",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "LIRA, Observatoire de Paris, Université PSL, Sorbonne Université, Université Paris Cité, CY Cergy Paris Université, CNRS, 92190 Meudon, France"
+            }
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0003-4475-0930",
+            "givenName": "Stéphane",
+            "familyName": "Aicardi",
+            "email": "stephane.aicardi@obspm.fr",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "CNRS, Observatoire de Paris, France"
+            }
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0002-4698-9542",
+            "givenName": "Alan",
+            "familyName": "Loh",
+            "email": "alan.loh@obspm.fr",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "LIRA, Observatoire de Paris, Université PSL, Sorbonne Université, Université Paris Cité, CY Cergy Paris Université, CNRS, 92190 Meudon, France"
+            }
+        }
+    ],
+    "maintainer": [
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0002-9552-8822",
+            "givenName": "Corentin",
+            "familyName": "Louis",
+            "email": "corentin.louis@obspm.fr",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "LIRA, Observatoire de Paris, Université PSL, Sorbonne Université, Université Paris Cité, CY Cergy Paris Université, CNRS, 92190 Meudon, France"
+            }
+        }
+    ]
+}

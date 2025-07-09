@@ -1,11 +1,20 @@
-PRO read_ephem_obs,ephem,time0,time,observer,longitude,distance,lat,error
+PRO read_ephem_obs,ephem,radius_parent,time0,time,observer,longitude,distance,lat,error
 
+radius_parent = DOUBLE(radius_parent)
 tmp=(STRSPLIT(ephem,'.',/EXTRACT))
 
-if STRLOWCASE(observer.parent) eq 'jupiter' then $
-	planet_radius = 71492d $
-else if STRLOWCASE(observer.parent) eq 'saturn' then $
-	planet_radius = 60268d 
+if radius_parent eq 1 then begin
+	    CASE STRLOWCASE(observer.parent) OF
+       		'Earth':   planet_radius = 6378.137
+       		'Mars':    planet_radius = 3396.2
+        	'Jupiter': planet_radius = 71492.00
+        	'Saturn':  planet_radius = 60268.00
+      	 	'Uranus':  planet_radius = 25559.00
+   		    'Neptune':  planet_radius = 24764.00
+           ELSE: stop, "In that case, you need to have all your distance units defined in km so that the code can correclty read and transform the distance units"
+    	ENDCASE
+endif
+planet_radius = DOUBLE(planet_radius)
 	
 if tmp[-1] eq 'csv' then begin
 
@@ -30,13 +39,23 @@ if tmp[-1] eq 'csv' then begin
 		date=strmid(result.field01[0:n-1],0,4)+strmid(result.field01[0:n-1],5,2)+strmid(result.field01[0:n-1],8,2)+strmid(result.field01[0:n-1],11,2)+strmid(result.field01[0:n-1],14,2)+strmid(result.field01[0:n-1],17,2)
 		longitude=(360+(-1.)*result.field02[0:n-1]+360.) mod 360d
 		lat=result.field03[0:n-1]
-		distance=result.field04[0:n-1]/planet_radius
+
+    if radius_parent eq 1 then $
+        distance=result.field04[0:n-1]/planet_radius $
+    else $
+        distance=result.field04[0:n-1]/radius_parent
+
 	endif else begin
 		date=strmid(result.field1[0:n-1],0,4)+strmid(result.field1[0:n-1],5,2)+strmid(result.field1[0:n-1],8,2)+strmid(result.field1[0:n-1],11,2)+strmid(result.field1[0:n-1],14,2)+strmid(result.field1[0:n-1],17,2)
 		longitude=(360+(-1.)*result.field2[0:n-1]+360.) mod 360d
 		lat=result.field3[0:n-1]
-		distance=result.field4[0:n-1]/planet_radius
-	endelse
+		
+    if radius_parent eq 1 then $
+  		distance=result.field4[0:n-1]/planet_radius $
+    else $
+      distance=result.field4[0:n-1]/radius_parent $
+
+  endelse
 endif
 
 if tmp[-1] ne 'csv' then begin 

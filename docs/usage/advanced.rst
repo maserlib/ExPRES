@@ -45,12 +45,7 @@ definition.
   models. The radio emission observable when the observer is located within the radio source beaming pattern.
   (Figure adapted from C. Louis, PhD Dissertation, 2018)
 
-All spatial parameters of the simulation configuration (distances, radii, lengths...) must be defined in the same units
-as that of provided *central body* radius. Hence, setting the central body radius to *1* implies that all other spatial
-parameters are provided in units of the central body planetary radii. On the contrary, providing the radius of the
-central body in km implies that all other spatial parameters must be also provided in km. The recommended convention
-is to provide all spatial parameters in units of the *central body* radius. This convention is followed in the examples
-provided below.
+All spatial parameters of the simulation configuration (distances, radii, lengths...) must be defined in the same units as that of provided *central body* radius. The two options are *km* or *central body planetary radii*. Hence, providing the radius of the central body in km implies that all other spatial parameters must be also provided in km. On the contrary, setting the central body radius to *1* implies that all other spatial parameters are provided in units of the central body planetary radii. This second convention is followed in the examples provided below. **Note that if you use the ``OBSERVER`` ``TYPE``: ``Pre-Defined`` with ``EPHEM``: *file name* you will need to provide the *central body* radius in km (hence  the same applies to all other spatial parameters).**
 
 The file output file names are built by ExPRES, using a set up configuration parameters. The general scheme is:
 ``expres_{OBS}_{BODY}_{SRC}_{MAG}_{SRC_PROP}_{DATE}_v{VERS}.json``. The parts of the template are explained in the table
@@ -80,7 +75,7 @@ Simulation Setup
 ----------------
 
 The simulation setup is configured via an ExPRES configuration file (in *JSON* format), following the `ExPRES
-JSON-Schema v1.3 <https://voparis-ns.pages.obspm.fr/maser/expres/v1.3/schema#>`_.
+JSON-Schema v1.4 <https://voparis-ns.obspm.fr/maser/expres/v1.4/schema>`_.
 
 
 
@@ -403,7 +398,7 @@ Celestial body definitions include the following keywords:
 
 - ``ON``: Flag to activate the current body (``true`` or ``false``)
 - ``NAME``: The name of the current body (must be unique in the configuration file)
-- ``RADIUS``: The radius of the current body (in consistent units throughout the configuration file)
+- ``RADIUS``: The radius of the current body (in consistent units throughout the configuration file, either in km or in planetary radii)
 - ``PERIOD``: The sidereal rotation period of the current body (in minutes)
 - ``FLAT``: The polar flatening ratio of the current body.
 - ``ORB_PER``: The orbital period according to 3rd Kepler's law at 1 radius (in minutes) 
@@ -414,12 +409,13 @@ therefore :math:`T = \sqrt{\frac{a^{3} * 4 * \pi^{2}}{G * M_{\textrm{Io}}}}*\fra
 
 - ``INIT_AX``: The reference longitude (in degrees)
 - ``MAG``: The internal body magnetic field model (see the :ref:`Magnetic Field Model<MFL>` section below)
+- ``MAG_FOLDER``: if ``MAG: auto``, this is the folder name containing the csv files with user defined magnetic field model of the body (see the :ref:`Magnetic Field Model<MFL>` section below)
 - ``MOTION``: Flag to indicate if the current body is moving in the simulation frame (must be ``false`` for the central
   body)
 - ``PARENT``: Named body, around which the current body is orbiting (must be one of the defined bodies, and must be
   empty for the central body)
-- ``SEMI_MAJ``: The semi-major axis orbital parameter of the current body (must be 0 for the central body)
-- ``SEMI_MIN``: The semi-minor axis orbital parameter of the current body (must be 0 for the central body)
+- ``SEMI_MAJ``: The semi-major axis orbital parameter of the current body (must be 0 for the central body). Same units as central body radius, *i.e.* in km or planetary radii
+- ``SEMI_MIN``: The semi-minor axis orbital parameter of the current body (must be 0 for the central body). Same units as central body radius, *i.e.* in km or planetary radii
 - ``DECLINATION``: The declination orbital parameter of the current body (must be 0 for the central body)
 - ``APO_LONG``: The apoapsis Longitude parameter of the current body (must be 0 for the central body)
 - ``INCLINATION``: The inclination orbital parameter of the current body (must be 0 for the central body)
@@ -478,9 +474,9 @@ Radio Source Configuration
 - ``LAG_MODEL``: Model of the lead angle for the Io active flux tube; choices are: ``hess2011`` :cite:`HBZ11`,
   ``bonfond2009`` :cite:`bonfond_2009_jgr`, ``bonfond2017`` :cite:`bonfond_2017_icarus`, ``hinton2019``
   :cite:`hinton_2019_jgr`, ``Hue2023`` :cite:`Hue2023`.
-- ``LAT``: If ``Fixed in latitude``: Latitude in degree; else: apex distance in planetary radii.
+- ``LAT``: If ``Fixed in latitude``: Latitude in degree; else: apex distance in planetary radii. **NOT in km**
 - ``SUB``: The subcorotation rate of the source (0 = no corotation)
-- ``AURORA_ALT``: The altitude of the aurora (in planetary radii)
+- ``AURORA_ALT``: The altitude of the aurora (same units as central body radius, *i.e.* in km or planetary radii)
 - ``SAT``: The name of the satellite when ``attached to a satellite`` is selected
 - ``NORTH``: Flag to activate the Northern hemisphere source (exclusive with ``SOUTH`` item)
 - ``SOUTH``: Flag to activate the Southern hemisphere source (exclusive with ``NORTH`` item)
@@ -563,7 +559,7 @@ Output Configuration
 
 Dynamic Spectrum Output
 .......................
-Dynamic Spectra ouput setup:
+PDF output setup:
 
 - ``INTENSITY``: Flag to ouput 'Intensity' plots (``true`` or ``false``)
 - ``POLAR``: Flag to ouput 'Polar' plots (``true`` or ``false``)
@@ -577,7 +573,12 @@ Dynamic Spectra ouput setup:
 - ``KHZ``: Flag for spectral axis output in kHz (``true`` or ``false``, default is MHz)
 - ``LOG``: Flag for spectral axis output in log scale (``true`` or ``false``)
 - ``PDF``: Flag for PDF file output (``true`` or ``false``)
-- ``CDF``: Configuration of CDF file output
+
+
+CDF output setup:
+
+- ``CDF``: Configuration of CDF file output:
+
    - ``THETA``: Flag for THETA parameter output in the CDF file (``true`` or ``false``)
    - ``FP``: Flag for FP parameter output in the CDF file (``true`` or ``false``)
    - ``FC``: Flag for FC parameter output in the CDF file (``true`` or ``false``)
@@ -590,6 +591,11 @@ Dynamic Spectra ouput setup:
    - ``CML``: Flag for CML parameter output in the CDF file (``true`` or ``false``)
    - ``SRCPOS``: Flag for SRCPOS parameter output in the CDF file (``true`` or ``false``)
    - ``SRCVIS``: Flag for SRCVIS parameter output in the CDF file (``true`` or ``false``)
+
+Note that a CDF file is always produced (output by default), and that it will always contain at least the ``POLARISATION`` variable (regardless of the value of the other flags, even if they are all set to ``false``).
+
+IDL saveset output setup:
+
 - ``INFOS``: IDL Saveset output (for debugging) (``true`` or ``false``)
 
 .. _M2D:
@@ -598,7 +604,7 @@ Dynamic Spectra ouput setup:
 .......................
 - ``ON``: Flag to activate Movie2D generation (``true`` or ``false``)
 - ``SUBCYCLE``: Subsampling rate of movie images (1=all temporal steps)
-- ``RANGE``: Size of Field of view (in central body planetary radii)
+- ``RANGE``: Size of Field of view (in central body planetary radii, **NOT in km**)
 
 .. _M3D:
 
@@ -606,9 +612,9 @@ Dynamic Spectra ouput setup:
 ...............
 - ``ON`` Flag to activate Movie3D generation (``true`` or ``false``)
 - ``SUBCYCLE``: Subsampling rate of movie images (1=all temporal steps)
-- ``XRANGE``: Plotting Range in X axis (in central planet radius units)
-- ``YRANGE``: Plotting Range in Y axis (in central planet radius units)
-- ``ZRANGE``: Plotting Range in Z axis (in central planet radius units)
+- ``XRANGE``: Plotting Range in X axis (in central planet radius units, **NOT in km**)
+- ``YRANGE``: Plotting Range in Y axis (in central planet radius units, **NOT in km**)
+- ``ZRANGE``: Plotting Range in Z axis (in central planet radius units, **NOT in km**)
 - ``OBS``: Flag to activate plotting the location of the observer
 - ``TRAJ``: Flag to activate plotting the trajectories of the objects
 
@@ -631,8 +637,8 @@ Plasma density model definitions include the following keywords:
 - ``NAME``: The name of the density model (must be present, not empty and unique in the configuration file).
 - ``TYPE``: The type of the density model, with the allowed values: ``Ionospheric``, ``Stellar``, ``Disk``, ``Torus``.
 - ``RHO0``: Definition depends on density model type (see below).
-- ``SCALE``: Definition depends on density model type (see below).
-- ``PERP``: Definition depends on density model type (see below).
+- ``SCALE``: Definition depends on density model type (see below). Same units as central body radius need no be used, *i.e.* in km or planetary radii
+- ``PERP``: Definition depends on density model type (see below). Same units as central body radius need no be used, *i.e.* in km or planetary radii
 
 Ionospheric Model
 +++++++++++++++++
@@ -650,13 +656,13 @@ where:
 +================+=========================================+============================+===============+
 | :math:`\rho_0` | Reference plasma number density         | :math:`\textrm{cm}^{-3}`   | ``RHO0``      |
 +----------------+-----------------------------------------+----------------------------+---------------+
-| :math:`r`      | Radial distance                         | :math:`R_p`                |               |
+| :math:`r`      | Radial distance                         | :math:`R_p` or :math:`km`  |               |
 +----------------+-----------------------------------------+----------------------------+---------------+
-| :math:`r_{ref}`| Reference radial distance on ellipsoid  | :math:`R_p`                |               |
+| :math:`r_{ref}`| Reference radial distance on ellipsoid  | :math:`R_p` or :math:`km`  |               |
 +----------------+-----------------------------------------+----------------------------+---------------+
-| :math:`h_0`    | Peak density altitude above 1 bar level | :math:`R_p`                | ``PERP``      |
+| :math:`h_0`    | Peak density altitude above 1 bar level | :math:`R_p` or :math:`km`  | ``PERP``      |
 +----------------+-----------------------------------------+----------------------------+---------------+
-| :math:`H`      | Scale-height                            | :math:`R_p`                | ``SCALE``     |
+| :math:`H`      | Scale-height                            | :math:`R_p` or :math:`km`  | ``SCALE``     |
 +----------------+-----------------------------------------+----------------------------+---------------+
 
 The :math:`r_{ref}` is computed by ExPRES using the ellipsoid flattening parameter (``FLAT`` keyword in ``BODY``
@@ -694,7 +700,7 @@ where:
 +================+=========================================+============================+===============+
 | :math:`\rho_0` | Reference plasma number density         | :math:`\textrm{cm}^{-3}`   | ``RHO0``      |
 +----------------+-----------------------------------------+----------------------------+---------------+
-| :math:`r`      | Radial distance                         | :math:`R_p`                |               |
+| :math:`r`      | Radial distance                         | :math:`R_p` or :math:`km`  |               |
 +----------------+-----------------------------------------+----------------------------+---------------+
 
 **Note:** Configuration keywords ``SCALE`` and ``PERP`` are not used for this model.
@@ -715,13 +721,13 @@ where:
 +================+=========================================+============================+===============+
 | :math:`\rho_0` | Reference plasma number density         | :math:`\textrm{cm}^{-3}`   | ``RHO0``      |
 +----------------+-----------------------------------------+----------------------------+---------------+
-| :math:`r`      | Equatorial radial distance              | :math:`R_p`                |               |
+| :math:`r`      | Equatorial radial distance              | :math:`R_p` or :math:`km`  |              |
 +----------------+-----------------------------------------+----------------------------+---------------+
-| :math:`z`      | Altitude above equator                  | :math:`R_p`                |               |
+| :math:`z`      | Altitude above equator                  | :math:`R_p` or :math:`km`  |               |
 +----------------+-----------------------------------------+----------------------------+---------------+
-| :math:`H_r`    | Equatorial radial scale-height          | :math:`R_p`                | ``PERP``      |
+| :math:`H_r`    | Equatorial radial scale-height          | :math:`R_p` or :math:`km`  | ``PERP``      |
 +----------------+-----------------------------------------+----------------------------+---------------+
-| :math:`H_z`    | Vertical scale-height                   | :math:`R_p`                | ``SCALE``     |
+| :math:`H_z`    | Vertical scale-height                   | :math:`R_p` or :math:`km`  | ``SCALE``     |
 +----------------+-----------------------------------------+----------------------------+---------------+
 
 Torus Model
@@ -740,13 +746,13 @@ where:
 +================+=========================================+============================+===============+
 | :math:`\rho_0` | Reference plasma number density         | :math:`\textrm{cm}^{-3}`   | ``RHO0``      |
 +----------------+-----------------------------------------+----------------------------+---------------+
-| :math:`r`      | Equatorial radial distance              | :math:`R_p`                |               |
+| :math:`r`      | Equatorial radial distance              | :math:`R_p` or :math:`km`  |               |
 +----------------+-----------------------------------------+----------------------------+---------------+
-| :math:`z`      | Altitude above equator                  | :math:`R_p`                |               |
+| :math:`z`      | Altitude above equator                  | :math:`R_p` or :math:`km`  |               |
 +----------------+-----------------------------------------+----------------------------+---------------+
-| :math:`r_0`    | Torus center equatorial diameter        | :math:`R_p`                | ``PERP``      |
+| :math:`r_0`    | Torus center equatorial diameter        | :math:`R_p` or :math:`km`  | ``PERP``      |
 +----------------+-----------------------------------------+----------------------------+---------------+
-| :math:`H`      | Torus scale-height                      | :math:`R_p`                | ``SCALE``     |
+| :math:`H`      | Torus scale-height                      | :math:`R_p` or :math:`km`  | ``SCALE``     |
 +----------------+-----------------------------------------+----------------------------+---------------+
 
 **Example:** We define the Io torus, with a peak reference density of :math:`2000\,\textrm{cm}^{-3}`, an equatorial
@@ -770,37 +776,76 @@ diameter of 5.91 Jovian Radii (orbit of Io) and a torus scale-height of 1 Jovian
 Magnetic Field Models
 ---------------------
 
-The detailed magnetic field models available for ExPRES are listed in the `LESIA_mag
-<https://gitlab.obspm.fr/maser/lesia-mag/lesia-mag_idl>`_ repository. We recall below the list of models and the
-related references.
+Pre-defined Models
++++++++++++
 
-+---------+----------------------------+----------------------------+------------------------+
-| Planet  | Magnetic Field Model       | Current Sheet Model        | ``BODY.MAG`` Value     |
-|         +------------+---------------+------------+---------------+                        |
-|         | Short Name | Reference     | Model Name | Reference     |                        |
-+=========+============+===============+============+===============+========================+
-| Mercury | A12        | :cite:`And12` |                            | ``A12``                |
-+---------+------------+---------------+------------+---------------+------------------------+
-| Jupiter | JRM33      | :cite:`CTO21` | CON20      | :cite:`CON20` | ``JRM33``              |
-|         +------------+---------------+------------+---------------+------------------------+
-|         | ISaAC      | :cite:`HBZ11` | CAN81      | :cite:`CAN81` | ``ISaAC+Connerney CS`` |
-|         +------------+---------------+            |               +------------------------+
-|         | JRM09      | :cite:`CKO18` |            |               | ``JRM09+Connerney CS`` |
-|         +------------+---------------+            |               +------------------------+
-|         | O6         | :cite:`C1992` |            |               | ``O6+Connerney CS``    |
-|         +------------+---------------+            |               +------------------------+
-|         | VIP4       | :cite:`CAN98` |            |               | ``VIP4+Connerney CS``  |
-|         +------------+---------------+            |               +------------------------+
-|         | VIPAL      | :cite:`HBB17` |            |               | ``VIPAL+Connerney CS`` |
-|         +------------+---------------+            |               +------------------------+
-|         | VIT4       | :cite:`C2007` |            |               | ``VIT4+Connerney CS``  |
-+---------+------------+---------------+------------+---------------+------------------------+
-| Saturn  | SPV        | :cite:`DS90`  |                            | ``SPV``                |
-|         +------------+---------------+----------------------------+------------------------+
-|         | Z3         | :cite:`CAN84` |                            | ``Z3``                 |
-+---------+------------+---------------+----------------------------+------------------------+
-| Uranus  | AH5        | :cite:`H2009` |                            | ``AH5``                |
-|         +------------+---------------+----------------------------+------------------------+
-|         | Q3         | :cite:`CAN87` |                            | ``Q3``                 |
-+---------+------------+---------------+----------------------------+------------------------+
+The detailed magnetic field models available for ExPRES are listed in the `LESIA_mag <https://gitlab.obspm.fr/maser/lesia-mag/lesia-mag_idl>`_ repository. We recall below the list of models and the related references.
 
++---------+-----------------------------+----------------------------+------------------------+
+| Planet  | Magnetic Field Model        | Current Sheet Model        | ``BODY.MAG`` Value     |
+|         +-------------+---------------+------------+---------------+                        |
+|         | Short Name  | Reference     | Model Name | Reference     |                        |
++=========+=============+===============+============+===============+========================+
+| Mercury | A12         | :cite:`And12` |                            | ``A12``                |
++---------+-------------+---------------+------------+---------------+------------------------+
+| Earth   | IGRF2000    |               |                            | ``IGRF2000``           |
++---------+-------------+---------------+------------+---------------+------------------------+
+| Jupiter | JRM33       | :cite:`CTO21` | CON20      | :cite:`CON20` | ``JRM33``              |
+|         +-------------+---------------+            +               +------------------------+
+|         | JRM09       | :cite:`CKO18  |            |               | ``JRM09_CS2020``       |
+|         +-------------+---------------+------------+---------------+------------------------+
+|         | ISaAC       | :cite:`HBZ11` | CAN81      | :cite:`CAN81` | ``ISaAC+Connerney CS`` |
+|         +-------------+---------------+            |               +------------------------+
+|         | JRM09       | :cite:`CKO18` |            |               | ``JRM09+Connerney CS`` |
+|         +-------------+---------------+            |               +------------------------+
+|         | O6          | :cite:`C1992` |            |               | ``O6+Connerney CS``    |
+|         +-------------+---------------+            |               +------------------------+
+|         | VIP4        | :cite:`CAN98` |            |               | ``VIP4+Connerney CS``  |
+|         +-------------+---------------+            |               +------------------------+
+|         | VIPAL       | :cite:`HBB17` |            |               | ``VIPAL+Connerney CS`` |
+|         +-------------+---------------+            |               +------------------------+
+|         | VIT4        | :cite:`C2007` |            |               | ``VIT4+Connerney CS``  |
++---------+-------------+---------------+------------+---------------+------------------------+
+| Saturn  | SPV         | :cite:`DS90`  |                            | ``SPV``                |
+|         +-------------+---------------+----------------------------+------------------------+
+|         | Z3          | :cite:`CAN84` |                            | ``Z3``                 |
++---------+-------------+---------------+----------------------------+------------------------+
+| Uranus  | AH5         | :cite:`H2009` |                            | ``AH5``                |
+|         +-------------+---------------+----------------------------+------------------------+
+|         | Q3          | :cite:`CAN87` |                            | ``Q3``                 |
++---------+-------------+---------------+----------------------------+------------------------+
+|Exoplanet| TDS axi     | :cite:`HZ11`  |                            | ``TDS_axi``            |
+|         +-------------+---------------+----------------------------+------------------------+
+|         | TDS         | :cite:`HZ11`  |                            | ``TDS``                |
++---------+-------------+---------------+----------------------------+------------------------+
+| Tau Boo | Tau Boo     |               |                            | ``Tau_Boo_ab_axi``     |
++---------+-------------+---------------+----------------------------+------------------------+
+| AD Leo  |ADLeo 262G   |  :cite:`Z24`  |                            | ``ADLeonis_262G``      |
+|         +-------------+---------------+----------------------------+------------------------+
+|         |ADLeo 300G   |  :cite:`Z24`  |                            | ``ADLeonis_300G``      |
+|         +-------------+---------------+----------------------------+------------------------+
+|         |ADLeo 441G   |  :cite:`Z24`  |                            | ``ADLeonis_441G``      |
+|         +-------------+---------------+----------------------------+------------------------+
+|         |ADLeo 460G   |  :cite:`Z24`  |                            | ``ADLeonis_460G``      |
++---------+-------------+---------------+----------------------------+------------------------+
+|Proxima  | PC          |               |                            |``proxima_centauri``    |
+|Centauri +-------------+---------------+----------------------------+------------------------+
+|         | PC axi      |               |                            |``proxima_centauri_axi``|
++---------+-------------+---------------+----------------------------+------------------------+
+
+__ https://maser.obspm.fr/support/expres/mfl/A12_lsh/
+__ https://maser.obspm.fr/support/expres/mfl/IGRF2000_lsh/
+
+
+User-defined Model
++++++++++++
+
+If users want to use their own pre-defined magnetic field model, and optionnaly density model, it is needed to set ``MAG: 'auto'``. Users will have to give the path to the folder that contains the user-defined magnetic field lines, using the option ``MAG_FOLDER: 'path/to/the/directory/containing/the/Magnetic_field_lines/files`` (without a '/' at the end of the path). It is necessary to have one file per longitude with a 1° step.
+The files need to be in csv (comma separated values) format, and contain (see example below) for each point along the magnetic field lines the cartesian coordinates (X, Y, Z, in main body radius units) and the corresponding magnetic field values (BX, BY, BZ, in Gauss units), and optionnaly the value of the density (in :math:`cm^{-3}` units). The header needs to contain at least a line that informs if the field line is connected to the main body (True or False), and the name of the variables (needs to be X, Y, Z, BX, BY, BZ, Rho).
+
+.. code-block::
+  :caption: Example of the first 3 lines of a user-defined csv file for a magnetic field and density model
+
+  #Field line is connected to star: True
+  #X [Rs], Y [Rs], Z [Rs], BX [G], BY [G], BZ [G], Rho [g/cm3]
+  8.859999656677246094e+00,  0.000000000000000000e+00,  0.000000000000000000e+00,  1.744556119298172961e-02,  -4.976430410837964996e-04,  -8.696679184620229822e-04, 12.541234207203594e+03

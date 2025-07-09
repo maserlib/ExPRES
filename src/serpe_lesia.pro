@@ -115,12 +115,14 @@ comd='mv '+name_rold+' '+name_r
 spawn,comd
 
 
+version='v14'
+
 adresse_mfl=loadpath('adresse_mfl',parameters)
 
 
 
 case strlowcase(strmid(name_r,strlen(name_r)-3)) of
-  'son' : read_save_json,adresse_mfl,name_r,parameters
+  'son' : read_save_json,version,adresse_mfl,name_r,parameters
   else: message,'Illegal input file name.'
 endcase 
 nobj=n_elements(parameters.objects)
@@ -274,7 +276,7 @@ if spdyn.save_out then begin
 		datefilename=string(format='(I04,I02,I02)',(*parameters.objects(i)).date(0:2))
 	endif
 
-	version='v11'
+	
 	outsplit=strsplit(parameters.out,'/',/EXTRACT)
 	filename=strmid(parameters.out,0,strlen(parameters.out)-strlen(outsplit(n_elements(outsplit)-1)))
 	file=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc)+lag+'_'+strlowcase(sourcetype)+'-'+strlowcase(wid)+'_'+strlowcase(ener)+strlowcase(refr)+'_'+strlowcase(datefilename)+'_'+version+'.sav'

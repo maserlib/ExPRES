@@ -245,7 +245,6 @@ if ((*obj).lagauto eq "on+3") then begin
 	(*((*obj).lg))[0,*,*]=calc_lag((*obj).lagmodel,(*obj).north,(*((*obj).parent)).lg,satellite=(*(*(*obj).parent).parent).name)+3.
 endif
 ;********************************************************
-
 lg=reform((*((*obj).lg))[0,*,*]+(*((*obj).parent)).lg,nlg*nlat)
 lg=(lg+360.) mod 360.
 lg0=fix(lg) & lg1=(lg0+1) mod 360 & c=lg-lg0  & lgc=lg0*0.
@@ -256,13 +255,23 @@ lat=reform((*((*obj).lat))[0,*,*]+(*((*obj).parent)).latitude[lg]-(*((*obj).pare
 
 ; **** Calcul des coefficients d interpolation ***
 coef=fltarr(nlg*nlat,4)
-a=lg-fix(lg)
-b=lat-fix(lat)
+
+if (*(*obj).parent).sat then mfl_auto = (*(*(*(*obj).parent).parent).parent).mfl $
+	else mfl_auto = (*(*(*obj).parent).parent).mfl
+
+if mfl_auto eq 'auto' then begin
+	a = 0
+	b = 0
+endif else begin
+	a=lg-fix(lg)
+	b=lat-fix(lat)
+endelse
 coef[*,0]=(1.-a)*(1.-b)
 coef[*,1]=(1.-a)*b
 coef[*,2]=a*(1.-b)
 coef[*,3]=a*b
 coef=reform(rebin(reform(coef,1,1,nlg,nlat,4),3,parameters.freq.n_freq,nlg,nlat,4),3,parameters.freq.n_freq,nlg*nlat,4)
+
 
 b=fltarr(3,parameters.freq.n_freq,nlg*nlat)		 ;vecteur champ unitaire
 bz=fltarr(3,parameters.freq.n_freq,nlg*nlat)	 ;vecteur direction normale au L-shell
@@ -303,6 +312,7 @@ endif else begin if (*obj).south then begin				; Magnetic south pole
 endif
 endelse
 
+ 
 coef=0b
 
 (*(*obj).fmax)[*,var]=f
