@@ -6,12 +6,11 @@
 Welcome to ExPRES' documentation!
 ==================================
 
-ExPRES (Exoplanetary and Planetary Radio Emission Simulator) is a versatile tool that computes the observation
-opportunities of planetary radio emissions, based on the radio source beaming patterns and the observer's location.
+ExPRES (Exoplanetary and Planetary Radio Emission Simulator) is a versatile tool that computes the observation opportunities of planetary, exoplanetary or stellar radio emissions, based on the radio source beaming patterns and the observer's location.
 
 ExPRES is an open source software (available under MIT license). It is maintained on
-`GitHub <https://github.com/maserlib/ExPRES>`_ and it is citable using its `DOI:10.5281/zenodo.4292002
-<https://doi.org/10.5281/zenodo.4292002>`_. The code is described in details in a paper published in Astronomy &
+`GitHub <https://github.com/maserlib/ExPRES>`_ and it is citable using its `DOI:10.5281/zenodo.4280546
+<https://doi.org/10.5281/zenodo.4280546>`_. The code is described in details in a paper published in Astronomy &
 Astrophyics :cite:`Louis:2019`.
 
 ExPRES is part of the `MASER <https://maser.lesia.obspm.fr>`_ (Measuring Analyzing & Simulating Emissions in Radio
