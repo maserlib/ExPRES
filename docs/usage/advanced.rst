@@ -400,12 +400,13 @@ Celestial body definitions include the following keywords:
 - ``NAME``: The name of the current body (must be unique in the configuration file)
 - ``RADIUS``: The radius of the current body (in consistent units throughout the configuration file, either in km or in planetary radii)
 - ``PERIOD``: The sidereal rotation period of the current body (in minutes)
-- ``FLAT``: The polar flatening ratio of the current body.
-- ``ORB_PER``: The orbital period according to 3rd Kepler's law at 1 radius (in minutes) 
-**Example:** For Io, we have :math:`M_{Io} = 8.931 \times 10^{22}~\textrm{kg}`,
-:math:`a = 1821 \times 10^{3}~\textrm{m}` and
-:math:`G = 6.674 \times 10^{-11}~\textrm{N}.\textrm{m}^{2}.\textrm{kg}^{-2}`,
-therefore :math:`T = \sqrt{\frac{a^{3} * 4 * \pi^{2}}{G * M_{\textrm{Io}}}}*\frac{1}{60} = 105.4~\textrm{min}`
+- ``FLAT``: The polar flatening ratio of the current body
+- ``ORB_PER``: The orbital period according to 3rd Kepler's law at 1 radius (in minutes)
+
+    **Example:** For Io, we have :math:`M_{Io} = 8.931 \times 10^{22}~\textrm{kg}`,
+    :math:`a = 1821 \times 10^{3}~\textrm{m}` and
+    :math:`G = 6.674 \times 10^{-11}~\textrm{N}.\textrm{m}^{2}.\textrm{kg}^{-2}`,
+    therefore :math:`T = \sqrt{\frac{a^{3} * 4 * \pi^{2}}{G * M_{\textrm{Io}}}}*\frac{1}{60} = 105.4~\textrm{min}`
 
 - ``INIT_AX``: The reference longitude (in degrees)
 - ``MAG``: The internal body magnetic field model (see the :ref:`Magnetic Field Model<MFL>` section below)
@@ -493,7 +494,7 @@ Radio Source Configuration
 
 **Example:** We configure a simulation with emission induced by Io (``"TYPE": "attached to a satellite"``,
 ``"SAT": "Io"``), in the northern (``"NAME": "Source1"``, ``"NORTH": true``) and the southern (``"NAME"="Source2"``,
-``"SOUTH": true``) hemispheres. We use the lead angle model based on :cite:`hinton_JGR_20119` (``"LAG_MODEL":
+``"SOUTH": true``) hemispheres. We use the lead angle model based on :cite:`hinton_2019_jgr` (``"LAG_MODEL":
 "hinton2019"``) to determine the active magnetic field lines that will produce the emission. The electron have an
 energy of 3 keV (``"ACCEL": 3``) and the distribution function is of the loss cone type (``"CURRENT": "Transient
 (Alfvenic)"``).
@@ -721,7 +722,7 @@ where:
 +================+=========================================+============================+===============+
 | :math:`\rho_0` | Reference plasma number density         | :math:`\textrm{cm}^{-3}`   | ``RHO0``      |
 +----------------+-----------------------------------------+----------------------------+---------------+
-| :math:`r`      | Equatorial radial distance              | :math:`R_p` or :math:`km`  |              |
+| :math:`r`      | Equatorial radial distance              | :math:`R_p` or :math:`km`  |               |
 +----------------+-----------------------------------------+----------------------------+---------------+
 | :math:`z`      | Altitude above equator                  | :math:`R_p` or :math:`km`  |               |
 +----------------+-----------------------------------------+----------------------------+---------------+
@@ -777,7 +778,7 @@ Magnetic Field Models
 ---------------------
 
 Pre-defined Models
-+++++++++++
+++++++++++++++++++
 
 The detailed magnetic field models available for ExPRES are listed in the `LESIA_mag <https://gitlab.obspm.fr/maser/lesia-mag/lesia-mag_idl>`_ repository. We recall below the list of models and the related references.
 
@@ -792,7 +793,7 @@ The detailed magnetic field models available for ExPRES are listed in the `LESIA
 +---------+-------------+---------------+------------+---------------+------------------------+
 | Jupiter | JRM33       | :cite:`CTO21` | CON20      | :cite:`CON20` | ``JRM33``              |
 |         +-------------+---------------+            +               +------------------------+
-|         | JRM09       | :cite:`CKO18  |            |               | ``JRM09_CS2020``       |
+|         | JRM09       | :cite:`CKO18` |            |               | ``JRM09_CS2020``       |
 |         +-------------+---------------+------------+---------------+------------------------+
 |         | ISaAC       | :cite:`HBZ11` | CAN81      | :cite:`CAN81` | ``ISaAC+Connerney CS`` |
 |         +-------------+---------------+            |               +------------------------+
@@ -833,12 +834,10 @@ The detailed magnetic field models available for ExPRES are listed in the `LESIA
 |         | PC axi      |               |                            |``proxima_centauri_axi``|
 +---------+-------------+---------------+----------------------------+------------------------+
 
-__ https://maser.obspm.fr/support/expres/mfl/A12_lsh/
-__ https://maser.obspm.fr/support/expres/mfl/IGRF2000_lsh/
 
 
 User-defined Model
-+++++++++++
+++++++++++++++++++
 
 If users want to use their own pre-defined magnetic field model, and optionnaly density model, it is needed to set ``MAG: 'auto'``. Users will have to give the path to the folder that contains the user-defined magnetic field lines, using the option ``MAG_FOLDER: 'path/to/the/directory/containing/the/Magnetic_field_lines/files`` (without a '/' at the end of the path). It is necessary to have one file per longitude with a 1° step.
 The files need to be in csv (comma separated values) format, and contain (see example below) for each point along the magnetic field lines the cartesian coordinates (X, Y, Z, in main body radius units) and the corresponding magnetic field values (BX, BY, BZ, in Gauss units), and optionnaly the value of the density (in :math:`cm^{-3}` units). The header needs to contain at least a line that informs if the field line is connected to the main body (True or False), and the name of the variables (needs to be X, Y, Z, BX, BY, BZ, Rho).
