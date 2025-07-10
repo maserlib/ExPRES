@@ -13,8 +13,9 @@ if radius_parent eq 1 then begin
    		    'Neptune':  planet_radius = 24764.00
            ELSE: stop, "In that case, you need to have all your distance units defined in km so that the code can correclty read and transform the distance units"
     	ENDCASE
-endif
 planet_radius = DOUBLE(planet_radius)
+endif
+
 	
 if tmp[-1] eq 'csv' then begin
 
