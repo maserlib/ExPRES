@@ -5,12 +5,12 @@ tmp=(STRSPLIT(ephem,'.',/EXTRACT))
 
 if radius_parent eq 1 then begin
 	    CASE STRLOWCASE(observer.parent) OF
-       		'Earth':   planet_radius = 6378.137
-       		'Mars':    planet_radius = 3396.2
-        	'Jupiter': planet_radius = 71492.00
-        	'Saturn':  planet_radius = 60268.00
-      	 	'Uranus':  planet_radius = 25559.00
-   		    'Neptune':  planet_radius = 24764.00
+       		'earth':   planet_radius = 6378.137
+       		'mars':    planet_radius = 3396.2
+        	'jupiter': planet_radius = 71492.00
+        	'saturn':  planet_radius = 60268.00
+      	 	'uranus':  planet_radius = 25559.00
+   		'neptune':  planet_radius = 24764.00
            ELSE: stop, "In that case, you need to have all your distance units defined in km so that the code can correclty read and transform the distance units"
     	ENDCASE
 planet_radius = DOUBLE(planet_radius)
