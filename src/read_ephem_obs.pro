@@ -53,11 +53,12 @@ if tmp[-1] eq 'csv' then begin
 		lat=result.field3[0:n-1]
 		
 	    if radius_parent eq 1 then begin
-	  		distance=result.field4[0:n-1]/planet_radius
-	    endif else begin
-	      distance=result.field4[0:n-1]/radius_parent
-	    endelse
 
+	        distance=result.field4[0:n-1]/planet_radius
+	    endif else begin
+	        distance=result.field4[0:n-1]/radius_parent
+	    endelse
+      
   endelse
 endif
 

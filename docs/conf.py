@@ -33,6 +33,7 @@ release = '1.0'
 extensions = [
     'sphinx_rtd_theme',
     'sphinxcontrib.bibtex',
+    'sphinx_copybutton',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
