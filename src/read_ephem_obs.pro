@@ -40,22 +40,25 @@ if tmp[-1] eq 'csv' then begin
 		date=strmid(result.field01[0:n-1],0,4)+strmid(result.field01[0:n-1],5,2)+strmid(result.field01[0:n-1],8,2)+strmid(result.field01[0:n-1],11,2)+strmid(result.field01[0:n-1],14,2)+strmid(result.field01[0:n-1],17,2)
 		longitude=(360+(-1.)*result.field02[0:n-1]+360.) mod 360d
 		lat=result.field03[0:n-1]
-	
+
 	    if radius_parent eq 1 then begin
 	        distance=result.field04[0:n-1]/planet_radius 
 	    endif else begin
 	        distance=result.field04[0:n-1]/radius_parent
 	    endelse
+
 	endif else begin
 		date=strmid(result.field1[0:n-1],0,4)+strmid(result.field1[0:n-1],5,2)+strmid(result.field1[0:n-1],8,2)+strmid(result.field1[0:n-1],11,2)+strmid(result.field1[0:n-1],14,2)+strmid(result.field1[0:n-1],17,2)
 		longitude=(360+(-1.)*result.field2[0:n-1]+360.) mod 360d
 		lat=result.field3[0:n-1]
 		
 	    if radius_parent eq 1 then begin
+
 	        distance=result.field4[0:n-1]/planet_radius
 	    endif else begin
 	        distance=result.field4[0:n-1]/radius_parent
 	    endelse
+      
   endelse
 endif
 
