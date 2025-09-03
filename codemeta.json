@@ -10,7 +10,7 @@
     "issueTracker": "https://github.com/maserlib/ExPRES/issues",
     "name": "ExPRES",
     "version": "1.4.0",
-    "identifier": "10.5281/zenodo.4280546",
+    "identifier": "10.5281/zenodo.17047296",
     "description": "Exoplanetary and Planetary Radio Emission Simulator",
     "applicationCategory": "Astronomy",
     "releaseNotes": "Add the possibility for users to provide magnetic field and density models.\n",
