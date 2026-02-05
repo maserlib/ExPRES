@@ -1195,10 +1195,12 @@ ticket='ExPRES_simulation_'+strtrim(long((systime(/seconds)-aj_t70(amj_aj(year*1
 
 ; ***** loading DOI number if present *****
 test_doi=where(((serpe_save['SIMU'])).keys() eq 'DOI',cnt_doi)
-	    	if cnt_doi ne 0 then begin
-      			if serpe_save['SIMU']['DOI'] ne '' then $ ;and sc[n].loss eq 1b  then $
-        			doi=strlowcase(serpe_save['SIMU']['DOI'])
-    		endif
+if cnt_doi ne 0 then begin
+	if (serpe_save['SIMU'])['DOI'] ne '' then begin ;and sc[n].loss eq 1b  then $
+		doi=strlowcase((serpe_save['SIMU'])['DOI'])
+	endif
+endif
+
 ; ***** loading NUMBER section *****
 nbody = fix((serpe_save['NUMBER'])['BODY'])
 ndens = fix((serpe_save['NUMBER'])['DENSITY'])
