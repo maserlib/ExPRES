@@ -1,6 +1,16 @@
 # Version History
 
-## Latest Release - 1.4.0 (2025)
+## Latest Release - 1.4.1 (2025)
+Contributors: C. Louis, B. Cecconi
+
+Change Log for version 1.4.1:
+- Configuration:
+  - Add an entry parameter in the json configuration file called `doi` (in `[SIMU]`, optional). The string in the doi parameter will be used to name the output files as `expres_{observer}_{planet}_{origin}_{doi}_{date}_{version}`
+
+Related Publications:
+Louis, C. K., Cecconi, B. (2026) ExPRES Jovian Radio Emissions Simulation Dataset (Version 21) [Dataset], PADC https://doi.org/10.25935/txka-y235
+
+## Version 1.4.0 (2025)
 Contributors: C. Louis, B. Cecconi
 
 Change Log for version 1.4.0:
@@ -17,7 +27,7 @@ Change Log for version 1.4.0:
   - Updated readthedocs documentation, available at: https://expres.readthedocs.io/en/latest/ 
 
 Related Publications:
-- Judy Chebly, Antoine Strugarek, Corentin K. Louis, Julian D. Alvarado Gomez, Philippe Zarka, "Predicting realistic radio emission from compact star-planet systems", to be submitted to Astronomy & Astrophysics
+- Chebly, J. J., Louis, C. K., Strugarek, A., Alvarado Gómez, J. D., and Zarka, P. (2026), "A predictive framework for realistic star-planet radio emission in compact systems", Astronomy and Astrophysics,705, A149, https://doi.org/10.1051/0004-6361/202557706.
 
 ## Version 1.3.0 (2023)
 Contributors: C. Louis, P. Zarka, B. Cecconi
@@ -29,7 +39,7 @@ Change Log for version 1.3.0:
   - Updated readthedocs documentation, available at: https://expres.readthedocs.io/en/latest/ 
 
 Related Publication: 
-- Philippe Zarka, Corentin K. Louis, Jiale Zhang, Hui Tian, Julien Morin and Yang Gao (2025), "Location and energy of electrons producing the radio bursts from AD Leo observed by FAST in December 2021", Astronomy & Astrophysics, 695, A95 (2025). https://doi.org/10.1051/0004-6361/202450950
+- Philippe Zarka, Corentin K. Louis, Jiale Zhang, Hui Tian, Julien Morin and Yang Gao (2025), "Location and energy of electrons producing the radio bursts from AD Leo observed by FAST in December 2021", Astronomy & Astrophysics, 695, A95. https://doi.org/10.1051/0004-6361/202450950
 
 
 ## Version 1.2.0 (2023)
