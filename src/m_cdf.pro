@@ -152,6 +152,7 @@ endif else begin
     filename=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc[0])+'_'+b_model+'_'+strlowcase(sourcetype[0])+'-'+strlowcase(wid[0])+'_'+strlowcase(ener[0])+strlowcase(mode[0])+strlowcase(refr[0])+'_'+strlowcase(datefilename)+'_'+version
 endelse
 
+parameters.cdf_name = filename
 skt_file = filename+'.skt'
 master_file = filename+'_masterfile.cdf'
 
@@ -316,9 +317,14 @@ pro fz_cdf,obj,parameters
 cdf_close,(*obj).id
 
 adresse_save_tmp=loadpath('adresse_save',parameters)
-version=parameters.version
-cmdskt='rm '+adresse_save_tmp+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_'+version+'.skt'
-cmdcdf='rm '+adresse_save_tmp+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_'+version+'.cdf'
+
+filename = parameters.cdf_name
+skt_file = filename+'.skt'
+master_file = filename+'_masterfile.cdf'
+
+
+cmdskt='rm '+adresse_save_tmp+skt_file
+cmdcdf='rm '+adresse_save_tmp+master_file
 spawn,cmdskt
 spawn,cmdcdf
 
