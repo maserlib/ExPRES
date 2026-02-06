@@ -153,7 +153,12 @@ spawn,'rm -rf '+master_file
 adresse_cdf=loadpath('adresse_cdf',parameters)
 spawn,adresse_cdf+'bin/skeletoncdf '+skt_file+' -cdf '+master_file
 
-filename=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc[0])+'_'+b_model+'_'+strlowcase(sourcetype[0])+'-'+strlowcase(wid[0])+'_'+strlowcase(ener[0])+strlowcase(mode[0])+strlowcase(refr[0])+'_'+strlowcase(datefilename)+'_'+version
+if parameters.doi ne ''  then begin
+    filename=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc[0])+'_'+parameters.doi+'_'+strlowcase(datefilename)+'_'+version
+endif else begin
+    filename=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc[0])+'_'+b_model+'_'+strlowcase(sourcetype[0])+'-'+strlowcase(wid[0])+'_'+strlowcase(ener[0])+strlowcase(mode[0])+strlowcase(refr[0])+'_'+strlowcase(datefilename)+'_'+version
+endelse
+
 
 
 data = {Epoch:epoch}

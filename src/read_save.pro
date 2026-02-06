@@ -927,7 +927,7 @@ mov3d={M3D,on:0b,sub:0,xrange:[0.,0.],yrange:[0.,0.],zrange:[0.,0.],obs:0b,traj:
 end
 
 ;************************************************************** BUILD_SERPE_OBJ
-FUNCTION build_serpe_obj,version,adresse_mfl,file_name,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d
+FUNCTION build_serpe_obj,version,adresse_mfl,file_name,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d,doi
 
 ; ***** number of objects to build *****
 nobj=n_elements(bd)-1+n_elements(ds)-1+2*(n_elements(sc)-1)+2+mov2d.on+mov3d.on+2;sacred&cdf
@@ -937,7 +937,7 @@ TEMPS={TIME,debut:time.mini,fin:time.maxi,step:time.dt,n_step:time.nbr,time:0d,t
 FREQUE={FREQ,fmin:freq.mini,fmax:freq.maxi,n_freq:freq.nbr,step:freq.df,file:freq.name,log:freq.log,freq_tab:freq.freq_tab}
 simu_name_tmp=strsplit(file_name,'/',/extract)
 simu_name_tmp=strsplit(simu_name_tmp[-1],'.',/extract)
-parameters={PARAMETERS,version:version,ticket:ticket,time:temps,freq:freque,name:simu_name_tmp[0],objects:PTRARR(nobj,/ALLOCATE_HEAP),out:''}
+parameters={PARAMETERS,version:version,ticket:ticket,time:temps,freq:freque,name:simu_name_tmp[0],objects:PTRARR(nobj,/ALLOCATE_HEAP),out:'', doi:doi}
 
 
 ; ***** preparing DENSITY parameters *****
@@ -1193,6 +1193,13 @@ caldat,systime(/julian),month,day,year
 ticket='ExPRES_simulation_'+strtrim(long((systime(/seconds)-aj_t70(amj_aj(year*10000+month*100+day-1))*24.*60.*60.)*1000),1)
 ;***** *****
 
+; ***** loading DOI number if present *****
+test_doi=where(((serpe_save['SIMU'])).keys() eq 'DOI',cnt_doi)
+if cnt_doi ne 0 then begin
+	if (serpe_save['SIMU'])['DOI'] ne '' then begin ;and sc[n].loss eq 1b  then $
+		doi=strlowcase((serpe_save['SIMU'])['DOI'])
+	endif
+endif
 
 ; ***** loading NUMBER section *****
 nbody = fix((serpe_save['NUMBER'])['BODY'])
@@ -1795,6 +1802,6 @@ for i=0,nsrc-1 do begin
 endfor
 
 ; ***** building SERPE objects *****
-parameters = build_serpe_obj(version,adresse_mfl,file_name,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d)
+parameters = build_serpe_obj(version,adresse_mfl,file_name,nbody,ndens,nsrc,ticket,time,freq,observer,bd,ds,sc,spdyn,cdf,mov2d,mov3d, doi)
 
 end
