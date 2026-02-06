@@ -143,21 +143,22 @@ endif
 outsplit=strsplit(parameters.out,'/',/EXTRACT)
 filename=strmid(parameters.out,0,strlen(parameters.out)-strlen(outsplit(n_elements(outsplit)-1)))
 version=parameters.version
-skt_file = filename+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_'+version+'.skt'
-master_file = filename+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_'+version+'.cdf'
 
+
+
+if parameters.doi ne ''  then begin
+	 filename=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc[0])+'_'+parameters.doi+'_'+strlowcase(datefilename)+'_'+version
+endif else begin
+    filename=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc[0])+'_'+b_model+'_'+strlowcase(sourcetype[0])+'-'+strlowcase(wid[0])+'_'+strlowcase(ener[0])+strlowcase(mode[0])+strlowcase(refr[0])+'_'+strlowcase(datefilename)+'_'+version
+endelse
+skt_file = filename+'.skt'
+master_file = filename+'_masterfile.cdf'
 
 for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]),/str) eq 'CDF' then opt=*parameters.objects[j]
 build_serpe_skt,*parameters.freq.freq_tab,Freq_Label,parameters.freq.log,Src_ID_Label,originsrc,hemisphere,b_model,sourcetype,observer,planet,wid,ener,mode,refr,sourcedescr,dt,dated,datef,skt_file,opt,version
 spawn,'rm -rf '+master_file
 adresse_cdf=loadpath('adresse_cdf',parameters)
 spawn,adresse_cdf+'bin/skeletoncdf '+skt_file+' -cdf '+master_file
-
-if parameters.doi ne ''  then begin
-    filename=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc[0])+'_'+parameters.doi+'_'+strlowcase(datefilename)+'_'+version
-endif else begin
-    filename=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc[0])+'_'+b_model+'_'+strlowcase(sourcetype[0])+'-'+strlowcase(wid[0])+'_'+strlowcase(ener[0])+strlowcase(mode[0])+strlowcase(refr[0])+'_'+strlowcase(datefilename)+'_'+version
-endelse
 
 
 
@@ -313,10 +314,14 @@ pro fz_cdf,obj,parameters
 ; =============================================================================
 cdf_close,(*obj).id
 
-adresse_save_tmp=loadpath('adresse_save',parameters)
-version=parameters.version
-cmdskt='rm '+adresse_save_tmp+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_'+version+'.skt'
-cmdcdf='rm '+adresse_save_tmp+'expres_obs_planet_origin_beam-wid_e_refraction_YYYYMMDD_'+version+'.cdf'
+
+filename = parameters.out
+skt_file = filename+'.skt'
+master_file = filename+'_masterfile.cdf'
+
+
+cmdskt='rm '+skt_file
+cmdcdf='rm '+master_file
 spawn,cmdskt
 spawn,cmdcdf
 
