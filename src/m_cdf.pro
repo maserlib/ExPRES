@@ -318,7 +318,7 @@ pro fz_cdf,obj,parameters
 cdf_close,(*obj).id
 
 
-filename = parameters.out+parameters.cdf_name
+filename = parameters.out
 skt_file = filename+'.skt'
 master_file = filename+'_masterfile.cdf'
 
