@@ -937,7 +937,7 @@ TEMPS={TIME,debut:time.mini,fin:time.maxi,step:time.dt,n_step:time.nbr,time:0d,t
 FREQUE={FREQ,fmin:freq.mini,fmax:freq.maxi,n_freq:freq.nbr,step:freq.df,file:freq.name,log:freq.log,freq_tab:freq.freq_tab}
 simu_name_tmp=strsplit(file_name,'/',/extract)
 simu_name_tmp=strsplit(simu_name_tmp[-1],'.',/extract)
-parameters={PARAMETERS,version:version,ticket:ticket,time:temps,freq:freque,name:simu_name_tmp[0],objects:PTRARR(nobj,/ALLOCATE_HEAP),out:'', doi:doi, cdf_name:''}
+parameters={PARAMETERS,version:version,ticket:ticket,time:temps,freq:freque,name:simu_name_tmp[0],objects:PTRARR(nobj,/ALLOCATE_HEAP),out:'', doi:doi}
 
 
 ; ***** preparing DENSITY parameters *****
