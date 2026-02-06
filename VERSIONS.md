@@ -17,7 +17,7 @@ Change Log for version 1.4.0:
   - Updated readthedocs documentation, available at: https://expres.readthedocs.io/en/latest/ 
 
 Related Publications:
-- Judy Chebly, Antoine Strugarek, Corentin K. Louis, Julian D. Alvarado Gomez, Philippe Zarka, "Assessing SPI-induced radio emission using 3D MHD simulations of stellar winds", to be submitted to Astronomy & Astrophysics
+- Judy Chebly, Antoine Strugarek, Corentin K. Louis, Julian D. Alvarado Gomez, Philippe Zarka, "Predicting realistic radio emission from compact star-planet systems", to be submitted to Astronomy & Astrophysics
 
 ## Version 1.3.0 (2023)
 Contributors: C. Louis, P. Zarka, B. Cecconi
