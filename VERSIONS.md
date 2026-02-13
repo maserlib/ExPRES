@@ -1,6 +1,6 @@
 # Version History
 
-## Latest Release - 1.4.1 (2025)
+## Latest Release - 1.4.1 (2026)
 Contributors: C. Louis, B. Cecconi
 
 Change Log for version 1.4.1:
