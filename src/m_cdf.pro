@@ -319,6 +319,9 @@ filename = parameters.out
 skt_file = filename+'.skt'
 master_file = filename+'_masterfile.cdf'
 
+filename = parameters.out
+skt_file = filename+'.skt'
+master_file = filename+'_masterfile.cdf'
 
 cmdskt='rm '+skt_file
 cmdcdf='rm '+master_file
