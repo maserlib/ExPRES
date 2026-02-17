@@ -138,10 +138,10 @@ if observer eq '' then observer='earth'
 ;adresse_save_tmp='/Groups/SERPE/SERPE_6.1/Corentin/result/Juno/'
 adresse_save_tmp=loadpath('adresse_save',parameters)
 
-adresse_save=adresse_save_tmp+strmid(tmp,0,strlen(tmp)-5)
+adresse_save=adresse_save_tmp
 parameters.out=adresse_save
 print,'Simulation file ok'
-print,'Results will be saved under the name ',parameters.out
+print,'Results will be saved in the '+parameters.out+' directory'
 
 print,'Initialization'
 INIT,parameters
