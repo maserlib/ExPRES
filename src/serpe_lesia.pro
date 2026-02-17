@@ -277,9 +277,10 @@ if spdyn.save_out then begin
 	endif
 
 	
-	outsplit=strsplit(parameters.out,'/',/EXTRACT)
-	filename=strmid(parameters.out,0,strlen(parameters.out)-strlen(outsplit(n_elements(outsplit)-1)))
-	file=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc)+lag+'_'+strlowcase(sourcetype)+'-'+strlowcase(wid)+'_'+strlowcase(ener)+strlowcase(refr)+'_'+strlowcase(datefilename)+'_'+version+'.sav'
+	;outsplit=strsplit(parameters.out,'/',/EXTRACT)
+	;filename=strmid(parameters.out,0,strlen(parameters.out)-strlen(outsplit(n_elements(outsplit)-1)))
+	;file=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc)+lag+'_'+strlowcase(sourcetype)+'-'+strlowcase(wid)+'_'+strlowcase(ener)+strlowcase(refr)+'_'+strlowcase(datefilename)+'_'+version+'.sav'
+	file = parameters.out+'.sav' ; at first parameters.out contains only the output directory. But after INIT, it contains the full name used for the cdf file.
 
 	
 	
