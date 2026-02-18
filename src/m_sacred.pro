@@ -207,11 +207,11 @@ for i=0,nobj-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SOURCE' then b
 		lg=obj2.lgmin+ilg*obj2.lgstep
 		lat=obj2.latmin+ilat*obj2.latstep
 		nom_fichier=nom_f2+'_'+strtrim(string(iv),2)+'_'+strtrim(string(ilg),2)+'_'+strtrim(string(ilat),2)+'.vot' 
-		print,'rm -f '+nom_fichier
 		cmd="rm -f "+nom_fichier
 		spawn,cmd
 	endfor
 
+	print,'main file name'+nom_fichier0
 	openu, unit, nom_fichier0, /get_lun,/APPEND
 	printf,unit,'</RESOURCE>'
 	printf,unit,'</VOTABLE>'
