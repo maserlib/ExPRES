@@ -5,11 +5,11 @@
     "codeRepository": "https://github.com/maserlib/ExPRES",
     "dateCreated": "2006-09-01",
     "datePublished": "2019-01-08",
-    "dateModified": "2023-12-21",
-    "downloadUrl": "https://github.com/maserlib/ExPRES/archive/refs/tags/1.4.1.zip",
+    "dateModified": "2026-02-18",
+    "downloadUrl": "https://github.com/maserlib/ExPRES/archive/refs/tags/1.4.2.zip",
     "issueTracker": "https://github.com/maserlib/ExPRES/issues",
     "name": "ExPRES",
-    "version": "1.4.1",
+    "version": "1.4.2",
     "identifier": "",
     "description": "Exoplanetary and Planetary Radio Emission Simulator",
     "applicationCategory": "Astronomy",
@@ -19,7 +19,7 @@
     "isPartOf": "https://maser.lesia.obspm.fr",
     "referencePublication": "https://doi.org/10.1051/0004-6361/201935161",
     "readme": "https://expres.readthedocs.io/en/latest/",
-    "softwareVersion": "1.4.1",
+    "softwareVersion": "1.4.2",
     "keywords": [
         "radio astronomy; planetary radio emissions; exoplanets; planetary magnetospheres"
     ],

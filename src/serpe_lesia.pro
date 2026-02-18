@@ -93,6 +93,90 @@ return,z
 end
 
 
+;************************************************************** NAMING_FILES
+pro naming_files,parameters
+
+	nsrc = 0
+	for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SOURCE' then begin
+		nsrc=nsrc+(*parameters.objects[i]).lgnbr
+	endif
+
+	
+	originsrc = strarr(nsrc)
+	sourcetype = strarr(nsrc)
+	ener = strarr(nsrc)
+	refr = strarr(nsrc)
+	mode = strarr(nsrc)
+	wid = strarr(nsrc)
+
+
+	h=0
+	for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SOURCE' then begin
+		for ilg=0,(*parameters.objects[i]).lgnbr-1 do begin
+			ener(h)=strtrim(long(string(((*(parameters.objects[i])).vmin)^2*255.5)),2)+'keV'
+			wid(h) ='wid'+strtrim(long((*parameters.objects[i]).width),2)+'deg'
+			
+			
+			if (*(parameters.objects[i])).refract then refr(h)='_refr' $
+			else refr(h)=''
+
+
+			mode(h) = '_'+(*(parameters.objects[i])).mode
+
+			if (*(*parameters.objects(i)).parent).sat then originsrc(h)=(*(*(*parameters.objects(i)).parent).parent).name $
+				else originsrc(h)=strtrim(lon,2)+'d-'+strtrim(lat,2)+'R'
+			
+			if (*(parameters.objects[i])).loss then sourcetype(h)='lossc' else $
+			if (*(parameters.objects[i])).constant then sourcetype(h)='cst'+strmid(strtrim((*(parameters.objects[i])).constant,1),0,6) else $
+			if (*(parameters.objects[i])).cavity then sourcetype(h)='cavity'
+			if (*(parameters.objects[i])).ring then sourcetype(h)='shell'
+			
+			h=h+1
+		endfor
+	endif
+	test=0
+	for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'FEATURE' then begin
+		if test eq 0 then $
+			b_model=strlowcase((strsplit((*(parameters.objects[i])).name,'_',/extract))[0])
+			b_model=strlowcase((strsplit(b_model,'+',/extract))[0])
+		test=test+1
+	endif
+
+
+	for i=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'OBSERVER' then begin
+		planet=(*(*parameters.objects(i)).parent).name
+		if (*parameters.objects(i)).name then $
+			observer=(*parameters.objects(i)).name else $
+			observer='Earth'		
+	endif	
+
+	
+
+
+	for i=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SACRED' then $
+		t0=julday((*parameters.objects[i]).date[1],(*parameters.objects[i]).date[2],(*parameters.objects[i]).date[0],$
+		(*parameters.objects[i]).date[3],(*parameters.objects[i]).date[4],(*parameters.objects[i]).date[5])
+		time=dblarr(parameters.time.n_step)
+		for i=0,parameters.time.n_step-1 do time(i)=t0+i*parameters.time.fin/60./24./(parameters.time.n_step-1)
+
+	for i=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SACRED' then begin
+		dated=string(format='(I04,"-",I02,"-",I02,"T",I02,":",I02,":",I02)',(*parameters.objects(i)).date(0:5))
+		datefilename=string(format='(I04,I02,I02)',(*parameters.objects(i)).date(0:2))
+	endif
+
+
+	filename = parameters.out
+	version=parameters.version
+
+
+	if parameters.doi ne ''  then begin
+		filename=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc[0])+'_'+parameters.doi+'_'+strlowcase(datefilename)+'_'+version
+	endif else begin
+		filename=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc[0])+'_'+b_model+'_'+strlowcase(sourcetype[0])+'-'+strlowcase(wid[0])+'_'+strlowcase(ener[0])+strlowcase(mode[0])+strlowcase(refr[0])+'_'+strlowcase(datefilename)+'_'+version
+	endelse
+	parameters.out = filename
+
+end
 
 ;**************************************************************
 ;************************************************************** MAIN
@@ -138,10 +222,18 @@ if observer eq '' then observer='earth'
 ;adresse_save_tmp='/Groups/SERPE/SERPE_6.1/Corentin/result/Juno/'
 adresse_save_tmp=loadpath('adresse_save',parameters)
 
-adresse_save=adresse_save_tmp+strmid(tmp,0,strlen(tmp)-5)
+
+
+
+
+
+
+adresse_save=adresse_save_tmp
 parameters.out=adresse_save
 print,'Simulation file ok'
-print,'Results will be saved under the name ',parameters.out
+print,'Results will be saved in the '+parameters.out+' directory'
+NAMING_FILES,parameters
+print,'Results will be saved as '+parameters.out
 
 print,'Initialization'
 INIT,parameters
@@ -277,9 +369,10 @@ if spdyn.save_out then begin
 	endif
 
 	
-	outsplit=strsplit(parameters.out,'/',/EXTRACT)
-	filename=strmid(parameters.out,0,strlen(parameters.out)-strlen(outsplit(n_elements(outsplit)-1)))
-	file=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc)+lag+'_'+strlowcase(sourcetype)+'-'+strlowcase(wid)+'_'+strlowcase(ener)+strlowcase(refr)+'_'+strlowcase(datefilename)+'_'+version+'.sav'
+	;outsplit=strsplit(parameters.out,'/',/EXTRACT)
+	;filename=strmid(parameters.out,0,strlen(parameters.out)-strlen(outsplit(n_elements(outsplit)-1)))
+	;file=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc)+lag+'_'+strlowcase(sourcetype)+'-'+strlowcase(wid)+'_'+strlowcase(ener)+strlowcase(refr)+'_'+strlowcase(datefilename)+'_'+version+'.sav'
+	file = parameters.out+'.sav' ; at first parameters.out contains only the output directory. But after INIT, it contains the full name used for the cdf file.
 
 	
 	
@@ -309,8 +402,9 @@ cmdbody='rm '+adresse_ephem+'ephembody'+strtrim(parameters.ticket,1)+'.txt'
 spawn,cmdobs
 spawn,cmdbody
 
-cmdvot1='rm '+adresse_save+'_Source1.vot'
-cmdvot2='rm '+adresse_save+'_Source2.vot'
+
+cmdvot1='rm '+adresse_save+'*.vot'
+cmdvot2='rm '+adresse_save+'*.vot'
 spawn,cmdvot1
 spawn,cmdvot2
 
