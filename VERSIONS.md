@@ -1,6 +1,13 @@
 # Version History
 
-## Latest Release - 1.4.1 (2026)
+## Latest Release - 1.4.2 (2026)
+Contributors: C. Louis
+
+Change Log for version 1.4.2:
+- Configuration:
+  - Modify the code to name temporary and final files consistently. The name is now defined at the beginning of the code.
+
+## Version 1.4.1 (2026)
 Contributors: C. Louis, B. Cecconi
 
 Change Log for version 1.4.1:
