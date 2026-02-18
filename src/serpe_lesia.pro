@@ -93,8 +93,8 @@ return,z
 end
 
 
-
-function naming_files,parameters
+;************************************************************** NAMING_FILES
+pro naming_files,parameters
 
 	nsrc = 0
 	for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SOURCE' then begin
@@ -232,8 +232,7 @@ adresse_save=adresse_save_tmp
 parameters.out=adresse_save
 print,'Simulation file ok'
 print,'Results will be saved in the '+parameters.out+' directory'
-
-naming_files,parameters
+NAMING_FILES,parameters
 print,'Results will be saved as '+parameters.out
 
 print,'Initialization'
