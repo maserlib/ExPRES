@@ -313,10 +313,6 @@ filename = parameters.out
 skt_file = filename+'.skt'
 master_file = filename+'_masterfile.cdf'
 
-print,"filename: "+filename
-print,"skt_file :"+skt_file
-print,"master_file: "+master_file
-
 cmdskt='rm '+skt_file
 cmdcdf='rm '+master_file
 spawn,cmdskt

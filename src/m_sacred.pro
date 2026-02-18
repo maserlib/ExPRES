@@ -211,7 +211,6 @@ for i=0,nobj-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SOURCE' then b
 		spawn,cmd
 	endfor
 
-	print,'main file name'+nom_fichier0
 	openu, unit, nom_fichier0, /get_lun,/APPEND
 	printf,unit,'</RESOURCE>'
 	printf,unit,'</VOTABLE>'
