@@ -145,14 +145,6 @@ endif
 filename = parameters.out
 version=parameters.version
 
-
-
-if parameters.doi ne ''  then begin
-	 filename=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc[0])+'_'+parameters.doi+'_'+strlowcase(datefilename)+'_'+version
-endif else begin
-    filename=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc[0])+'_'+b_model+'_'+strlowcase(sourcetype[0])+'-'+strlowcase(wid[0])+'_'+strlowcase(ener[0])+strlowcase(mode[0])+strlowcase(refr[0])+'_'+strlowcase(datefilename)+'_'+version
-endelse
-parameters.out = filename
 skt_file = filename+'.skt'
 master_file = filename+'_masterfile.cdf'
 
