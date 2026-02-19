@@ -402,13 +402,6 @@ cmdbody='rm '+adresse_ephem+'ephembody'+strtrim(parameters.ticket,1)+'.txt'
 spawn,cmdobs
 spawn,cmdbody
 
-
-cmdvot1='rm '+adresse_save+'*.vot'
-cmdvot2='rm '+adresse_save+'*.vot'
-spawn,cmdvot1
-spawn,cmdvot2
-
-
 parameters=''
 HEAP_GC
 end
