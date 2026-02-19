@@ -402,6 +402,11 @@ cmdbody='rm '+adresse_ephem+'ephembody'+strtrim(parameters.ticket,1)+'.txt'
 spawn,cmdobs
 spawn,cmdbody
 
+; removing votable files, as there are not usefull any more. Will be fully deleted from the code in a future version
+cmdvot = 'rm '+parameters.out+'_source*.vot'
+spawn, cmdvot
+
+
 parameters=''
 HEAP_GC
 end
