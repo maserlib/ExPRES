@@ -403,7 +403,7 @@ spawn,cmdobs
 spawn,cmdbody
 
 ; removing votable files, as there are not usefull any more. Will be fully deleted from the code in a future version
-cmdvot = 'rm '+parameters.out+'_source*.vot'
+cmdvot = 'rm '+parameters.out+'_Source*.vot'
 spawn, cmdvot
 
 
