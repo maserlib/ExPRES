@@ -1,6 +1,19 @@
 # Version History
 
-## Latest Release - 1.4.2 (2026)
+
+## Latest Release - 1.4.3 (2026)
+Contributors: C. Louis
+
+Change Log for version 1.4.3:
+- Configuration:
+  - Add ephemeris for Juno's Extended Mission #2
+- Others:
+  - Fix deletions of final votable files (which sometimes caused problems when running simultaneously with writing finished products to the same folder)
+
+Related Publications:
+Louis, C. K., Cecconi, B. (2026) ExPRES Jovian Radio Emissions Simulation Dataset (Version 21) [Dataset], PADC https://doi.org/10.25935/txka-y235
+
+## Version 1.4.2 (2026)
 Contributors: C. Louis
 
 Change Log for version 1.4.2:
