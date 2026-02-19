@@ -1,4 +1,4 @@
-# Exoplanetary and Planetary Radio Emission Simulator (ExPRES) V1.4.2
+# Exoplanetary and Planetary Radio Emission Simulator (ExPRES) V1.4.3
 
 <a href="http://ascl.net/1902.009"><img src="https://img.shields.io/badge/ascl-1902.009-blue.svg?colorB=262255" alt="ascl:1902.009" /></a>
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18682880.svg)](https://doi.org/10.5281/zenodo.18682880)
