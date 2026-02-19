@@ -1365,10 +1365,10 @@ if (serpe_save['OBSERVER'])['EPHEM'] eq '' then begin
   			restore,adresse_ephem+'Juno/2017_001-365.sav'
   		if (strmid(strtrim(long64(observer.start),2),0,4) eq '2018') then $
   			restore,adresse_ephem+'Juno/2018_001-365.sav'
-     		if (long64(strmid(observer.start,0,4)) ge 2019) and (long64(strmid(observer.start,0,4)) le 2024) then $
+     		if (long64(strmid(observer.start,0,4)) ge 2019) and (long64(strmid(observer.start,0,4)) le 2027) then $
       			restore,adresse_ephem+'Juno/'+strmid(strtrim(long64(observer.start),2),0,4)+'.sav'
-      		if (long64(strmid(observer.start,0,8)) ge 20250101) and (long64(strmid(observer.start,0,8)) lt 20251016) then $
-      			restore,adresse_ephem+'Juno/2025_001-288.sav'
+      		if (long64(strmid(observer.start,0,8)) ge 20280101) and (long64(strmid(observer.start,0,8)) lt 20281001) then $
+      			restore,adresse_ephem+'Juno/2028_001-274.sav'
 
       
       
