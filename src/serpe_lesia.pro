@@ -402,11 +402,9 @@ cmdbody='rm '+adresse_ephem+'ephembody'+strtrim(parameters.ticket,1)+'.txt'
 spawn,cmdobs
 spawn,cmdbody
 
-
-cmdvot1='rm '+adresse_save+'*.vot'
-cmdvot2='rm '+adresse_save+'*.vot'
-spawn,cmdvot1
-spawn,cmdvot2
+; removing votable files, as there are not usefull any more. Will be fully deleted from the code in a future version
+cmdvot = 'rm '+parameters.out+'_Source*.vot'
+spawn, cmdvot
 
 
 parameters=''
