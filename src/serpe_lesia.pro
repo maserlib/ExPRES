@@ -123,8 +123,12 @@ pro naming_files,parameters
 
 			mode(h) = '_'+(*(parameters.objects[i])).mode
 
-			if (*(*parameters.objects(i)).parent).sat then originsrc(h)=(*(*(*parameters.objects(i)).parent).parent).name $
-				else originsrc(h)=strtrim(lon,2)+'d-'+strtrim(lat,2)+'R'
+			if (*(*parameters.objects(i)).parent).sat then sourcedescr(h)=(*(*(*parameters.objects(i)).parent).parent).name $
+				else begin
+					lon=long((*(*parameters.objects[i]).lg)[ilg])
+					lat=long((*(*parameters.objects[i]).lat)[ilg])
+					originsrc(h)=strtrim(lon,2)+'d-'+strtrim(lat,2)+'R'
+				endelse
 			
 			if (*(parameters.objects[i])).loss then sourcetype(h)='lossc' else $
 			if (*(parameters.objects[i])).constant then sourcetype(h)='cst'+strmid(strtrim((*(parameters.objects[i])).constant,1),0,6) else $
@@ -334,44 +338,7 @@ if spdyn.save_out then begin
 		k=k+1
 	endif
 
-	for i=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'OBSERVER' then begin
-		planet=(*(*parameters.objects(i)).parent).name
-		if (*parameters.objects(i)).name then $
-			observer=(*parameters.objects(i)).name else $
-			observer='Earth'		
-	endif
-	h=0
-	for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SOURCE' then begin
-		if h eq 0 then begin
-			if (*(*parameters.objects(i)).parent).sat then originsrc=(*(*(*parameters.objects(i)).parent).parent).name $
-				else originsrc=strtrim(lon,2)+'d-'+strtrim(lat,2)+'R'
-		
-		
-			if (*(parameters.objects[i])).loss then sourcetype='lossc' else $
-				if (*(parameters.objects[i])).constant then sourcetype='cst'+strmid(strtrim((*(parameters.objects[i])).constant,1),0,6) else $
-				if (*(parameters.objects[i])).cavity then sourcetype='cavity'
-				if (*(parameters.objects[i])).ring then sourcetype='shell'
-			
-			ener=strtrim(long(((*(parameters.objects[i])).vmin)^2*255.5),2)+'keV'
-			wid='wid'+strtrim(long((*parameters.objects[i]).width),2)+'deg'	
-			
-			if (*(parameters.objects[i])).refract then refr='_refr' $
-				else refr=''
-			
-			if (*(parameters.objects[i])).LAGAUTO eq 'on' then lag='_lag' $
-			else lag=''
-		endif
-		h=h+1
-	endif
-	for i=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SACRED' then begin
-		dated=string(format='(I04,"-",I02,"-",I02,"T",I02,":",I02,":",I02)',(*parameters.objects(i)).date(0:5))
-		datefilename=string(format='(I04,I02,I02)',(*parameters.objects(i)).date(0:2))
-	endif
 
-	
-	;outsplit=strsplit(parameters.out,'/',/EXTRACT)
-	;filename=strmid(parameters.out,0,strlen(parameters.out)-strlen(outsplit(n_elements(outsplit)-1)))
-	;file=filename+'expres_'+strlowcase(observer)+'_'+strlowcase(planet)+'_'+strlowcase(originsrc)+lag+'_'+strlowcase(sourcetype)+'-'+strlowcase(wid)+'_'+strlowcase(ener)+strlowcase(refr)+'_'+strlowcase(datefilename)+'_'+version+'.sav'
 	file = parameters.out+'.sav' ; at first parameters.out contains only the output directory. But after INIT, it contains the full name used for the cdf file.
 
 	
