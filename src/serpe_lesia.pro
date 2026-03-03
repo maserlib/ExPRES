@@ -122,8 +122,7 @@ pro naming_files,parameters
 
 
 			mode(h) = '_'+(*(parameters.objects[i])).mode
-
-			if (*(*parameters.objects(i)).parent).sat then sourcedescr(h)=(*(*(*parameters.objects(i)).parent).parent).name $
+			if (*(*parameters.objects(i)).parent).sat then originsrc(h)=(*(*(*parameters.objects(i)).parent).parent).name $
 				else begin
 					lon=long((*(*parameters.objects[i]).lg)[ilg])
 					lat=long((*(*parameters.objects[i]).lat)[ilg])
