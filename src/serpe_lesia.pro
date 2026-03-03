@@ -123,10 +123,8 @@ pro naming_files,parameters
 		mode(h) = '_'+(*(parameters.objects[i])).mode
 		if (*(*parameters.objects(i)).parent).sat then originsrc(h)=(*(*(*parameters.objects(i)).parent).parent).name $
 			else begin
-				help,*parameters.objects[i]
-				print,*(*parameters.objects[i]).lg
-				lon=long(*(*parameters.objects[i]).lg)
-				lat=long(*(*parameters.objects[i]).lat)
+				lon=long((*parameters.objects[i]).LGMIN)
+				lat=long((*parameters.objects[i]).LATMIN)
 				originsrc(h)=strtrim(lon,2)+'d-'+strtrim(lat,2)+'R'
 			endelse
 			
