@@ -112,25 +112,23 @@ pro naming_files,parameters
 
 	h=0
 	for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'SOURCE' then begin
-		for ilg=0,(*parameters.objects[i]).lgnbr-1 do begin
-			ener(h)=strtrim(long(string(((*(parameters.objects[i])).vmin)^2*255.5)),2)+'keV'
-			wid(h) ='wid'+strtrim(long((*parameters.objects[i]).width),2)+'deg'
+		ener(h)=strtrim(long(string(((*(parameters.objects[i])).vmin)^2*255.5)),2)+'keV'
+		wid(h) ='wid'+strtrim(long((*parameters.objects[i]).width),2)+'deg'
 			
 			
-			if (*(parameters.objects[i])).refract then refr(h)='_refr' $
-			else refr(h)=''
+		if (*(parameters.objects[i])).refract then refr(h)='_refr' $
+		else refr(h)=''
 
 
-			mode(h) = '_'+(*(parameters.objects[i])).mode
-			if (*(*parameters.objects(i)).parent).sat then originsrc(h)=(*(*(*parameters.objects(i)).parent).parent).name $
-				else begin
-					print,*parameters.objects[i]
-					print,((*parameters.objects[i]).lg)[ilg]
-					print,long((*(*parameters.objects[i]).lg)[ilg])
-					lon=long((*(*parameters.objects[i]).lg)[ilg])
-					lat=long((*(*parameters.objects[i]).lat)[ilg])
-					originsrc(h)=strtrim(lon,2)+'d-'+strtrim(lat,2)+'R'
-				endelse
+		mode(h) = '_'+(*(parameters.objects[i])).mode
+		if (*(*parameters.objects(i)).parent).sat then originsrc(h)=(*(*(*parameters.objects(i)).parent).parent).name $
+			else begin
+				print,*parameters.objects[i]
+				print,((*parameters.objects[i]).lg)
+				lon=long(((*parameters.objects[i]).lg))
+				lat=long(((*parameters.objects[i]).lat))
+				originsrc(h)=strtrim(lon,2)+'d-'+strtrim(lat,2)+'R'
+			endelse
 			
 			if (*(parameters.objects[i])).loss then sourcetype(h)='lossc' else $
 			if (*(parameters.objects[i])).constant then sourcetype(h)='cst'+strmid(strtrim((*(parameters.objects[i])).constant,1),0,6) else $
