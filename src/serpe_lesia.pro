@@ -130,14 +130,15 @@ pro naming_files,parameters
 				originsrc(h)=strtrim(lon,2)+'d-'+strtrim(lat,2)+'R'
 			endelse
 			
-			if (*(parameters.objects[i])).loss then sourcetype(h)='lossc' else $
-			if (*(parameters.objects[i])).constant then sourcetype(h)='cst'+strmid(strtrim((*(parameters.objects[i])).constant,1),0,6) else $
-			if (*(parameters.objects[i])).cavity then sourcetype(h)='cavity'
-			if (*(parameters.objects[i])).ring then sourcetype(h)='shell'
-			
-			h=h+1
-		endfor
+		if (*(parameters.objects[i])).loss then sourcetype(h)='lossc' else $
+		if (*(parameters.objects[i])).constant then sourcetype(h)='cst'+strmid(strtrim((*(parameters.objects[i])).constant,1),0,6) else $
+		if (*(parameters.objects[i])).cavity then sourcetype(h)='cavity'
+		if (*(parameters.objects[i])).ring then sourcetype(h)='shell'
+		
+		h=h+1
 	endif
+	endfor
+		
 	test=0
 	for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'FEATURE' then begin
 		if test eq 0 then $
