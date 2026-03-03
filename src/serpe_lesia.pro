@@ -137,7 +137,6 @@ pro naming_files,parameters
 		
 		h=h+1
 	endif
-	endfor
 		
 	test=0
 	for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i]),/str) eq 'FEATURE' then begin
