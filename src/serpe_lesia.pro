@@ -126,8 +126,8 @@ pro naming_files,parameters
 				else begin
 					print,*parameters.objects[i]
 					print,((*parameters.objects[i]).lg)[ilg]
-					lon=long(((*parameters.objects[i]).lg)[ilg])
-					lat=long(((*parameters.objects[i]).lat)[ilg])
+					lon=long(*((*parameters.objects[i]).lg)[ilg])
+					lat=long(*((*parameters.objects[i]).lat)[ilg])
 					originsrc(h)=strtrim(lon,2)+'d-'+strtrim(lat,2)+'R'
 				endelse
 			
