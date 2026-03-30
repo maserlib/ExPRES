@@ -48,6 +48,8 @@
 ;        Width of the emission layer in degree
 ;    Ener: in, required, type=fltarr
 ;        Energy of the instable electron population
+;    Mode: in, required, type=str
+;        Wave mode description
 ;    Refr: in, required, type=intarr
 ;        Flag for refraction
 ;    SourceDescr: in,required, type=strarr
@@ -62,11 +64,15 @@
 ;        File name
 ;    Option: in, required, type=structure
 ;        Contains output options (i.e., which parameters will be put in the CDF file) 
+;    Version: in, required, type=str
+;        Version number
+;    doi: in, required, type=str
+;        DOI number, if the file is part of a dataset with an attached doi (otherwise it's an empty string which won't be in the CDF metadata)
 ;
 ;-
 
 PRO BUILD_SERPE_SKT,frequency,Freq_Label,Flog,Src_ID_Label,originsrc,hemisphere,b_model,sourcetype,$
-    observer,planet,wid,ener,mode,refr,sourcedescr,dt,dated,datef,file,option,version
+    observer,planet,wid,ener,mode,refr,sourcedescr,dt,dated,datef,file,option,version, doi
 ; Check if input parameters 'file' is set. Create new file name, if not set; remove previous one (if it exist) if set. 
 if ~keyword_set(file) then begin
 	file=string(format='(I12.12)',long(systime(1)))+'.skt'
@@ -124,6 +130,10 @@ printf,lun,"  ""Discipline""          1:    CDF_CHAR     { ""Space "" -"
 printf,lun,"                                             ""Physics>Magnetospheric "" -"
 printf,lun,"                                             ""Science"" } ."
 printf,lun,""
+if doi NE ""then begin
+	printf,lun,"  ""DOI""          1:    CDF_CHAR     { ""https://doi.org/10.25935/"+strlowcase(doi)+"""} ."
+	printf,lun,""
+endif
 printf,lun,"  ""Data_type""           1:    CDF_CHAR     { """+strlowcase(observer[0])+"_"+strlowcase(planet[0])+"_"+strlowcase(originsrc[0])+""" } ."
 printf,lun,""
 printf,lun,"  ""Descriptor""          1:    CDF_CHAR     { """+strlowcase(b_model[0])+"_"+sourcetype[0]+"-"+wid[0]+"_"+strlowcase(ener[0])+strlowcase(mode[0])+refr[0]+""" } ."
