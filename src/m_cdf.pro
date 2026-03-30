@@ -144,12 +144,13 @@ endif
 ;filename=strmid(parameters.out,0,strlen(parameters.out)-strlen(outsplit(n_elements(outsplit)-1)))
 filename = parameters.out
 version=parameters.version
+doi = parameters.doi
 
 skt_file = filename+'.skt'
 master_file = filename+'_masterfile.cdf'
 
 for j=0,n_elements(parameters.objects)-1 do if TAG_NAMES(*(parameters.objects[j]),/str) eq 'CDF' then opt=*parameters.objects[j]
-build_serpe_skt,*parameters.freq.freq_tab,Freq_Label,parameters.freq.log,Src_ID_Label,originsrc,hemisphere,b_model,sourcetype,observer,planet,wid,ener,mode,refr,sourcedescr,dt,dated,datef,skt_file,opt,version
+build_serpe_skt,*parameters.freq.freq_tab,Freq_Label,parameters.freq.log,Src_ID_Label,originsrc,hemisphere,b_model,sourcetype,observer,planet,wid,ener,mode,refr,sourcedescr,dt,dated,datef,skt_file,opt,version, doi
 spawn,'rm -rf '+master_file
 adresse_cdf=loadpath('adresse_cdf',parameters)
 spawn,adresse_cdf+'bin/skeletoncdf '+skt_file+' -cdf '+master_file
