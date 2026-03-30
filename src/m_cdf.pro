@@ -77,7 +77,7 @@ for i=0,n_elements(parameters.objects) -1 do if TAG_NAMES(*(parameters.objects[i
 		else refr(h)=''
 
 
-		mode(h) = '_'+(*(parameters.objects[i])).mode
+		mode(h) = (*(parameters.objects[i])).mode
 
 		if (*(*parameters.objects(i)).parent).sat then originsrc(h)=(*(*(*parameters.objects(i)).parent).parent).name $
 			else originsrc(h)=strtrim(lon,2)+'d-'+strtrim(lat,2)+'R'
