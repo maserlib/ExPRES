@@ -167,7 +167,7 @@ printf,lun,"											 "" DAM radio emission observed from "+observer[0]+""" } 
 printf,lun,""
 printf,lun,"  ""Time_resolution""		1:		CDF_CHAR	{"""+dt[0]+" seconds""} ."
 printf,lun,""
-printf,lun,"  ""Rules_of_use"" 			1:	CDF_CHAR	{ "" This MASER/ExPRES simulation is distributed under Creative Commons CC-BY-NC-SA licence. "" -"
+printf,lun,"  ""Rules_of_use"" 			1:	CDF_CHAR	{ "" This MASER/ExPRES simulation is distributed under Creative Commons CC-BY licence. "" -"
 printf,lun,"                                            "" It can be used for scientific purposes. "" -"
 printf,lun,"											"" This data has been processed by the LESIA/PADC team which can be contacted for any question "" -"
 printf,lun,"											"" or collaborated purposes (contact.maser@obspm.fr). "" -"
