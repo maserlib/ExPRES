@@ -130,7 +130,7 @@ printf,lun,"  ""Discipline""          1:    CDF_CHAR     { ""Space "" -"
 printf,lun,"                                             ""Physics>Magnetospheric "" -"
 printf,lun,"                                             ""Science"" } ."
 printf,lun,""
-if doi NE ""then begin
+if doi ne "" then begin
 	printf,lun,"  ""DOI""          1:    CDF_CHAR     { ""https://doi.org/10.25935/"+strlowcase(doi)+"""} ."
 	printf,lun,""
 endif
